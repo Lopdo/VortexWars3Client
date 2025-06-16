@@ -42,9 +42,10 @@ func _http_request_completed(result, response_code, headers, body):
 	print(body.get_string_from_utf8())
 	var login_response = JSON.parse_string(body.get_string_from_utf8())
 	Globals.session_token = login_response["sessionToken"]
+	Globals.player_id = login_response["player"]["id"]
 	Globals.player_name = login_response["player"]["name"]
 	
-	var lobby_scene = preload("res://main_lobby.tscn").instantiate()
+	var lobby_scene = preload("res://MainLobby/main_lobby.tscn").instantiate()
 	change_scene_to_node(lobby_scene)
 
 func change_scene_to_node(node):
