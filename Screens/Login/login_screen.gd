@@ -1,5 +1,7 @@
 extends Node
 
+
+
 func _on_button_pressed() -> void:
 	# Create an HTTP request node and connect its completion signal.
 	_login()
@@ -17,6 +19,7 @@ func _login():
 	var error = http_request.request("http://127.0.0.1:8080/auth/login", [_auth_header()], HTTPClient.METHOD_POST)
 	if error != OK:
 		push_error("An error occurred in the HTTP request.")
+		Globals.error_popup.show_error("An error occurred in the HTTP request.")
 
 func _register():
 	var http_request = HTTPRequest.new()
@@ -38,6 +41,10 @@ func _auth_header() -> String:
 
 
 func _http_request_completed(result, response_code, headers, body):
+	if result != 0:
+		Globals.error_popup.show_error("An error occurred in the HTTP request. " + str(result))
+		return
+		
 	##print(json["name"])
 	print(body.get_string_from_utf8())
 	var login_response = JSON.parse_string(body.get_string_from_utf8())

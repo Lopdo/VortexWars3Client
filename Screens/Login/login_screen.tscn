@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://csa1nm825t105"]
 
-[ext_resource type="Script" uid="uid://dqs85bdhqcu7h" path="res://main_menu.gd" id="1_r6qsq"]
+[ext_resource type="Script" uid="uid://dqs85bdhqcu7h" path="res://Screens/Login/login_screen.gd" id="1_wplbs"]
 
 [node name="MarginContainer" type="MarginContainer"]
 anchors_preset = 15
@@ -12,7 +12,7 @@ theme_override_constants/margin_left = 100
 theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 100
 theme_override_constants/margin_bottom = 100
-script = ExtResource("1_r6qsq")
+script = ExtResource("1_wplbs")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
