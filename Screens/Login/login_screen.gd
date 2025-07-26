@@ -47,13 +47,18 @@ func _http_request_completed(result, response_code, headers, body):
 		
 	##print(json["name"])
 	print(body.get_string_from_utf8())
-	var login_response = JSON.parse_string(body.get_string_from_utf8())
-	Globals.session_token = login_response["sessionToken"]
-	Globals.player_id = login_response["player"]["id"]
-	Globals.player_name = login_response["player"]["name"]
-	
-	var lobby_scene = preload("res://MainLobby/main_lobby.tscn").instantiate()
-	change_scene_to_node(lobby_scene)
+	if response_code == 500:
+		Globals.error_popup.show_http_error(body)
+	elif response_code == 200:
+		var login_response = JSON.parse_string(body.get_string_from_utf8())
+		Globals.session_token = login_response["sessionToken"]
+		Globals.player_id = login_response["player"]["id"]
+		Globals.player_name = login_response["player"]["name"]
+		
+		var lobby_scene = preload("res://MainLobby/main_lobby.tscn").instantiate()
+		change_scene_to_node(lobby_scene)
+	else:
+		Globals.error_popup.show_error("An error occurred in the HTTP request. " + str(result))
 
 func change_scene_to_node(node):
 	var tree = get_tree()
