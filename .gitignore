@@ -3,3 +3,5 @@
 /android/
 *.pck
 *.exe
+swift/.index-build
+bin
