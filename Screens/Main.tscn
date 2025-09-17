@@ -1,9 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://c5qqskmefu3ea"]
+[gd_scene format=3 uid="uid://c5qqskmefu3ea"]
 
-[ext_resource type="Script" uid="uid://dllkpg4ktyl0f" path="res://Screens/Main.gd" id="1_fgway"]
-
-[node name="Main" type="CanvasLayer"]
+[node name="Main" type="MainScene" node_paths=PackedStringArray("error_layer", "game_layer")]
+error_layer = NodePath("ErrorLayer")
+game_layer = NodePath("GameLayer")
 layer = 0
-script = ExtResource("1_fgway")
+
+[node name="GameLayer" type="CanvasLayer" parent="."]
 
 [node name="ErrorLayer" type="CanvasLayer" parent="."]

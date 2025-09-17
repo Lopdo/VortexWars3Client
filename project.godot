@@ -15,10 +15,6 @@ run/main_scene="uid://c5qqskmefu3ea"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
-[autoload]
-
-Globals="*res://globals.gd"
-
 [editor]
 
 version_control/plugin_name="GitPlugin"
@@ -26,4 +22,4 @@ version_control/autoload_on_startup=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot-vim/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot-vim/plugin.cfg", "res://addons/swift_godot_editor_plugin/plugin.cfg")

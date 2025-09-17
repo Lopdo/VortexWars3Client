@@ -1,15 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://bbk4fgpw1ycvh"]
+[gd_scene format=3 uid="uid://bbk4fgpw1ycvh"]
 
-[ext_resource type="Script" uid="uid://cb6bhisojssdg" path="res://Popups/ErrorPopup.gd" id="1_0520o"]
-
-[node name="Control" type="Control"]
-layout_mode = 3
+[node name="ErrorPopup" type="ErrorPopup" node_paths=PackedStringArray("lbl_message", "btn_okay")]
+lbl_message = NodePath("ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/PopupMessage")
+btn_okay = NodePath("ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/Button")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_0520o")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -62,5 +60,3 @@ horizontal_alignment = 1
 [node name="Button" type="Button" parent="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Okay"
-
-[connection signal="pressed" from="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/Button" to="." method="on_okay"]

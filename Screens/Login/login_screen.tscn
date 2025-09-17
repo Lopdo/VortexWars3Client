@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://csa1nm825t105"]
+[gd_scene format=3 uid="uid://csa1nm825t105"]
 
-[ext_resource type="Script" uid="uid://dqs85bdhqcu7h" path="res://Screens/Login/login_screen.gd" id="1_wplbs"]
+[node name="LoginScreen" type="LoginScreen" node_paths=PackedStringArray("line_edit_username", "line_edit_password")]
+line_edit_username = NodePath("MarginContainer/VBoxContainer/LineEditUsername")
+line_edit_password = NodePath("MarginContainer/VBoxContainer/LineEditPassword")
 
-[node name="MarginContainer" type="MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -12,27 +14,27 @@ theme_override_constants/margin_left = 100
 theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 100
 theme_override_constants/margin_bottom = 100
-script = ExtResource("1_wplbs")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="LineEditUsername" type="LineEdit" parent="VBoxContainer"]
+[node name="LineEditUsername" type="LineEdit" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="LineEditPassword" type="LineEdit" parent="VBoxContainer"]
+[node name="LineEditPassword" type="LineEdit" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="ButtonLogin" type="Button" parent="VBoxContainer"]
+[node name="ButtonLogin" type="Button" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Login"
 
-[node name="ButtonRegister" type="Button" parent="VBoxContainer"]
+[node name="ButtonLogin2" type="Button" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-text = "Register"
+text = "Register
+"
 
-[connection signal="pressed" from="VBoxContainer/ButtonLogin" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/ButtonRegister" to="." method="_on_register_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ButtonLogin" to="." method="onLoginPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ButtonLogin2" to="." method="onRegisterPressed"]

@@ -1,0 +1,14 @@
+[configuration]
+entry_symbol = "swift_entry_point"
+compatibility_minimum = 4.4
+
+
+[libraries]
+macos.debug = "res://bin/libSwiftGodotGame.dylib"
+windows.x86_64.debug = "res://bin/VortexWars3.dll"
+windows.x86_64.release = "res://bin/VortexWars3.dll"
+
+[dependencies]
+macos.debug = "res://bin/libSwiftGodot.dylib"
+windows.x86_64.debug = "res://bin/SwiftGodot.dll"
+windows.x86_64.release = "res://bin/SwiftGodot.dll"

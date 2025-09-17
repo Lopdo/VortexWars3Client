@@ -1,19 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://r52dhllgoy16"]
+[gd_scene format=3 uid="uid://r52dhllgoy16"]
 
-[ext_resource type="Script" uid="uid://nnvthbsrn42m" path="res://MainLobby/main_lobby.gd" id="1_xe48q"]
-[ext_resource type="Script" uid="uid://dm4wh0x4tmjue" path="res://Websocket/WebsocketClient.gd" id="2_tyd4p"]
-
-[node name="MainLobby" type="Node2D" node_paths=PackedStringArray("chatContent", "playerList")]
-script = ExtResource("1_xe48q")
-chatContent = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/ScrollContainer/ChatContent")
-playerList = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/ScrollContainer2/PlayersList")
+[node name="MainLobby" type="MainLobby" node_paths=PackedStringArray("line_edit", "chat_content", "player_list")]
+line_edit = NodePath("MarginContainer/VBoxContainer/HBoxContainer/LineEdit")
+chat_content = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/ScrollContainer/ChatContent")
+player_list = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/ScrollContainer2/PlayersList")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 1152.0
-offset_bottom = 648.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -57,10 +52,4 @@ layout_mode = 2
 text = "Send
 "
 
-[node name="WebsocketScript" type="Node" parent="."]
-script = ExtResource("2_tyd4p")
-
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Button" to="." method="_on_send_pressed"]
-[connection signal="connected_to_server" from="WebsocketScript" to="." method="_on_web_socket_client_connected_to_server"]
-[connection signal="connection_closed" from="WebsocketScript" to="." method="_on_web_socket_client_connection_closed"]
-[connection signal="message_received" from="WebsocketScript" to="." method="_on_web_socket_client_message_received"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Button" to="." method="onSendPressed"]
