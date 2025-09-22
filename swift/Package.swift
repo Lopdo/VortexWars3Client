@@ -13,7 +13,8 @@ let package = Package(
             targets: ["VortexWars3"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main")
+        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main"),
+        .package(url: "https://github.com/Lopdo/VW3NetworkModels", exact: "0.0.4"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -21,7 +22,8 @@ let package = Package(
         .target(
             name: "VortexWars3",
             dependencies: [
-                .product(name: "SwiftGodot", package: "swiftgodot")
+                .product(name: "SwiftGodot", package: "swiftgodot"),
+                .product(name: "NetworkModels", package: "VW3NetworkModels"),
             ],
             plugins: [                
                 .plugin(name: "EntryPointGeneratorPlugin", package: "swiftgodot")

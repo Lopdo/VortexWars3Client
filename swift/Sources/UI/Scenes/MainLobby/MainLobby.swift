@@ -1,11 +1,9 @@
 import Foundation
 import SwiftGodot
+import NetworkModels
 
 @Godot
 final class MainLobby: Node {
-	// Placeholder for future implementation
-	//oprivate let client = WebSocketClient()
-	//ovar ws = NSURLSessionWebSocketTask()
 	private let client = WebSocketClient()
 
 	@Export
@@ -19,8 +17,7 @@ final class MainLobby: Node {
 	
 	override func _ready() {
 		addChild(node: client)
-		//connectToWebSocket()
-
+		
 		client.connectedToServer.connect(connectedToServer)
 		client.connectionClosed.connect {
 			GD.print("Client just disconnected with code: \(self.client.socket.getCloseCode()), reason: \(self.client.socket.getCloseReason())")
@@ -72,15 +69,9 @@ final class MainLobby: Node {
 		}
 	}
 	
-	private func initializeLobby(players: Variant) {
-		if let playersArray = players as? [Variant] {
-			for player in playersArray {
-				if let playerDict = player as? [String: Any],
-				   let name = playerDict["name"] as? String,
-				   let pid = playerDict["pid"] as? String {
-					addPlayer(name: name, id: pid)
-				}
-			}
+	private func initializeLobby(players: [NMLobbyMember]) {
+		for player in players {
+			addPlayer(name: player.playerName, id: player.playerId)
 		}
 	}
 
@@ -105,44 +96,31 @@ final class MainLobby: Node {
 	}
 
 	private func handleBinaryMessage(data: PackedByteArray) {
-		GD.print("Received binary message of size: \(data.size())")
-		// Handle binary message if needed
+		//GD.print("Received binary message of size: \(data.size())")
+
+		do {
+			let message = try NMDecoder.decode(data.asBytes())
+
+			if let chatMessage = message as? NMChatMessage {
+				addChatMessage(sender: chatMessage.senderName, message: chatMessage.message)
+			} else if let joinedLobbyMessage = message as? NMChatJoinedLobby {
+				initializeLobby(players: joinedLobbyMessage.players)
+			} else if let playerJoinedMessage = message as? NMChatPlayerJoined {
+				addChatMessage(sender: "System", message: "\(playerJoinedMessage.playerName) has joined")
+				addPlayer(name: playerJoinedMessage.playerName, id: playerJoinedMessage.playerId)
+			} else if let playerLeftMessage = message as? NMChatPlayerLeft {
+				//addChatMessage(sender: "System", message: "\(playerLeftMessage.playerId) has left")
+				removePlayer(id: playerLeftMessage.playerId)
+			} else {
+				GD.print("Received unknown binary message type")
+			}
+		} catch {
+			GD.print("Failed to decode binary message: \(error)")
+			GD.print(error.localizedDescription)
+		}
 	}
 
 	private func handleMessage(message: String) {
 		GD.print(message)
-		if let data = message.data(using: .utf8) {
-			if let chatMessage = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-			   let type = chatMessage["type"] as? String {
-				switch type {
-				case "joinedLobby":
-					//initializeLobby(players: chatMessage["players"])
-					break
-				case "chatMessage":
-					if let name = chatMessage["name"] as? String,
-					   let msg = chatMessage["msg"] as? String {
-						addChatMessage(sender: name, message: msg)
-					}
-				case "playerJoined":
-					if let name = chatMessage["name"] as? String,
-					   let pid = chatMessage["pid"] as? String {
-						addChatMessage(sender: "System", message: "\(name) has joined")
-						addPlayer(name: name, id: pid)
-					}
-				case "playerLeft":
-					if let name = chatMessage["name"] as? String,
-					   let pid = chatMessage["pid"] as? String {
-						addChatMessage(sender: "System", message: "\(name) has left")
-						removePlayer(id: pid)
-					}
-				default:
-					GD.print("Unknown message type: \(type)")
-				}
-			} else {
-				GD.print("Failed to parse JSON message")
-			}
-		} else {
-			GD.print("Failed to decode message as UTF-8 string")
-		}
 	}
 }

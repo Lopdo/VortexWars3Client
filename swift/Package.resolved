@@ -1,6 +1,15 @@
 {
-  "originHash" : "a2415b69065d32704b269170a9aa1c9845e346e1369c987a69375ddbee1edf54",
+  "originHash" : "c627b004aab4223321e8de919dd658d02004ca098988c9dbbb4d14364d187edc",
   "pins" : [
+    {
+      "identity" : "binarycodable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/christophhagen/BinaryCodable",
+      "state" : {
+        "revision" : "4febea33ee5d813fd9c94c9158be6c85472480d2",
+        "version" : "3.1.0"
+      }
+    },
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
@@ -26,6 +35,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "7d9241cb08bd31961c6599ebaef7043cef972e83"
+      }
+    },
+    {
+      "identity" : "vw3networkmodels",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Lopdo/VW3NetworkModels",
+      "state" : {
+        "revision" : "abc187a7ac8e9c30755cea63a4668827056c47aa",
+        "version" : "0.0.4"
       }
     }
   ],
