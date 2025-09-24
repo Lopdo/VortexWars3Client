@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main"),
-        .package(url: "https://github.com/Lopdo/VW3NetworkModels", exact: "0.0.4"),
+        .package(url: "https://github.com/Lopdo/VW3NetworkModels", exact: "0.0.6"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

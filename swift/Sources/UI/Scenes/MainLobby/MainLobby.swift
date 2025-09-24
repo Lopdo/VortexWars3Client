@@ -91,8 +91,13 @@ final class MainLobby: Node {
 
 	private func connectedToServer() {
 		GD.print("Client just connected with protocol: \(client.socket.getSelectedProtocol())")
-		client.send(message: "\(user.player.id):\(user.sessionToken)")
-		addChatMessage(sender: "System", message: "Chat joined...")
+		do {
+			let auth = NMPlayerAuth(playerId: user.player.id, authToken: user.sessionToken)
+			let data = try NMEncoder.encode(auth)
+			try client.send(data: data)
+		} catch {
+			GD.print("Failed to encode NMPlayerAuth: \(error)")
+		}
 	}
 
 	private func handleBinaryMessage(data: PackedByteArray) {
@@ -101,7 +106,13 @@ final class MainLobby: Node {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
 
-			if let chatMessage = message as? NMChatMessage {
+			if let authResponse = message as? NMPlayerAuthResult {
+				if authResponse.success {
+					GD.print("Authentication successful")
+				} else {
+					GD.print("Authentication failed: \(authResponse.message ?? "Unknown error")")
+				}
+			} else if let chatMessage = message as? NMChatMessage {
 				addChatMessage(sender: chatMessage.senderName, message: chatMessage.message)
 			} else if let joinedLobbyMessage = message as? NMChatJoinedLobby {
 				initializeLobby(players: joinedLobbyMessage.players)

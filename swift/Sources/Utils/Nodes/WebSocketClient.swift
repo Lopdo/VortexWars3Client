@@ -38,9 +38,12 @@ final class WebSocketClient: Node {
 		return socket.sendText(message: message)
 	}
 
-	/*func send(data: Data) -> GodotError {
-		return socket.send(message: PackedByteArray(data))
-	}*/
+	func send(data: [UInt8]) throws {
+		let err = socket.send(message: PackedByteArray(data))
+		if err != .ok {
+			throw NSError(domain: "WebSocketClient", code: Int(err.rawValue), userInfo: [NSLocalizedDescriptionKey: "Error sending binary message: \(err)"])
+		}
+	}
 
 	private func checkMessage() {
 		if socket.getAvailablePacketCount() < 1 {
