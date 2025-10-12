@@ -14,6 +14,9 @@ final class MatchesSectionView: Control {
 	@Export
 	var matchList: VBoxContainer!
 
+	@Export
+	var loadingIndicator: CanvasItem!
+
 	override func _ready() {
 		addChild(node: client)
 		
@@ -23,6 +26,8 @@ final class MatchesSectionView: Control {
 		}
 		//client.textReceived.connect(handleMessage)
 		client.dataReceived.connect(handleBinaryMessage)
+
+		loadingIndicator.hide()
 	}
 
 	@Callable
@@ -39,15 +44,18 @@ final class MatchesSectionView: Control {
 			matchList.removeChild(node: mv)
 		}
 
+		loadingIndicator.show()
 
 		let httpRequest = HTTPRequest()
 		addChild(node: httpRequest)
 		httpRequest.requestCompleted.connect { result, responseCode, headers, body in
+			self.loadingIndicator.hide()
 			self.httpRequestCompleted(result: result, responseCode: responseCode, headers: headers, body: body)
 		}
 
 		let error = httpRequest.request(url: "http://127.0.0.1:8080/match/list", method: .get)
 		if error != .ok {
+			loadingIndicator.hide()
 			GD.print("An error occurred in the HTTP request.")
 			ErrorManager.showError(message: "An error occurred in the HTTP request.")
 		}

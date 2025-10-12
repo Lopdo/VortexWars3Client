@@ -24,6 +24,14 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/ProfileContainer"]
+layout_mode = 2
+text = "Player data will be here.
+level, some stats, 
+maybe current battle pass
+watever we need"
+horizontal_alignment = 1
+
 [node name="ChatSection" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -67,9 +75,10 @@ layout_mode = 2
 text = "Send
 "
 
-[node name="MatchesSectionView" type="MatchesSectionView" parent="MarginContainer/HBoxContainer" node_paths=PackedStringArray("create_match_button", "match_list")]
+[node name="MatchesSectionView" type="MatchesSectionView" parent="MarginContainer/HBoxContainer" node_paths=PackedStringArray("create_match_button", "match_list", "loading_indicator")]
 create_match_button = NodePath("MatchSection/HBoxContainer/Button")
-match_list = NodePath("MatchSection/VBoxContainer")
+match_list = NodePath("MatchSection/Control/VBoxContainer")
+loading_indicator = NodePath("MatchSection/Control/CenterContainer")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.6
@@ -84,9 +93,30 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection"]
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/Control/CenterContainer"]
+layout_mode = 2
+text = "Loading"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection"]
 custom_minimum_size = Vector2(0, 40)
