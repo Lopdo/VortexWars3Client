@@ -99,5 +99,5 @@ func recompile_swift() -> void:
 	append_log("Running `swift build`")
 	await wait_process_finished(pid, "Building")
 	append_log("Done! Restarting editor")
-	await get_tree().create_timer(1.0).timeout
-	#EditorInterface.restart_editor(false)
+	#await get_tree().create_timer(1.0).timeout
+	EditorInterface.restart_editor(false)

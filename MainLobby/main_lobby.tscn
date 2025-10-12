@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://r52dhllgoy16"]
 
-[node name="MainLobby" type="MainLobby" node_paths=PackedStringArray("line_edit", "chat_content", "player_list")]
-line_edit = NodePath("MarginContainer/VBoxContainer/HBoxContainer/LineEdit")
-chat_content = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/ScrollContainer/ChatContent")
-player_list = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/ScrollContainer2/PlayersList")
+[node name="MainLobby" type="MainLobby" node_paths=PackedStringArray("line_edit", "chat_content", "player_list", "matches_section_view")]
+line_edit = NodePath("MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer/LineEdit")
+chat_content = NodePath("MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2/ChatScrollContainer/ChatContent")
+player_list = NodePath("MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2/PlayersScrollContainer/PlayersList")
+matches_section_view = NodePath("MarginContainer/HBoxContainer/MatchesSectionView")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -12,44 +13,102 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProfileContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="ChatSection" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChatScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ChatContent" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2/ScrollContainer"]
+[node name="ChatContent" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2/ChatScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ScrollContainer2" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="PlayersScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 
-[node name="PlayersList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2/ScrollContainer2"]
+[node name="PlayersList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2/PlayersScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection"]
 layout_mode = 2
 
-[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Send
 "
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Button" to="." method="onSendPressed"]
+[node name="MatchesSectionView" type="MatchesSectionView" parent="MarginContainer/HBoxContainer" node_paths=PackedStringArray("create_match_button", "match_list")]
+create_match_button = NodePath("MatchSection/HBoxContainer/Button")
+match_list = NodePath("MatchSection/VBoxContainer")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.6
+
+[node name="MatchSection" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer"]
+layout_mode = 2
+text = "Create match
+"
+
+[node name="Button2" type="Button" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer"]
+layout_mode = 2
+text = "Refresh"
+
+[node name="Spacer2" type="Control" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer/Button" to="." method="onSendPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer/Button" to="MarginContainer/HBoxContainer/MatchesSectionView" method="onCreateMatchButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer/Button2" to="MarginContainer/HBoxContainer/MatchesSectionView" method="onRefresh"]

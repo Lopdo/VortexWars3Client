@@ -13,6 +13,9 @@ final class MainLobby: Node {
 	@Export
 	var playerList: VBoxContainer!
 
+	@Export
+	var matchesSectionView: MatchesSectionView!
+
 	private var user: User!
 	
 	override func _ready() {
@@ -24,6 +27,8 @@ final class MainLobby: Node {
 		}
 		client.textReceived.connect(handleMessage)
 		client.dataReceived.connect(handleBinaryMessage)
+
+		matchesSectionView.user = user
 	}
 	
 	func initialize(user: User) {
@@ -106,24 +111,25 @@ final class MainLobby: Node {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
 
-			if let authResponse = message as? NMPlayerAuthResult {
-				if authResponse.success {
-					GD.print("Authentication successful")
-				} else {
-					GD.print("Authentication failed: \(authResponse.message ?? "Unknown error")")
-				}
-			} else if let chatMessage = message as? NMChatMessage {
-				addChatMessage(sender: chatMessage.senderName, message: chatMessage.message)
-			} else if let joinedLobbyMessage = message as? NMChatJoinedLobby {
-				initializeLobby(players: joinedLobbyMessage.players)
-			} else if let playerJoinedMessage = message as? NMChatPlayerJoined {
-				addChatMessage(sender: "System", message: "\(playerJoinedMessage.playerName) has joined")
-				addPlayer(name: playerJoinedMessage.playerName, id: playerJoinedMessage.playerId)
-			} else if let playerLeftMessage = message as? NMChatPlayerLeft {
-				//addChatMessage(sender: "System", message: "\(playerLeftMessage.playerId) has left")
-				removePlayer(id: playerLeftMessage.playerId)
-			} else {
-				GD.print("Received unknown binary message type")
+			switch message {
+				case let msg as NMPlayerAuthResult:
+					if msg.success {
+						GD.print("Authentication successful")
+					} else {
+						GD.print("Authentication failed: \(msg.message ?? "Unknown error")")
+					}
+				case let msg as NMChatMessage:
+					addChatMessage(sender: msg.senderName, message: msg.message)
+				case let msg as NMChatJoinedLobby:
+					initializeLobby(players: msg.players)
+				case let msg as NMChatPlayerJoined:
+					addChatMessage(sender: "System", message: "\(msg.playerName) has joined")
+					addPlayer(name: msg.playerName, id: msg.playerId)
+				case let msg as NMChatPlayerLeft:
+					//addChatMessage(sender: "System", message: "\(msg.playerId) has left")
+					removePlayer(id: msg.playerId)
+				default:
+					GD.print("Received unknown binary message type")
 			}
 		} catch {
 			GD.print("Failed to decode binary message: \(error)")
