@@ -5,7 +5,8 @@ compatibility_minimum = 4.4
 
 [libraries]
 macos.debug = "res://bin/libSwiftGodotGame.dylib"
-windows.x86_64.debug = "res://addons/swift_godot_extension/bin/x86_64-unknown-windows-msvc/debug/VortexWars3.dll"
+windows.x86_64.debug = "res://bin/VortexWars3.dll"
+windows.x86_65.debug = "res://addons/swift_godot_extension/bin/x86_64-unknown-windows-msvc/debug/VortexWars3.dll"
 windows.x86_64.release = "res://bin/VortexWars3.dll"
 
 [dependencies]

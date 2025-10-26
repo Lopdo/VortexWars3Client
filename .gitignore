@@ -6,3 +6,4 @@
 swift/.index-build
 swift/.build
 bin
+*.dll

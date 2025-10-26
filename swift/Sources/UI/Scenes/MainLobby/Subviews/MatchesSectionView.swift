@@ -6,7 +6,8 @@ import NetworkModels
 final class MatchesSectionView: Control {
 	
 	private let client = WebSocketClient()
-	
+	private var binaryMsgHandlerToken: Callable?
+
 	var user: User!
 
 	@Export
@@ -24,8 +25,7 @@ final class MatchesSectionView: Control {
 		client.connectionClosed.connect {
 			GD.print("Client just disconnected with code: \(self.client.socket.getCloseCode()), reason: \(self.client.socket.getCloseReason())")
 		}
-		//client.textReceived.connect(handleMessage)
-		client.dataReceived.connect(handleBinaryMessage)
+		binaryMsgHandlerToken = client.dataReceived.connect(handleBinaryMessage)
 
 		loadingIndicator.hide()
 	}
@@ -67,7 +67,6 @@ final class MatchesSectionView: Control {
 			return
 		}
 
-		GD.print("Response Body: \(body.getStringFromUtf8())")
 		if responseCode == 500 {
 			ErrorManager.showHTTPError(body: body)
 		} else if responseCode == 200 {
@@ -86,12 +85,10 @@ final class MatchesSectionView: Control {
 	}
 
 	private func createMatchView(for match: MatchDTO) {
-		GD.print("create2")
-		if let matchView = SceneLoader.load(path: "res://MainLobby/match_view.tscn") as? MatchView {
+		if let matchView = SceneLoader.load(path: "res://Screens/MainLobby/match_view.tscn") as? MatchView {
 			matchView.setup(with: match)
 			matchList.addChild(node: matchView)
 			matchView.pressed.connect {
-		GD.print("create")
 				self.joinTapped(match: match)
 			}
 		}
@@ -124,8 +121,6 @@ final class MatchesSectionView: Control {
 		} catch {
 			GD.print("Failed to encode NMPlayerAuth: \(error)")
 		}
-		//client.send(message: "\(user.player.id):\(user.sessionToken)")
-		//addChatMessage(sender: "System", message: "Chat joined...")
 	}
 
 	private func handleBinaryMessage(data: PackedByteArray) {
@@ -141,8 +136,14 @@ final class MatchesSectionView: Control {
 						GD.print("Authentication failed: \(msg.message ?? "<Unknown error>")")
 					}
 				case let msg as NMMatchJoined:
-					GD.print("Joined match with ID: \(msg.matchId)")
-					
+					GD.print("Joined match with ID: \(msg.id)")
+					if let lobby = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby.tscn") as? MatchLobby {
+						if let binaryMsgHandlerToken {
+							client.dataReceived.disconnect(binaryMsgHandlerToken)
+						}
+						lobby.initialize(ws: client, user: user, players: msg.players)
+						changeSceneToNode(node: lobby)
+					}
 				default:
 					GD.print("Received unknown binary message type")
 			}

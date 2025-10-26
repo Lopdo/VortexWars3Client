@@ -77,58 +77,20 @@ final class LoginScreen: Node {
 			ErrorManager.showHTTPError(body: body)
 		} else if responseCode == 200 {
 			let data = Data(body.asBytes())
-			if let userDTO = try? JSONDecoder().decode(UserDTO.self, from: data) {
-				if let lobbyScene = GD.load(path: "res://MainLobby/main_lobby.tscn") as? PackedScene,
-				   let lobby = lobbyScene.instantiate() as? MainLobby {
-					   lobby.initialize(user: User(from: userDTO))
-					   changeSceneToNode(node: lobby)
+				if let userDTO = try? JSONDecoder().decode(UserDTO.self, from: data) {
+					if let lobby = SceneLoader.load(path: "res://Screens/MainLobby/main_lobby.tscn") as? MainLobby {
+						lobby.initialize(user: User(from: userDTO))
+						changeSceneToNode(node: lobby)
+					} else {
+						GD.print("Failed to load MainLobby scene")
+						ErrorManager.showError(message: "Failed to load MainLobby scene")
+					}
 				} else {
-					GD.print("Failed to load MainLobby scene")
-					ErrorManager.showError(message: "Failed to load MainLobby scene")
+					ErrorManager.showError(message: "Failed to parse login response")
 				}
-			} else {
-				ErrorManager.showError(message: "Failed to parse login response")
-			}
-			// let response = JSON()
-			// let err = response.parse(jsonText: body.getStringFromUtf8())
-			// if err != .ok {
-			// 	ErrorManager.showError(message: "Failed to parse JSON response")
-			// 	return
-			// }
-
-			// if let loginResponse = response.data?.to(VariantDictionary.self),
-			//    let sessionToken = loginResponse["sessionToken"]?.to(String.self),
-			//    let player = loginResponse["player"]?.to(VariantDictionary.self),
-			// 	let playerId = player["id"].to(String.self),
-			//    let playerName = player["name"].to(String.self) {
-			// 	//Globals.sessionToken = sessionToken
-			// 	//Globals.playerId = playerId
-			// 	//Globals.playerName = playerName
-
-			// 	if let lobbyScene = GD.load(path: "res://MainLobby/main_lobby.tscn") as? PackedScene,
-			// 	   let lobby = lobbyScene.instantiate() {
-			// 		changeSceneToNode(node: lobby)
-			// 	} else {
-			// 		GD.print("Failed to load MainLobby scene")
-			// 		ErrorManager.showError(message: "Failed to load MainLobby scene")
-			// 	}
-			// } else {
-			// 	ErrorManager.showError(message: "Failed to parse login response")
-			// }
 		} else {
 			ErrorManager.showError(message: "An error occurred in the HTTP request. \(responseCode)")
 		}
 	}
 
-	private func changeSceneToNode(node: Node) {
-		if let tree = getTree(),
-		   let curScene = tree.currentScene {
-			tree.root?.addChild(node: node)
-			tree.root?.removeChild(node: curScene)
-			tree.currentScene = node
-		} else {
-			GD.print("Failed to change scene")
-			ErrorManager.showError(message: "Failed to change scene")
-		}
-	}
 }

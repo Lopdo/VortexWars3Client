@@ -1,13 +1,13 @@
 {
-  "originHash" : "646ab07ffa250af5fa36912cc3ed2f085d83938ca905e9d741bb669ba16c1d3e",
+  "originHash" : "69abc0b724c9d7b4deef43e21c21dc3ace2bc514dec3b237a66329ef87d3839a",
   "pins" : [
     {
       "identity" : "binarycodable",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/christophhagen/BinaryCodable",
       "state" : {
-        "revision" : "4febea33ee5d813fd9c94c9158be6c85472480d2",
-        "version" : "3.1.0"
+        "revision" : "53f057050f3c78a1997ed0218337fd92d2eba2b5",
+        "version" : "3.1.1"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
-        "revision" : "309a47b2b1d9b5e991f36961c983ecec72275be3",
-        "version" : "1.6.1"
+        "revision" : "cdd0ef3755280949551dc26dee5de9ddeda89f54",
+        "version" : "1.6.2"
       }
     },
     {
@@ -34,7 +34,7 @@
       "location" : "https://github.com/migueldeicaza/SwiftGodot",
       "state" : {
         "branch" : "main",
-        "revision" : "7d9241cb08bd31961c6599ebaef7043cef972e83"
+        "revision" : "17f47cb5e611d480898e46e29d6bb603e0b4aa61"
       }
     },
     {
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Lopdo/VW3NetworkModels",
       "state" : {
-        "revision" : "b1e22491ad84c8aada02a447779dc67f3b2482fd",
-        "version" : "0.0.7"
+        "revision" : "c4eec67960389a274c4304a34011c11f4d95d256",
+        "version" : "0.0.9"
       }
     }
   ],
