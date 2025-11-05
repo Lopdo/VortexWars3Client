@@ -1,0 +1,7 @@
+#!/bin/bash
+
+swift build --package-path swift
+
+cp swift/.build/x86_64-unknown-linux-gnu/debug/libVortexWars3.so bin/libVortexWars3.so
+cp swift/.build/x86_64-unknown-linux-gnu/debug/libSwiftGodot.so bin/libSwiftGodot.so
+

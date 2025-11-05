@@ -27,6 +27,8 @@ final class MatchLobby: Node {
 	func initialize(ws: WebSocketClient, user: User, players: [NMMatchPlayer]) {
 		wsClient = ws
 		wsClient.dataReceived.connect(handleBinaryMessage)
+		wsClient.getParent()?.removeChild(node: wsClient)
+		addChild(node: wsClient)		
 
 		self.user = user
 
@@ -39,15 +41,17 @@ final class MatchLobby: Node {
 	private func handleBinaryMessage(data: PackedByteArray) {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
+			GD.print("MatchLobby message received: \(message)")
 			switch message {
 				case let msg as NMMatchPlayerJoined:
 					add(player: msg.player)
 				case let msg as NMMatchPlayerLeft:
 					remove(playerId: msg.playerId)
 				case let msg as NMMatchPlayerReadyStatusChanged:
+					GD.print("NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)")
 					updateReadyState(playerId: msg.playerId, isReady: msg.ready)
 				default:
-					GD.print("Received unknown binary message type")
+					GD.print("Received unsupported binary message type \(message)")
 			}
 		} catch {
 			GD.print("Failed to decode binary message: \(error)")

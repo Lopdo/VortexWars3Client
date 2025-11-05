@@ -1,5 +1,5 @@
 {
-  "originHash" : "69abc0b724c9d7b4deef43e21c21dc3ace2bc514dec3b237a66329ef87d3839a",
+  "originHash" : "8bd597fd69b629f1fcf1c53bb9b265c868f351245afa3fad4319565fe8a2af90",
   "pins" : [
     {
       "identity" : "binarycodable",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Lopdo/VW3NetworkModels",
       "state" : {
-        "revision" : "c4eec67960389a274c4304a34011c11f4d95d256",
-        "version" : "0.0.9"
+        "revision" : "861d5a6eece764337804ac989398d13f4ad345ac",
+        "version" : "0.0.12"
       }
     }
   ],

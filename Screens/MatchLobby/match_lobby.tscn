@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cbecxnd3um4cn"]
 
 [node name="MatchLobby" type="MatchLobby" node_paths=PackedStringArray("player_list", "button_leave", "button_ready")]
-player_list = NodePath("HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2/PlayersScrollContainer/PlayersList")
+player_list = NodePath("HBoxContainer/VBoxContainer2/PlayerList")
 button_leave = NodePath("HBoxContainer/VBoxContainer2/HBoxContainer/Button")
 button_ready = NodePath("HBoxContainer/VBoxContainer2/HBoxContainer/Button2")
 

@@ -7,3 +7,9 @@ swift/.index-build
 swift/.build
 bin
 *.dll
+
+VortexWars3.sh
+
+*.x86_64
+
+*.so

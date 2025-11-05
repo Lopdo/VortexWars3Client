@@ -85,19 +85,24 @@ func recompile_swift() -> void:
 		file.close()
 	
 	append_log("Building into %s" % target_dir)
-	var pid := OS.create_process(
-		"swift", [
-			"build", 
-			"--package-path", swift_path, 
-			"--build-path", target_dir
-		], false)
-	if pid == -1:
-		append_log("Couldn't execute `swift build` command")
-		state_changed.emit(false)
-		return
+	#var pid := OS.create_process(
+		#"swift", [
+		#	"build", 
+		#	"--package-path", swift_path, 
+		#	"--build-path", target_dir
+	#	"./buildcp", [
+	#	], false)
+	#if pid == -1:
+	#	append_log("Couldn't execute `swift build` command")
+	#	state_changed.emit(false)
+	#	return
+	var output = []
+	var exit_code = OS.execute("./buildcp", [], output, true, true)
 		
 	append_log("Running `swift build`")
-	await wait_process_finished(pid, "Building")
+	#for line in output:
+	#	append_log(line)
+	#await wait_process_finished(pid, "Building")
 	append_log("Done! Restarting editor")
 	#await get_tree().create_timer(1.0).timeout
-	EditorInterface.restart_editor(false)
+	#EditorInterface.restart_editor(false)
