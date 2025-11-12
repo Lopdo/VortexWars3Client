@@ -11,14 +11,25 @@ final class MatchLobbyPlayerView: Control {
 	@Export
 	var lblReady: Label!
 
-	var player: NMMatchPlayer!
+	var player: MatchPlayer!
 
-	func initialize(player: NMMatchPlayer) {
+	func initialize(player: MatchPlayer) {
 		self.player = player
-		lblName.text = player.name
+		updateName()
 	}
 	
 	func set(ready: Bool) {
+		player.isReady = ready
 		lblReady.text = ready ? "Ready" : "Not ready"
 	}
+
+	func set(isCook: Bool) {
+		player.isCook = isCook
+		updateName()
+	}
+
+	private func updateName() {
+		lblName.text = "\(player.isCook ? "*" : "") \(player.name)"
+	}
+
 }

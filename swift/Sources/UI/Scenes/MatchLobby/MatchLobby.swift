@@ -14,6 +14,9 @@ final class MatchLobby: Node {
 	@Export
 	var buttonReady: Button!
 
+	@Export
+	var buttonStart: Button!
+
 	private var user: User!
 	private var wsClient: WebSocketClient!
 
@@ -35,6 +38,11 @@ final class MatchLobby: Node {
 		for player in players {
 			add(player: player)
 		}
+		buttonStart.hide()
+		buttonStart.disabled = true
+		if players.first(where: { $0.id == user.player.id } )?.isCook == true {
+			buttonStart.show()
+		}
 	}
 
 
@@ -50,6 +58,13 @@ final class MatchLobby: Node {
 				case let msg as NMMatchPlayerReadyStatusChanged:
 					GD.print("NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)")
 					updateReadyState(playerId: msg.playerId, isReady: msg.ready)
+				case let msg as NMMatchStarted:
+					GD.print("NMMatchStarted received")
+				case let msg as NMMatchCookChanged:
+					updateCook(newCookId: msg.playerId)
+				case let msg as NMMatchAlreadyStarted:
+					//TODO: show popup
+					GD.print("Match already started")
 				default:
 					GD.print("Received unsupported binary message type \(message)")
 			}
@@ -61,7 +76,7 @@ final class MatchLobby: Node {
 
 	private func add(player: NMMatchPlayer) {
 		if let matchView = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby_player.tscn") as? MatchLobbyPlayerView {
-			matchView.initialize(player: player)
+			matchView.initialize(player: MatchPlayer(from: player))
 			playerList.addChild(node: matchView)
 		}
 	}
@@ -84,6 +99,25 @@ final class MatchLobby: Node {
 		if let playerView = playerView(for: playerId) {
 			playerView.set(ready: isReady)
 		}
+		updateStartButton()
+	}
+
+	private func updateCook(newCookId: String) {
+		if user.player.id == newCookId {
+			buttonStart.show()
+		} else {
+			buttonStart.hide()
+		}
+		
+		let playerViews = playerList.getChildren().compactMap { $0 as? MatchLobbyPlayerView }
+		for pView in playerViews {
+			pView.set(isCook: pView.player.id == newCookId)
+		}
+	}
+
+	private func updateStartButton() {
+		let playerViews = playerList.getChildren().compactMap { $0 as? MatchLobbyPlayerView }
+		buttonStart.disabled = playerViews.contains(where: { !$0.player.isReady })
 	}
 
 	@Callable
@@ -108,6 +142,19 @@ final class MatchLobby: Node {
 		} else {
 			GD.print("Failed to load MainLobby scene")
 				ErrorManager.showError(message: "Failed to load MainLobby scene")
+		}
+	}
+
+	@Callable
+	func onStart() {
+		do {
+			let start = NMMatchStartRequested()
+			let data = try NMEncoder.encode(start)
+			try wsClient.send(data: data)
+			buttonStart.disabled = true
+		} catch {
+			//TODO: add error handling
+			GD.print("Failed to send message NMMatchPlayerChangeReadyStatus")
 		}
 	}
 }

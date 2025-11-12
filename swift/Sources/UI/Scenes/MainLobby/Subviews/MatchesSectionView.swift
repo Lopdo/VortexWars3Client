@@ -27,6 +27,8 @@ final class MatchesSectionView: Control {
 		}
 
 		loadingIndicator.hide()
+
+		onRefresh()
 	}
 
 	@Callable
