@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://cbecxnd3um4cn"]
 
-[node name="MatchLobby" type="MatchLobby" node_paths=PackedStringArray("player_list", "button_leave", "button_ready")]
+[node name="MatchLobby" type="MatchLobby" node_paths=PackedStringArray("player_list", "button_leave", "button_ready", "button_start")]
 player_list = NodePath("HBoxContainer/VBoxContainer2/PlayerList")
-button_leave = NodePath("HBoxContainer/VBoxContainer2/HBoxContainer/Button")
-button_ready = NodePath("HBoxContainer/VBoxContainer2/HBoxContainer/Button2")
+button_leave = NodePath("HBoxContainer/VBoxContainer2/HBoxContainer/ButtonLeave")
+button_ready = NodePath("HBoxContainer/VBoxContainer2/HBoxContainer/ButtonReady")
+button_start = NodePath("HBoxContainer/VBoxContainer2/HBoxContainer/ButtonStart")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchors_preset = 15
@@ -79,21 +80,26 @@ size_flags_vertical = 3
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="Control" type="Control" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="Spacer" type="Control" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Button2" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="ButtonStart" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+text = "Start"
+
+[node name="ButtonReady" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 text = "Ready"
 
-[node name="Button" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="ButtonLeave" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 text = "Leave match"
 
-[node name="Control2" type="Control" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="Spacer2" type="Control" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[connection signal="pressed" from="HBoxContainer/VBoxContainer2/HBoxContainer/Button2" to="." method="onChangeReady"]
-[connection signal="pressed" from="HBoxContainer/VBoxContainer2/HBoxContainer/Button" to="." method="onExit"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer2/HBoxContainer/ButtonStart" to="." method="onStart"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer2/HBoxContainer/ButtonReady" to="." method="onChangeReady"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer2/HBoxContainer/ButtonLeave" to="." method="onExit"]

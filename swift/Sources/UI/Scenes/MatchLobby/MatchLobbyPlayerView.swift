@@ -11,11 +11,12 @@ final class MatchLobbyPlayerView: Control {
 	@Export
 	var lblReady: Label!
 
-	var player: MatchPlayer!
+	var player: MatchLobbyPlayer!
 
-	func initialize(player: MatchPlayer) {
+	func initialize(player: MatchLobbyPlayer) {
 		self.player = player
 		updateName()
+		set(ready: player.isReady)
 	}
 	
 	func set(ready: Bool) {

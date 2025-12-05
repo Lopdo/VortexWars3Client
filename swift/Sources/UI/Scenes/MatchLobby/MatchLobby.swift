@@ -76,7 +76,7 @@ final class MatchLobby: Node {
 
 	private func add(player: NMMatchPlayer) {
 		if let matchView = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby_player.tscn") as? MatchLobbyPlayerView {
-			matchView.initialize(player: MatchPlayer(from: player))
+			matchView.initialize(player: MatchLobbyPlayer(from: player))
 			playerList.addChild(node: matchView)
 		}
 	}
