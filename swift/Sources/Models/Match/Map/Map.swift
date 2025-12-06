@@ -64,12 +64,13 @@ struct Map {
 				}
 
 				if let nonEmptyTiles = NonEmpty(rawValue: regionTiles) {
-					let region = Region(id: regions.count, tiles: nonEmptyTiles)
+					let region = Region(id: tileValue, tiles: nonEmptyTiles)
 					regions.append(region)
 				}
 			}
 		}
 
+		print(regions)
 		return regions
 	}
 

@@ -5,6 +5,7 @@ import SwiftGodot
 class RegionBorderView: Node2D {
 	
 	var region: MatchRegion!
+	var map: Map!
 
 	var borderLine: Line2D!
 	var externalBorders: [Line2D] = []
@@ -12,7 +13,7 @@ class RegionBorderView: Node2D {
 	//let borderColor = Color(r: Float.random(in: 0...1.0), g: Float.random(in: 0...1.0), b: Float.random(in: 0...1.0))
 
 	override func _ready() {
-		borderLine = createRegionBorder()
+		borderLine = createRegionBorder(map: map)
 		//borderLine.defaultColor = borderColor
 		addChild(node: borderLine)
 	}
@@ -118,21 +119,28 @@ class RegionBorderView: Node2D {
 		return segments
 	}
 
-	private func createRegionBorder() -> Line2D {
+	private func createRegionBorder(map: Map) -> Line2D {
 		let line = Line2D()
-		var segments = getBorderSegments()
+		var segments = getBorderSegments(map: map)
+		print(segments)
 		//sort segments to form continuous lines
 		var currentSegment = segments.removeFirst()
 		line.addPoint(position: currentSegment.start)
 
 		repeat {
 			for (index, segment) in segments.enumerated() {
+				print(index, segment)
 				if segment.start == currentSegment.end {
 					line.addPoint(position: segment.start)
 					segments.remove(at: index)
 					currentSegment = segment
 					break
-				} 
+				} else if segment.end == currentSegment.end {
+					line.addPoint(position: segment.end)
+					segments.remove(at: index)
+					currentSegment = segment.reversed()
+					break
+				}
 			}
 		} while !segments.isEmpty
 		
@@ -143,7 +151,7 @@ class RegionBorderView: Node2D {
 		return line
 	}
 
-	private func getBorderSegments() -> [BorderSegment] {
+	private func getBorderSegments(map: Map) -> [BorderSegment] {
 		var segments: [BorderSegment] = []
 		
 		for tile in region.region.tiles {
@@ -153,7 +161,7 @@ class RegionBorderView: Node2D {
 			let cornerVector = Vector2(x: relPosX + xOffset, y: relPosY)
 			
 			for dir in Map.Direction.allCases {
-				let neighborCoord = tile.getNeighborCoord(dir: dir, mapWidth: 5, mapHeight: 5)
+				let neighborCoord = tile.getNeighborCoord(dir: dir, mapWidth: map.width, mapHeight: map.height)
 				
 				if neighborCoord == nil || !region.region.tiles.contains(neighborCoord!) {
 					let startPoint = cornerVector + TileRenderInfo.points[dir]!.0
@@ -171,4 +179,8 @@ class RegionBorderView: Node2D {
 fileprivate struct BorderSegment {
 	let start: Vector2
 	let end: Vector2
+
+	func reversed() -> BorderSegment {
+		return BorderSegment(start: end, end: start)
+	}
 }

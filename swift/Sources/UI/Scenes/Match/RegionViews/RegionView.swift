@@ -5,6 +5,7 @@ import SwiftGodot
 class RegionView: Sprite2D {
 	
 	var region: MatchRegion!
+	var map: Map!
 	
 	private var borderView: RegionBorderView!
 	private var bgView: RegionBGView!
@@ -21,6 +22,7 @@ class RegionView: Sprite2D {
 
 		borderView = RegionBorderView()
 		borderView.region = region
+		borderView.map = map
 		maskView.addChild(node: borderView)
 
 		bgView.set(race: "", color: region.owner?.color ?? Color.lightGray)

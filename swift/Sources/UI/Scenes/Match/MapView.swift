@@ -15,13 +15,22 @@ final class MapView: Node2D {
 	override func _ready() {
 		// For testing purposes, create a simple map
 		let tiles: [Int] = [
-			0, 1, 0, 2, 0,
-			1, 1, 1, 2, 2,
-			3, 1, 4, 2, 2,
-			3, 3, 4, 4, 0,
-			3, 3, 4, 4, 4
-		]
-		let map = Map(tiles: tiles, width: 5, height: 5)
+				0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0,
+				0, 1, 1, 1, 2, 2, 2, 0, 0, 7, 7, 7, 7, 7, 0,
+				0, 1, 1, 1, 2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 0,
+				1, 1, 1, 2, 2, 2, 2, 2, 7, 7, 7, 7, 7, 0, 0,
+				1, 1, 1, 1, 2, 2, 2, 2, 2, 5, 5, 7, 7, 0, 0,
+				1, 1, 1, 3, 2, 2, 5, 5, 5, 5, 5, 7, 0, 0, 0,
+				1, 1, 3, 3, 3, 3, 5, 5, 5, 5, 5, 0, 0, 0, 0,
+				0, 3, 3, 3, 3, 3, 4, 5, 5, 5, 5, 5, 0, 0, 0,
+				0, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 0, 0,
+				0, 0, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 6, 0, 0,
+				0, 0, 3, 3, 3, 4, 4, 4, 4, 6, 6, 6, 6, 0, 0,
+				0, 3, 3, 3, 0, 0, 4, 4, 4, 6, 6, 6, 6, 0, 0,
+				0, 0, 3, 3, 0, 0, 0, 0, 6, 6, 6, 6, 6, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+		let map = Map(tiles: tiles, width: 15, height: 15)
 		let players = [MatchPlayer(index: 0), MatchPlayer(index: 1)]
 
 		match = Match(map: map, players: players)
@@ -33,12 +42,13 @@ final class MapView: Node2D {
 		
 		setupDimensions()
 
+		print("dimensions set up")
 		renderMap()
 	}
 
 	private func setupDimensions() {
-		let mapRenderWidth = 5 * TileRenderInfo.width
-		let mapRenderHeight = 5 * TileRenderInfo.rowHeight + TileRenderInfo.roofHeight
+		let mapRenderWidth = Float(match.map.width) * TileRenderInfo.width
+		let mapRenderHeight = Float(match.map.height) * TileRenderInfo.rowHeight + TileRenderInfo.roofHeight
 
 		print("Map render dimensions: \(mapRenderWidth)x\(mapRenderHeight)")
 
@@ -65,14 +75,13 @@ final class MapView: Node2D {
 		for region in match.regions {
 			let regionView = RegionView()
 			regionView.region = region
+			regionView.map = match.map
 			addChild(node: regionView)
-			let xOffset: Float = region.region.position.y % 2 == 1 ? TileRenderInfo.width / 2 : 0
-			regionView.position = Vector2(x: Float(region.region.position.x) * TileRenderInfo.width + xOffset,
+			regionView.position = Vector2(x: Float(region.region.position.x) * TileRenderInfo.width,
 										  y: Float(region.region.position.y) * TileRenderInfo.rowHeight)
 
 			regionView.updateBorders(match: match)
 		}
-
 	}
 
 }

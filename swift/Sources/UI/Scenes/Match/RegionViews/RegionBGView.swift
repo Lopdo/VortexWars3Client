@@ -9,9 +9,7 @@ final class RegionBGView: TextureRect {
 	}
 	
 	func setRegion(region: Region) {
-
-		let xOffset: Float = region.position.y % 2 == 1 ? TileRenderInfo.width / 2 : 0
-		let posX = -(Float(region.position.x) * TileRenderInfo.width + xOffset).truncatingRemainder(dividingBy: 100)
+		let posX = -(Float(region.position.x) * TileRenderInfo.width).truncatingRemainder(dividingBy: 100)
 		let posY = -(Float(region.position.y) * TileRenderInfo.rowHeight).truncatingRemainder(dividingBy: 100)
 
 		setPosition(Vector2(x: posX, y: posY))

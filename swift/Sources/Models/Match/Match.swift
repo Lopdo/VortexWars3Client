@@ -7,7 +7,7 @@ class Match {
 
 	init(map: Map, players: [MatchPlayer]) {
 		self.map = map
-		self.regions = map.regions.map { MatchRegion(region: $0) }
+		self.regions = map.regions.map { MatchRegion(region: $0) }.sorted(by: { $0.region.id < $1.region.id })
 		self.players = players
 	}
 
