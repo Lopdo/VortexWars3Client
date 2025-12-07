@@ -82,6 +82,11 @@ final class MapView: Node2D {
 
 			regionView.updateBorders(match: match)
 		}
+		
+		// Place top layer views (like armies) after all regions are added
+		for regionView in getChildren().compactMap({ $0 as? RegionView }) {
+			regionView.placeTopLayerViews(to: self)
+		}
 	}
 
 }

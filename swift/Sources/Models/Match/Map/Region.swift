@@ -18,7 +18,7 @@ struct Region {
 		self.tiles = tiles
 		
 		self.center = Region.findArmyCenter(tiles: tiles)
-
+		print("Region \(id) center at \(self.center)")
 
 		let minX = tiles.min { $0.x < $1.x }.x
 		let minY = tiles.min { $0.y < $1.y }.y

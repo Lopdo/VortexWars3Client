@@ -122,14 +122,12 @@ class RegionBorderView: Node2D {
 	private func createRegionBorder(map: Map) -> Line2D {
 		let line = Line2D()
 		var segments = getBorderSegments(map: map)
-		print(segments)
 		//sort segments to form continuous lines
 		var currentSegment = segments.removeFirst()
 		line.addPoint(position: currentSegment.start)
 
 		repeat {
 			for (index, segment) in segments.enumerated() {
-				print(index, segment)
 				if segment.start == currentSegment.end {
 					line.addPoint(position: segment.start)
 					segments.remove(at: index)
