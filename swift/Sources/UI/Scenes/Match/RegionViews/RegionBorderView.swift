@@ -8,13 +8,10 @@ class RegionBorderView: Node2D {
 	var map: Map!
 
 	var borderLine: Line2D!
-	var externalBorders: [Line2D] = []
+	private var externalBorders: [Line2D] = []
 	
-	//let borderColor = Color(r: Float.random(in: 0...1.0), g: Float.random(in: 0...1.0), b: Float.random(in: 0...1.0))
-
 	override func _ready() {
 		borderLine = createRegionBorder(map: map)
-		//borderLine.defaultColor = borderColor
 		addChild(node: borderLine)
 	}
 

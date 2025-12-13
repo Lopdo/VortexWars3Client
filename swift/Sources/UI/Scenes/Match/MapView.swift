@@ -42,15 +42,12 @@ final class MapView: Node2D {
 		
 		setupDimensions()
 
-		print("dimensions set up")
 		renderMap()
 	}
 
 	private func setupDimensions() {
 		let mapRenderWidth = Float(match.map.width) * TileRenderInfo.width
 		let mapRenderHeight = Float(match.map.height) * TileRenderInfo.rowHeight + TileRenderInfo.roofHeight
-
-		print("Map render dimensions: \(mapRenderWidth)x\(mapRenderHeight)")
 
 		let renderNodeWidth: Float = 800
 		let renderNodeHeight: Float = 600
@@ -64,8 +61,6 @@ final class MapView: Node2D {
 		bgTextureRect.setPosition(Vector2(x: Float(-bgTextureRectOffsetX), y: Float(-bgTextureRectOffsetY)))
 		bgTextureRect.setSize(Vector2(x: Float(bgTextureWidth), y: Float(bgTextureHeight)))
 		
-		print("Background TextureRect positioned at (\(-bgTextureRectOffsetX), \(-bgTextureRectOffsetY)) with size \(bgTextureWidth)x\(bgTextureHeight)")
-
 		camera.mapSize = Vector2(x: Float(mapRenderWidth), y: Float(mapRenderHeight))
 		//TODO pass actual viewport size
 		camera.setMapView(size: getViewportRect().size)

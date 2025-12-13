@@ -70,7 +70,6 @@ struct Map {
 			}
 		}
 
-		print(regions)
 		return regions
 	}
 

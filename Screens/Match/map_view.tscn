@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cgh4wcyu1vy5m"]
+[gd_scene load_steps=2 format=3 uid="uid://cgh4wcyu1vy5m"]
 
 [ext_resource type="Texture2D" uid="uid://vgc6641mxxed" path="res://res/img/map_bg_0.png" id="1_ak6rx"]
-[ext_resource type="Texture2D" uid="uid://b50usdqic2fxn" path="res://res/img/terrain_pumpkins.jpg" id="2_uf7wj"]
 
 [node name="MapView" type="MapView" node_paths=PackedStringArray("camera", "bg_texture_rect")]
 camera = NodePath("CameraZoomAndPan")
@@ -21,20 +20,3 @@ offset_bottom = 2000.0
 texture = ExtResource("1_ak6rx")
 expand_mode = 1
 stretch_mode = 1
-
-[node name="Sprite2D" type="Sprite2D" parent="Node2D"]
-visible = false
-texture = ExtResource("2_uf7wj")
-centered = false
-
-[node name="Sprite2D2" type="Sprite2D" parent="Node2D"]
-position = Vector2(51, 811)
-texture = ExtResource("2_uf7wj")
-
-[node name="Sprite2D3" type="Sprite2D" parent="Node2D"]
-position = Vector2(1399, 59)
-texture = ExtResource("2_uf7wj")
-
-[node name="Sprite2D4" type="Sprite2D" parent="Node2D"]
-position = Vector2(1396, 807)
-texture = ExtResource("2_uf7wj")
