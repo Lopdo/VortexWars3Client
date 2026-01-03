@@ -28,69 +28,63 @@ final class LoginScreen: Node {
 	}
 
 	private func login() {
-		let httpRequest = HTTPRequest()
-		addChild(node: httpRequest)
-		httpRequest.requestCompleted.connect { result, responseCode, headers, body in
-			self.httpRequestCompleted(result: result, responseCode: responseCode, headers: headers, body: body)
-		}
-
-		let authHeader = getAuthHeader()
-		GD.print("Auth Header: \(authHeader)")
-
-		let error = httpRequest.request(url: "http://127.0.0.1:8080/auth/login", customHeaders: [authHeader], method: .post)
-		if error != .ok {
-			GD.print("An error occurred in the HTTP request.")
-			ErrorManager.showError(message: "An error occurred in the HTTP request.")
-		}
-	}
-
-	private func register() {
-		let httpRequest = HTTPRequest()
-		addChild(node: httpRequest)
-		httpRequest.requestCompleted.connect { result, responseCode, headers, body in
-			self.httpRequestCompleted(result: result, responseCode: responseCode, headers: headers, body: body)
-		}
-
 		let bodyDict: [String: String] = [
 			"username": lineEditUsername.text,
 			"password": lineEditPassword.text
 		]
 
 		let jsonData = try! JSONSerialization.data(withJSONObject: bodyDict)
-		//let jsonString = GString(String(data: jsonData, encoding: .utf8)!)
+		
+		NetworkManager.jsonRequest(
+				node: self,
+				url: "/auth/login",
+				method: .post,
+				headers: [getAuthHeader()],
+				body: jsonData,
+				completion: requestCompleted
+				)
+	}
 
-		let error = httpRequest.request(url: "http://127.0.0.1:8080/auth/register", customHeaders: ["Content-Type: application/json"], method: .post, requestData: String(data: jsonData, encoding: .utf8)!)
-		if error != .ok {
-			GD.print("An error occurred in the HTTP request.")
-			ErrorManager.showError(message: "An error occurred in the HTTP request.")
+	private func requestCompleted(result: Result<UserDTO, Error>) {
+		switch result {
+		case .success(let userDTO):
+			loginCompleted(userDTO: userDTO)
+		case .failure(let error):
+			GD.print("An error occurred in the HTTP request: \(error)")
+			switch error {
+				case NetworkManager.NetworkError.serverError(let code) where code == 401:
+					ErrorManager.showError(message: "Invalid username or password.")
+				default:
+					ErrorManager.showError(message: "An error occurred in the HTTP request. \(error.localizedDescription)")
+			}
 		}
 	}
 
-	private func httpRequestCompleted(result: Int64, responseCode: Int64, headers: PackedStringArray, body: PackedByteArray) {
-		if result != 0 {
-			ErrorManager.showError(message: "An error occurred in the HTTP request. \(result)")
-			return
-		}
-
-		GD.print("Response Body: \(body.getStringFromUtf8())")
-		if responseCode == 500 {
-			ErrorManager.showHTTPError(body: body)
-		} else if responseCode == 200 {
-			let data = Data(body.asBytes())
-				if let userDTO = try? JSONDecoder().decode(UserDTO.self, from: data) {
-					if let lobby = SceneLoader.load(path: "res://Screens/MainLobby/main_lobby.tscn") as? MainLobby {
-						lobby.initialize(user: User(from: userDTO))
-						changeSceneToNode(node: lobby)
-					} else {
-						GD.print("Failed to load MainLobby scene")
-						ErrorManager.showError(message: "Failed to load MainLobby scene")
-					}
-				} else {
-					ErrorManager.showError(message: "Failed to parse login response")
-				}
+	private func loginCompleted(userDTO: UserDTO) {
+		if let lobby = SceneLoader.load(path: "res://Screens/MainLobby/main_lobby.tscn") as? MainLobby {
+			lobby.initialize(user: User(from: userDTO))
+			changeSceneToNode(node: lobby)
 		} else {
-			ErrorManager.showError(message: "An error occurred in the HTTP request. \(responseCode)")
+			GD.print("Failed to load MainLobby scene")
+			ErrorManager.showError(message: "Failed to load MainLobby scene")
 		}
+	}				
+
+	private func register() {
+		let bodyDict: [String: String] = [
+			"username": lineEditUsername.text,
+			"password": lineEditPassword.text
+		]
+
+		let jsonData = try! JSONSerialization.data(withJSONObject: bodyDict)
+
+		NetworkManager.jsonRequest(
+				node: self,
+				url: "/auth/register",
+				method: .post,
+				body: jsonData,
+				completion: requestCompleted
+				)
 	}
 
 }

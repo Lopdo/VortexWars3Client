@@ -47,41 +47,25 @@ final class MatchesSectionView: Control {
 
 		loadingIndicator.show()
 
-		let httpRequest = HTTPRequest()
-		addChild(node: httpRequest)
-		httpRequest.requestCompleted.connect { result, responseCode, headers, body in
-			self.loadingIndicator.hide()
-			self.httpRequestCompleted(result: result, responseCode: responseCode, headers: headers, body: body)
-		}
-
-		let error = httpRequest.request(url: "http://127.0.0.1:8080/match/list", method: .get)
-		if error != .ok {
-			loadingIndicator.hide()
-			GD.print("An error occurred in the HTTP request.")
-			ErrorManager.showError(message: "An error occurred in the HTTP request.")
-		}
+		NetworkManager.jsonRequest(
+			node: self,
+			url: "/match/list",
+			method: .get,
+			completion: requestCompleted
+		)
 	}
 
-	private func httpRequestCompleted(result: Int64, responseCode: Int64, headers: PackedStringArray, body: PackedByteArray) {
-		if result != 0 {
-			ErrorManager.showError(message: "An error occurred in the HTTP request. \(result)")
-			return
-		}
+	private func requestCompleted(result: Result<MatchListDTO, Error>) {
+		loadingIndicator.hide()
 
-		if responseCode == 500 {
-			ErrorManager.showHTTPError(body: body)
-		} else if responseCode == 200 {
-			let data = Data(body.asBytes())
-			do {
-				let matchListDTO = try JSONDecoder().decode(MatchListDTO.self, from: data)
+		switch result {
+			case .success(let matchListDTO):
 				for match in matchListDTO.matches {
 					createMatchView(for: match)
 				}
-			} catch {
-				ErrorManager.showError(message: "Failed to parse login response \(error)")
-			}
-		} else {
-			ErrorManager.showError(message: "An error occurred in the HTTP request. \(responseCode)")
+			case .failure(let error):
+				GD.print("An error occurred in the HTTP request: \(error)")
+				ErrorManager.showError(message: "An error occurred in the HTTP request. \(error.localizedDescription)")
 		}
 	}
 
