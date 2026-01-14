@@ -130,6 +130,33 @@ final class TestScene: Node {
 		label.text = text
 	}
 	
+	private func handleBinaryMessage(data: PackedByteArray) {
+		do {
+			let message = try NMDecoder.decode(data.asBytes())
+			GD.print("MatchLobby message received: \(message)")
+			switch message {
+				case let msg as NMMatchPlayerJoined:
+					//add(player: msg.player)
+					break;
+				case let msg as NMMatchPlayerLeft:
+					//remove(playerId: msg.playerId)
+					break;
+				case let msg as NMMatchPlayerReadyStatusChanged:
+					//GD.print("NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)")
+					//updateReadyState(playerId: msg.playerId, isReady: msg.ready)
+					startGame()
+				case let msg as NMMatchStarted:
+					//GD.print("NMMatchStarted received")
+					matchStartReceived(msg: msg)
+				default:
+					GD.print("Received unsupported binary message type \(message)")
+			}
+		} catch {
+			GD.print("Failed to decode binary message: \(error)")
+			GD.print(error.localizedDescription)
+		}
+	}
+
 	private func getAuthHeader(for player: String) -> String {
 		let token = "\(player):\(password)"
 		return "Authorization: Basic " + token.base64Encoded.string!
@@ -161,9 +188,9 @@ final class TestScene: Node {
 				label.text = label.text + "\nAn error occurred in the HTTP request: \(error)"
 				switch error {
 					case NetworkManager.NetworkError.serverError(let code) where code == 401:
-						ErrorManager.showError(message: "Invalid username or password.")
+						label.text = label.text + "\nInvalid username or password."
 					default:
-							ErrorManager.showError(message: "An error occurred in the HTTP request. \(error.localizedDescription)")
+						label.text = label.text + "\nAn error occurred in the HTTP request. \(error.localizedDescription)"
 				}
 		}
 	}
@@ -176,6 +203,7 @@ final class TestScene: Node {
 	
 	private func createWebSocketClient() -> WebSocketClient {
 		let client = WebSocketClient()
+		client.dataReceived.connect(handleBinaryMessage)
 		addChild(node: client)
 		return client
 	}
@@ -205,18 +233,53 @@ final class TestScene: Node {
 		
 		webSocketClient = createWebSocketClient()
 		
+		let settings = NMMatchSettings(mapId: "123", gameName: matchName, maxPlayers: 4)
 		MatchService.createMatch(
-			settings: NMMatchSettings(mapId: "", gameName: matchName, maxPlayers: 4),
+			settings: settings,
 			user: user,
 			webSocketClient: webSocketClient!,
 			onCreateSuccess: { joinMsg in
 				GD.print("Successfully created match")
 				self.label.text = self.label.text + "\nSuccessfully created match"
+				self.readyUp()
 			},
 			onError: { error in
 				GD.print("Failed to create match: \(error)")
 				self.label.text = self.label.text + "\nFailed to create match: \(error)"
 			}
 		)
+	}
+
+	func readyUp() {
+		do {
+			let auth = NMMatchPlayerChangeReadyStatus(ready: true)
+			let data = try NMEncoder.encode(auth)
+			try webSocketClient?.send(data: data)
+		} catch {
+			//TODO: add error handling
+			GD.print("Failed to send message NMMatchPlayerChangeReadyStatus")
+			self.label.text = self.label.text + "\nFailed to send message NMMatchPlayerChangeReadyStatus: \(error)"
+		}
+	}
+	
+	func startGame() {
+		do {
+			let start = NMMatchStartRequested()
+			let data = try NMEncoder.encode(start)
+			try webSocketClient?.send(data: data)
+		} catch {
+			//TODO: add error handling
+			GD.print("Failed to send message NMMatchPlayerChangeReadyStatus")
+		}
+	}
+
+	private func matchStartReceived(msg: NMMatchStarted) {
+		if let match = SceneLoader.load(path: "res://Screens/Match/match_screen.tscn") as? MatchScreen {
+			match.initialize(settings: msg.settings, players: msg.players)
+			changeSceneToNode(node: match)
+		} else {
+			GD.print("Failed to load MainLobby scene")
+				ErrorManager.showError(message: "Failed to load MainLobby scene")
+		}
 	}
 }

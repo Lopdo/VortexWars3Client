@@ -45,6 +45,12 @@ final class MapView: Node2D {
 		renderMap()
 	}
 
+	override func _process(delta: Double) {
+		if let subViewport = findSubViewport() {
+			camera.setMapView(size: Vector2(from: subViewport.size))
+		}
+	}
+
 	private func setupDimensions() {
 		let mapRenderWidth = Float(match.map.width) * TileRenderInfo.width
 		let mapRenderHeight = Float(match.map.height) * TileRenderInfo.rowHeight + TileRenderInfo.roofHeight
@@ -62,8 +68,6 @@ final class MapView: Node2D {
 		bgTextureRect.setSize(Vector2(x: Float(bgTextureWidth), y: Float(bgTextureHeight)))
 		
 		camera.mapSize = Vector2(x: Float(mapRenderWidth), y: Float(mapRenderHeight))
-		//TODO pass actual viewport size
-		camera.setMapView(size: getViewportRect().size)
 	}
 
 	private func renderMap() {
@@ -82,6 +86,17 @@ final class MapView: Node2D {
 		for regionView in getChildren().compactMap({ $0 as? RegionView }) {
 			regionView.placeTopLayerViews(to: self)
 		}
+	}
+	
+	private func findSubViewport() -> SubViewport? {
+		var current = getParent()
+		while current != nil {
+			if let subViewport = current as? SubViewport {
+				return subViewport
+			}
+			current = current?.getParent()
+		}
+		return nil
 	}
 
 }

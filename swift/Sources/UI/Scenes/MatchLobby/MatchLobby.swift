@@ -60,6 +60,7 @@ final class MatchLobby: Node {
 					updateReadyState(playerId: msg.playerId, isReady: msg.ready)
 				case let msg as NMMatchStarted:
 					GD.print("NMMatchStarted received")
+					matchStartReceived(msg: msg)
 				case let msg as NMMatchCookChanged:
 					updateCook(newCookId: msg.playerId)
 				case let msg as NMMatchAlreadyStarted:
@@ -156,5 +157,16 @@ final class MatchLobby: Node {
 			//TODO: add error handling
 			GD.print("Failed to send message NMMatchPlayerChangeReadyStatus")
 		}
+	}
+
+	private func matchStartReceived(msg: NMMatchStarted) {
+		if let match = SceneLoader.load(path: "res://Screens/Match/match_screen.tscn") as? MatchScreen {
+			match.initialize(settings: msg.settings, players: msg.players)
+			changeSceneToNode(node: match)
+		} else {
+			GD.print("Failed to load MainLobby scene")
+				ErrorManager.showError(message: "Failed to load MainLobby scene")
+		}
+
 	}
 }
