@@ -14,6 +14,8 @@ enum MatchError: Error {
 
 struct MatchService {
 	
+	private static var binaryMsgHandlerToken: Callable?
+
 	static func joinMatch(
 		matchId: String,
 		user: User,
@@ -31,7 +33,7 @@ struct MatchService {
 			onError(.connectionClosed)
 		}
 		
-		webSocketClient.dataReceived.connect { data in
+		binaryMsgHandlerToken = webSocketClient.dataReceived.connect { data in
 			handleJoinMatchMessage(
 				data: data,
 				webSocketClient: webSocketClient,
@@ -64,7 +66,7 @@ struct MatchService {
 			onError(.connectionClosed)
 		}
 		
-		webSocketClient.dataReceived.connect { data in
+		binaryMsgHandlerToken = webSocketClient.dataReceived.connect { data in
 			handleCreateMatchMessage(
 				settings: settings,
 				data: data,
@@ -130,6 +132,9 @@ struct MatchService {
 			case let msg as NMMatchJoined:
 				GD.print("Successfully joined match: \(msg.id)")
 				onJoinSuccess(msg)
+				if let binaryMsgHandlerToken {
+					webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
+				}
 				
 			default:
 				GD.print("Received unexpected message in join match: \(type(of: message))")
@@ -164,6 +169,9 @@ struct MatchService {
 			case let msg as NMMatchJoined:
 				GD.print("Successfully created match: \(msg.id)")
 				onCreateSuccess(msg)
+				if let binaryMsgHandlerToken {
+					webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
+				}
 				
 			default:
 				GD.print("Received unexpected message in create match: \(type(of: message))")

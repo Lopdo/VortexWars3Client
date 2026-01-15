@@ -6,7 +6,6 @@ import NetworkModels
 final class MatchesSectionView: Control {
 	
 	private let client = WebSocketClient()
-	private var binaryMsgHandlerToken: Callable?
 
 	var user: User!
 
@@ -103,9 +102,6 @@ final class MatchesSectionView: Control {
 	private func handleJoinSuccess(msg: NMMatchJoined) {
 		GD.print("Successfully joined match with ID: \(msg.id)")
 		if let lobby = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby.tscn") as? MatchLobby {
-			if let binaryMsgHandlerToken {
-				client.dataReceived.disconnect(binaryMsgHandlerToken)
-			}
 			lobby.initialize(ws: client, user: user, players: msg.players)
 			changeSceneToNode(node: lobby)
 		}

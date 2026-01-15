@@ -14,6 +14,8 @@ final class TestScene: Node {
 	var player: String?
 	var password: String = "123"
 	var action: Action?
+	var playerCount = 1
+	var readyPlayerCount = 0
 	
 	private var currentUser: User?
 	private var webSocketClient: WebSocketClient?
@@ -66,6 +68,12 @@ final class TestScene: Node {
 						default:
 							print("Unknown action type: \(value)")
 					}
+				case "pc", "playerCount":
+					if let count = Int(value) {
+						playerCount = count
+					} else {
+						print("Error: non-integer value in playerCount parameter: \(value)")
+					}
 				default:
 					print("Unknown flag: \(flag)")
 					break
@@ -78,29 +86,30 @@ final class TestScene: Node {
 		guard let action else { return }
 		
 		switch action {
-		case .joinMatch(let matchId):
-			executeJoinMatchAction(matchId: matchId)
-		case .createMatch(let matchId):
-			executeCreateMatchAction(matchId: matchId)
+		case .joinMatch(let matchName):
+			executeJoinMatchAction(matchName: matchName)
+		case .createMatch(let matchName):
+			executeCreateMatchAction(matchName: matchName)
 		}
 	}
 	
-	private func executeJoinMatchAction(matchId: String) {
+	private func executeJoinMatchAction(matchName: String) {
 		guard let currentUser else {
 			print("Error: User not logged in")
 			return
 		}
 		
-		joinMatch(matchId: matchId, user: currentUser)
+		findMatch(name: matchName)
+		//joinMatch(matchName: matchName, user: currentUser)
 	}
 	
-	private func executeCreateMatchAction(matchId: String) {
+	private func executeCreateMatchAction(matchName: String) {
 		guard let currentUser else {
 			print("Error: User not logged in")
 			return
 		}
 		
-		createMatch(matchName: matchId, user: currentUser)
+		createMatch(matchName: matchName, user: currentUser)
 	}
 	
 	private func updateLabel() {
@@ -136,17 +145,22 @@ final class TestScene: Node {
 			GD.print("MatchLobby message received: \(message)")
 			switch message {
 				case let msg as NMMatchPlayerJoined:
-					//add(player: msg.player)
+					_ = msg
 					break;
 				case let msg as NMMatchPlayerLeft:
-					//remove(playerId: msg.playerId)
+					_ = msg
 					break;
 				case let msg as NMMatchPlayerReadyStatusChanged:
-					//GD.print("NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)")
-					//updateReadyState(playerId: msg.playerId, isReady: msg.ready)
-					startGame()
+					if msg.ready {
+						readyPlayerCount += 1
+					} else {
+						readyPlayerCount -= 1
+					}
+					if readyPlayerCount == playerCount {
+						startGame()	
+					}
+					GD.print("NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)")
 				case let msg as NMMatchStarted:
-					//GD.print("NMMatchStarted received")
 					matchStartReceived(msg: msg)
 				default:
 					GD.print("Received unsupported binary message type \(message)")
@@ -208,6 +222,33 @@ final class TestScene: Node {
 		return client
 	}
 	
+	private func findMatch(name matchName: String) {
+		label.text = label.text + "\nFetching matches..."
+		NetworkManager.jsonRequest(
+			node: self,
+			url: "/match/list",
+			method: .get,
+			completion: {
+				self.matchFetchRequestCompleted(result: $0, matchName: matchName)
+			}
+		)
+	}
+
+	private func matchFetchRequestCompleted(result: Result<MatchListDTO, Error>, matchName: String) {
+		switch result {
+			case .success(let matchListDTO):
+				//if let match = matchListDTO.matches.first(where: { $0.name == matchName }) {
+				if let match = matchListDTO.matches.first {
+					joinMatch(matchId: match.id, user: currentUser!)
+				} else {
+					label.text = label.text + "\nMatch with name \(matchName) not found"
+				}
+
+			case .failure(let error):
+				GD.print("An error occurred in the HTTP request: \(error)")
+		}
+	}
+
 	private func joinMatch(matchId: String, user: User) {
 		label.text = label.text + "\nJoining match: \(matchId)"
 		
@@ -220,6 +261,7 @@ final class TestScene: Node {
 			onJoinSuccess: { joinMsg in
 				GD.print("Successfully joined match")
 				self.label.text = self.label.text + "\nSuccessfully joined match"
+				self.readyUp()
 			},
 			onError: { error in
 				GD.print("Failed to join match: \(error)")
