@@ -24,10 +24,9 @@ final class MatchScreen: Node {
 
 	override func _ready() {
 		setupSubViewport()
-		createMapView()
 	}
 
-	func initialize(settings: NMMatchSettings, players: [NMMatchPlayer], startingPlayer: String, ws: WebSocketClient) {
+	func initialize(settings: NMMatchSettings, players: [NMMatchPlayer], startingPlayer: String, mapData: NMMatchMapData, ws: WebSocketClient) {
 		for i in 0..<players.count {
 			self.players.append(MatchPlayer(index: i, nmMatchPlayer: players[i]))
 		}
@@ -40,6 +39,8 @@ final class MatchScreen: Node {
 		ws.getParent()?.removeChild(node: ws)
 		addChild(node: ws)
 		self.ws = ws
+		
+		createMapView(mapData: mapData)
 	}
 
 	private func setupSubViewport() {
@@ -50,9 +51,10 @@ final class MatchScreen: Node {
 		mapContainer.physicsObjectPicking = true
 	}
 
-	private func createMapView() {
+	private func createMapView(mapData: NMMatchMapData) {
 		if let mapView = SceneLoader.load(path: "res://Screens/Match/map_view.tscn") as? MapView {
 			self.mapView = mapView
+			mapView.set(mapData: mapData)
 			mapContainer.addChild(node: mapView)
 		} else {
 			//TODO: handle error in more restrictive way, something is very wrong, kick user out?

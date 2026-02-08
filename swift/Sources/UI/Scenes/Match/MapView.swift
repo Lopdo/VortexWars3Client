@@ -1,5 +1,6 @@
 import Foundation
 import SwiftGodot
+import NetworkModels
 
 @Godot
 final class MapView: Node2D {
@@ -13,8 +14,19 @@ final class MapView: Node2D {
 	private var match: Match!
 
 	override func _ready() {
+		guard match != nil else {
+			GD.print("Match and map not initialized in MapView._ready")
+			return
+		}
+
+		setupDimensions()
+
+		renderMap()
+	}
+	
+	func set(mapData: NMMatchMapData) {
 		// For testing purposes, create a simple map
-		let tiles: [Int] = [
+		/*let tiles: [Int] = [
 				0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0,
 				0, 1, 1, 1, 2, 2, 2, 0, 0, 7, 7, 7, 7, 7, 0,
 				0, 1, 1, 1, 2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 0,
@@ -30,7 +42,10 @@ final class MapView: Node2D {
 				0, 0, 3, 3, 0, 0, 0, 0, 6, 6, 6, 6, 6, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-		let map = Map(tiles: tiles, width: 15, height: 15)
+				*/
+		let map = Map(tiles: mapData.tiles.map { Int($0) },
+					  width: Int(mapData.width), 
+					  height: Int(mapData.height))
 		let players = [MatchPlayer(index: 0), MatchPlayer(index: 1)]
 
 		match = Match(map: map, players: players)
@@ -40,9 +55,6 @@ final class MapView: Node2D {
 		match.regions[1].owner = players[1]
 		match.regions[3].owner = players[1]
 		
-		setupDimensions()
-
-		renderMap()
 	}
 
 	override func _process(delta: Double) {

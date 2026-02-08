@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main"),
-        .package(url: "https://github.com/Lopdo/VW3NetworkModels", exact: "0.0.21"),
+        .package(url: "https://github.com/Lopdo/VW3NetworkModels", exact: "0.0.24"),
 		.package(url: "https://github.com/pointfreeco/swift-nonempty.git", from: "0.3.0")
     ],
     targets: [

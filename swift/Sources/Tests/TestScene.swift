@@ -319,7 +319,7 @@ final class TestScene: Node {
 
 	private func matchStartReceived(msg: NMMatchStarted) {
 		if let match = SceneLoader.load(path: "res://Screens/Match/match_screen.tscn") as? MatchScreen {
-			match.initialize(settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer, ws: webSocketClient!)
+			match.initialize(settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer, mapData: msg.mapData, ws: webSocketClient!)
 			changeSceneToNode(node: match)
 			if let binaryMsgHandlerToken {
 				webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)
