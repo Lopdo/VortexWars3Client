@@ -1,8 +1,9 @@
 import Foundation
 import SwiftGodot
+import NetworkModels
 
 class MatchPlayer {
-	let id: UUID
+	let id: String
 	let index: Int
 
 	var color: Color {
@@ -14,7 +15,12 @@ class MatchPlayer {
 
 	init(index: Int) {
 		self.index = index
-		self.id = UUID()
+		self.id = UUID().uuidString
+	}
+
+	init(index: Int, nmMatchPlayer: NMMatchPlayer) {
+		self.index = index
+		id = nmMatchPlayer.id
 	}
 }
 

@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://d32rqnxbwt36v"]
+
+[node name="MatchLobbyPlayer" type="MatchPlayerListPlayerView" node_paths=PackedStringArray("lbl_name", "lbl_current")]
+lbl_name = NodePath("MarginContainer/HBoxContainer/LabelName")
+lbl_current = NodePath("MarginContainer/HBoxContainer/LabelCurrent")
+custom_minimum_size = Vector2(0, 80)
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="LabelCurrent" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="LabelName" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2

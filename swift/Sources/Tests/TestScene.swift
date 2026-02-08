@@ -20,6 +20,8 @@ final class TestScene: Node {
 	private var currentUser: User?
 	private var webSocketClient: WebSocketClient?
 
+	private var binaryMsgHandlerToken: Callable?
+
 	override func _ready() {
 		parseCommandLineArgs()
 		updateLabel()
@@ -142,7 +144,7 @@ final class TestScene: Node {
 	private func handleBinaryMessage(data: PackedByteArray) {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
-			GD.print("MatchLobby message received: \(message)")
+			GD.print("TestScene message received: \(message)")
 			switch message {
 				case let msg as NMMatchPlayerJoined:
 					_ = msg
@@ -217,7 +219,7 @@ final class TestScene: Node {
 	
 	private func createWebSocketClient() -> WebSocketClient {
 		let client = WebSocketClient()
-		client.dataReceived.connect(handleBinaryMessage)
+		binaryMsgHandlerToken = client.dataReceived.connect(handleBinaryMessage)
 		addChild(node: client)
 		return client
 	}
@@ -317,8 +319,11 @@ final class TestScene: Node {
 
 	private func matchStartReceived(msg: NMMatchStarted) {
 		if let match = SceneLoader.load(path: "res://Screens/Match/match_screen.tscn") as? MatchScreen {
-			match.initialize(settings: msg.settings, players: msg.players)
+			match.initialize(settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer, ws: webSocketClient!)
 			changeSceneToNode(node: match)
+			if let binaryMsgHandlerToken {
+				webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)
+			}
 		} else {
 			GD.print("Failed to load MainLobby scene")
 				ErrorManager.showError(message: "Failed to load MainLobby scene")

@@ -131,10 +131,10 @@ struct MatchService {
 				
 			case let msg as NMMatchJoined:
 				GD.print("Successfully joined match: \(msg.id)")
-				onJoinSuccess(msg)
 				if let binaryMsgHandlerToken {
 					webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
 				}
+				onJoinSuccess(msg)
 				
 			default:
 				GD.print("Received unexpected message in join match: \(type(of: message))")
@@ -168,10 +168,10 @@ struct MatchService {
 				
 			case let msg as NMMatchJoined:
 				GD.print("Successfully created match: \(msg.id)")
-				onCreateSuccess(msg)
 				if let binaryMsgHandlerToken {
 					webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
 				}
+				onCreateSuccess(msg)
 				
 			default:
 				GD.print("Received unexpected message in create match: \(type(of: message))")

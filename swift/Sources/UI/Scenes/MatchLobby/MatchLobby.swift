@@ -19,6 +19,7 @@ final class MatchLobby: Node {
 
 	private var user: User!
 	private var wsClient: WebSocketClient!
+	private var binaryMessageHandler: Callable?
 
 	private var isReady: Bool = false {
 		didSet {
@@ -29,7 +30,7 @@ final class MatchLobby: Node {
 
 	func initialize(ws: WebSocketClient, user: User, players: [NMMatchPlayer]) {
 		wsClient = ws
-		wsClient.dataReceived.connect(handleBinaryMessage)
+		binaryMessageHandler = wsClient.dataReceived.connect(handleBinaryMessage)
 		wsClient.getParent()?.removeChild(node: wsClient)
 		addChild(node: wsClient)		
 
@@ -63,7 +64,7 @@ final class MatchLobby: Node {
 					matchStartReceived(msg: msg)
 				case let msg as NMMatchCookChanged:
 					updateCook(newCookId: msg.playerId)
-				case let msg as NMMatchAlreadyStarted:
+				case is NMMatchAlreadyStarted:
 					//TODO: show popup
 					GD.print("Match already started")
 				default:
@@ -161,8 +162,12 @@ final class MatchLobby: Node {
 
 	private func matchStartReceived(msg: NMMatchStarted) {
 		if let match = SceneLoader.load(path: "res://Screens/Match/match_screen.tscn") as? MatchScreen {
-			match.initialize(settings: msg.settings, players: msg.players)
+			match.initialize(settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer, ws: wsClient)
 			changeSceneToNode(node: match)
+			if let binaryMessageHandler {
+				wsClient.dataReceived.disconnect(binaryMessageHandler)
+			}
+			binaryMessageHandler = nil
 		} else {
 			GD.print("Failed to load MainLobby scene")
 				ErrorManager.showError(message: "Failed to load MainLobby scene")

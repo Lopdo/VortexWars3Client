@@ -8,25 +8,38 @@ final class MatchScreen: Node {
 	@Export
 	var mapContainer: SubViewport!
 
+	@Export
+	var playerListView: MatchPlayerListView!
 
+	@Export
+	var btnEndTurn: Button!
+
+	private var players: [MatchPlayer] = []
 	private var mapView: MapView!
 
-	//@Export
-	//var lineEditUsername: LineEdit!
+	private var currentPlayerId: String!
 
-	//@Callable
-	/*func onLoginPressed() {
-		GD.print("Login pressed: \(lineEditUsername.text), \(lineEditPassword.text)")
-		login()
-	}*/
+	private var ws: WebSocketClient!
+	private var binaryMessageHandler: Callable?
 
 	override func _ready() {
 		setupSubViewport()
 		createMapView()
 	}
 
-	func initialize(settings: NMMatchSettings, players: [NMMatchPlayer]) {
+	func initialize(settings: NMMatchSettings, players: [NMMatchPlayer], startingPlayer: String, ws: WebSocketClient) {
+		for i in 0..<players.count {
+			self.players.append(MatchPlayer(index: i, nmMatchPlayer: players[i]))
+		}
 		//TODO: map setup
+		
+		currentPlayerId = startingPlayer
+		playerListView.add(players: self.players, currentPlayerId: currentPlayerId)
+
+		binaryMessageHandler = ws.dataReceived.connect(handleBinaryMessage)
+		ws.getParent()?.removeChild(node: ws)
+		addChild(node: ws)
+		self.ws = ws
 	}
 
 	private func setupSubViewport() {
@@ -46,6 +59,46 @@ final class MatchScreen: Node {
 			GD.print("Failed to load map view")
 			ErrorManager.showError(message: "Failed to load map view")
 		}
+	}
+
+	@Callable 
+	func endTurnPressed() {
+		do {
+			let endTurnMsg = NMMatchEndTurn()
+			let data = try NMEncoder.encode(endTurnMsg)
+			try ws.send(data: data)
+		} catch {
+			//TODO: add error handling
+			GD.print("Failed to send message NMMatchEndTurn")
+		}
+	}
+
+
+	private func handleBinaryMessage(data: PackedByteArray) {
+		do {
+			let message = try NMDecoder.decode(data.asBytes())
+			GD.print("MatchScreen message received: \(message)")
+			switch message {
+				case let msg as NMMatchPlayerLeft:
+					//remove(playerId: msg.playerId)
+					break;
+				case let msg as NMMatchTurnEnded:
+					//TODO: 
+					break;
+				case let msg as NMMatchNewTurnStarted:
+					newTurnStarted(newPlayerId: msg.playerId)
+				default:
+					GD.print("Received unsupported binary message type \(message)")
+			}
+		} catch {
+			GD.print("Failed to decode binary message: \(error)")
+			GD.print(error.localizedDescription)
+		}
+	}
+
+	private func newTurnStarted(newPlayerId: String) {
+		currentPlayerId = newPlayerId
+		playerListView.updateCurrentPlayer(id: currentPlayerId)
 	}
 }
 
