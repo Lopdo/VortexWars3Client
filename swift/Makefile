@@ -1,0 +1,6 @@
+.PHONY: build
+
+build:
+	swift build
+	cp .build/x86_64-unknown-linux-gnu/debug/libVortexWars3.so ../bin/libVortexWars3.so
+	cp .build/x86_64-unknown-linux-gnu/debug/libSwiftGodot.so ../bin/libSwiftGodot.so

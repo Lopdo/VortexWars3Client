@@ -1,18 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://cgh4wcyu1vy5m"]
+[gd_scene format=3 uid="uid://cgh4wcyu1vy5m"]
 
 [ext_resource type="Texture2D" uid="uid://vgc6641mxxed" path="res://res/img/map_bg_0.png" id="1_ak6rx"]
 
-[node name="MapView" type="MapView" node_paths=PackedStringArray("camera", "bg_texture_rect")]
-camera = NodePath("CameraZoomAndPan")
+[node name="MapView" type="MapView" unique_id=274839926 node_paths=PackedStringArray("bg_texture_rect")]
+camera = Object(CameraZoomAndPan,"map_size":Vector2(1500, 800),"zoom_step_ratio":0.1,"pan_action":&"camera>pan","zoom_in_action":&"camera>zoom+","zoom_out_action":&"camera>zoom-","zoom_to_cursor":true,"use_fallback_buttons":"Auto","pan_button":1,"zoom_in_button":4,"zoom_out_button":5,"pan_smoothing":0.5,"zoom_smoothing":0.5,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(0, 0),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"offset":Vector2(0, 0),"anchor_mode":1,"ignore_rotation":true,"enabled":true,"zoom":Vector2(1, 1),"process_callback":1,"limit_enabled":true,"limit_left":-10000000,"limit_top":-10000000,"limit_right":10000000,"limit_bottom":10000000,"limit_smoothed":false,"position_smoothing_enabled":false,"position_smoothing_speed":5.0,"rotation_smoothing_enabled":false,"rotation_smoothing_speed":5.0,"drag_horizontal_enabled":false,"drag_vertical_enabled":false,"drag_horizontal_offset":0.0,"drag_vertical_offset":0.0,"drag_left_margin":0.2,"drag_top_margin":0.2,"drag_right_margin":0.2,"drag_bottom_margin":0.2,"editor_draw_screen":true,"editor_draw_limits":false,"editor_draw_drag_margin":false,"script":null)
+
 bg_texture_rect = NodePath("Node2D/TextureRect")
 
-[node name="CameraZoomAndPan" type="CameraZoomAndPan" parent="."]
+[node name="CameraZoomAndPan" type="CameraZoomAndPan" parent="." unique_id=2100129413]
 map_size = Vector2(1500, 800)
 pan_button = 1
 
-[node name="Node2D" type="Node2D" parent="."]
+[node name="Node2D" type="Node2D" parent="." unique_id=975769474]
 
-[node name="TextureRect" type="TextureRect" parent="Node2D"]
+[node name="TextureRect" type="TextureRect" parent="Node2D" unique_id=652283177]
 offset_left = -1000.0
 offset_top = -1000.0
 offset_right = 2000.0

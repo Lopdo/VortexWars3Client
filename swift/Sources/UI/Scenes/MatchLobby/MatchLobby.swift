@@ -1,6 +1,6 @@
 import Foundation
-import SwiftGodot
 import NetworkModels
+import SwiftGodot
 
 @Godot
 final class MatchLobby: Node {
@@ -28,11 +28,11 @@ final class MatchLobby: Node {
 		}
 	}
 
-	func initialize(ws: WebSocketClient, user: User, players: [NMMatchPlayer]) {
+	func initialize(ws: WebSocketClient, user: User, players: [NMMatchLobbyPlayer]) {
 		wsClient = ws
 		binaryMessageHandler = wsClient.dataReceived.connect(handleBinaryMessage)
 		wsClient.getParent()?.removeChild(node: wsClient)
-		addChild(node: wsClient)		
+		addChild(node: wsClient)
 
 		self.user = user
 
@@ -41,34 +41,35 @@ final class MatchLobby: Node {
 		}
 		buttonStart.hide()
 		buttonStart.disabled = true
-		if players.first(where: { $0.id == user.player.id } )?.isCook == true {
+		if players.first(where: { $0.id == user.player.id })?.isCook == true {
 			buttonStart.show()
 		}
 	}
-
 
 	private func handleBinaryMessage(data: PackedByteArray) {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
 			GD.print("MatchLobby message received: \(message)")
 			switch message {
-				case let msg as NMMatchPlayerJoined:
-					add(player: msg.player)
-				case let msg as NMMatchPlayerLeft:
-					remove(playerId: msg.playerId)
-				case let msg as NMMatchPlayerReadyStatusChanged:
-					GD.print("NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)")
-					updateReadyState(playerId: msg.playerId, isReady: msg.ready)
-				case let msg as NMMatchStarted:
-					GD.print("NMMatchStarted received")
-					matchStartReceived(msg: msg)
-				case let msg as NMMatchCookChanged:
-					updateCook(newCookId: msg.playerId)
-				case is NMMatchAlreadyStarted:
-					//TODO: show popup
-					GD.print("Match already started")
-				default:
-					GD.print("Received unsupported binary message type \(message)")
+			case let msg as NMMatchPlayerJoined:
+				add(player: msg.player)
+			case let msg as NMMatchPlayerLeft:
+				remove(playerId: msg.playerId)
+			case let msg as NMMatchPlayerReadyStatusChanged:
+				GD.print(
+					"NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)"
+				)
+				updateReadyState(playerId: msg.playerId, isReady: msg.ready)
+			case let msg as NMMatchStarted:
+				GD.print("NMMatchStarted received")
+				matchStartReceived(msg: msg)
+			case let msg as NMMatchCookChanged:
+				updateCook(newCookId: msg.playerId)
+			case is NMMatchAlreadyStarted:
+				//TODO: show popup
+				GD.print("Match already started")
+			default:
+				GD.print("Received unsupported binary message type \(message)")
 			}
 		} catch {
 			GD.print("Failed to decode binary message: \(error)")
@@ -76,8 +77,10 @@ final class MatchLobby: Node {
 		}
 	}
 
-	private func add(player: NMMatchPlayer) {
-		if let matchView = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby_player.tscn") as? MatchLobbyPlayerView {
+	private func add(player: NMMatchLobbyPlayer) {
+		if let matchView = SceneLoader.load(
+			path: "res://Screens/MatchLobby/match_lobby_player.tscn") as? MatchLobbyPlayerView
+		{
 			matchView.initialize(player: MatchLobbyPlayer(from: player))
 			playerList.addChild(node: matchView)
 		}
@@ -85,7 +88,9 @@ final class MatchLobby: Node {
 
 	private func playerView(for playerId: String) -> MatchLobbyPlayerView? {
 		let nodes = playerList.getChildren()
-		if let playerView = nodes.first(where: { ($0 as? MatchLobbyPlayerView)?.player.id == playerId }) {
+		if let playerView = nodes.first(where: {
+			($0 as? MatchLobbyPlayerView)?.player.id == playerId
+		}) {
 			return playerView as? MatchLobbyPlayerView
 		} else {
 			GD.print("PlayerView for \(playerId) not found")
@@ -110,7 +115,7 @@ final class MatchLobby: Node {
 		} else {
 			buttonStart.hide()
 		}
-		
+
 		let playerViews = playerList.getChildren().compactMap { $0 as? MatchLobbyPlayerView }
 		for pView in playerViews {
 			pView.set(isCook: pView.player.id == newCookId)
@@ -138,12 +143,14 @@ final class MatchLobby: Node {
 	@Callable
 	func onExit() {
 		wsClient.close()
-		if let lobby = SceneLoader.load(path: "res://Screens/MainLobby/main_lobby.tscn") as? MainLobby {
+		if let lobby = SceneLoader.load(path: "res://Screens/MainLobby/main_lobby.tscn")
+			as? MainLobby
+		{
 			lobby.initialize(user: user)
-				changeSceneToNode(node: lobby)
+			changeSceneToNode(node: lobby)
 		} else {
 			GD.print("Failed to load MainLobby scene")
-				ErrorManager.showError(message: "Failed to load MainLobby scene")
+			ErrorManager.showError(message: "Failed to load MainLobby scene")
 		}
 	}
 
@@ -161,16 +168,20 @@ final class MatchLobby: Node {
 	}
 
 	private func matchStartReceived(msg: NMMatchStarted) {
-		if let match = SceneLoader.load(path: "res://Screens/Match/match_screen.tscn") as? MatchScreen {
-			match.initialize(settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer, mapData: msg.mapData, ws: wsClient)
+		if let match = SceneLoader.load(path: "res://Screens/Match/match_screen.tscn")
+			as? MatchScreen
+		{
 			changeSceneToNode(node: match)
+			match.initialize(
+				settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer,
+				mapData: msg.mapData, ws: wsClient)
 			if let binaryMessageHandler {
 				wsClient.dataReceived.disconnect(binaryMessageHandler)
 			}
 			binaryMessageHandler = nil
 		} else {
 			GD.print("Failed to load MainLobby scene")
-				ErrorManager.showError(message: "Failed to load MainLobby scene")
+			ErrorManager.showError(message: "Failed to load MainLobby scene")
 		}
 
 	}

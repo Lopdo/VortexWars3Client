@@ -7,15 +7,19 @@ final class RegionBGView: TextureRect {
 	override func _ready() {
 		stretchMode = .tile
 	}
-	
-	func setRegion(region: Region) {
-		let posX = -(Float(region.position.x) * TileRenderInfo.width).truncatingRemainder(dividingBy: 100)
-		let posY = -(Float(region.position.y) * TileRenderInfo.rowHeight).truncatingRemainder(dividingBy: 100)
+
+	func setRegion(region: MapRegion) {
+		let posX = -(Float(region.position.x) * TileRenderInfo.width).truncatingRemainder(
+			dividingBy: 100)
+		let posY = -(Float(region.position.y) * TileRenderInfo.rowHeight).truncatingRemainder(
+			dividingBy: 100)
 
 		setPosition(Vector2(x: posX, y: posY))
 
-		setSize(Vector2(x: Float(region.size.width) * TileRenderInfo.width + 100,
-				        y: Float(region.size.height) * TileRenderInfo.rowHeight + 100))
+		setSize(
+			Vector2(
+				x: Float(region.size.width) * TileRenderInfo.width + 100,
+				y: Float(region.size.height) * TileRenderInfo.rowHeight + 100))
 	}
 
 	func set(race: String, color: Color) {

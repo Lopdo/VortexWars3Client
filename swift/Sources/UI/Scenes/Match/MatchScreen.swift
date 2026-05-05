@@ -1,6 +1,6 @@
 import Foundation
-import SwiftGodot
 import NetworkModels
+import SwiftGodot
 
 @Godot
 final class MatchScreen: Node {
@@ -14,8 +14,10 @@ final class MatchScreen: Node {
 	@Export
 	var btnEndTurn: Button!
 
-	private var players: [MatchPlayer] = []
 	private var mapView: MapView!
+
+	private var match: Match!
+	//private var players: [MatchPlayer] = []
 
 	private var currentPlayerId: String!
 
@@ -24,37 +26,38 @@ final class MatchScreen: Node {
 
 	override func _ready() {
 		setupSubViewport()
-	}
+		createMapView()
 
-	func initialize(settings: NMMatchSettings, players: [NMMatchPlayer], startingPlayer: String, mapData: NMMatchMapData, ws: WebSocketClient) {
-		for i in 0..<players.count {
-			self.players.append(MatchPlayer(index: i, nmMatchPlayer: players[i]))
-		}
-		//TODO: map setup
-		
-		currentPlayerId = startingPlayer
-		playerListView.add(players: self.players, currentPlayerId: currentPlayerId)
+		playerListView.add(players: match.players, currentPlayerId: currentPlayerId)
 
 		binaryMessageHandler = ws.dataReceived.connect(handleBinaryMessage)
 		ws.getParent()?.removeChild(node: ws)
 		addChild(node: ws)
+	}
+
+	func initialize(
+		settings: NMMatchSettings, players: [NMMatchPlayer], startingPlayer: String,
+		mapData: NMMatchMapData, ws: WebSocketClient
+	) {
+		match = Match(mapData: mapData, players: players.map { MatchPlayer(nmMatchPlayer: $0) })
+
+		currentPlayerId = startingPlayer
+
 		self.ws = ws
-		
-		createMapView(mapData: mapData)
 	}
 
 	private func setupSubViewport() {
 		// Enable local input processing for mouse events
 		mapContainer.handleInputLocally = true
-		
+
 		// Enable physics object picking for Area2D mouse detection
 		mapContainer.physicsObjectPicking = true
 	}
 
-	private func createMapView(mapData: NMMatchMapData) {
+	private func createMapView() {
 		if let mapView = SceneLoader.load(path: "res://Screens/Match/map_view.tscn") as? MapView {
 			self.mapView = mapView
-			mapView.set(mapData: mapData)
+			mapView.set(match: match)
 			mapContainer.addChild(node: mapView)
 		} else {
 			//TODO: handle error in more restrictive way, something is very wrong, kick user out?
@@ -63,7 +66,7 @@ final class MatchScreen: Node {
 		}
 	}
 
-	@Callable 
+	@Callable
 	func endTurnPressed() {
 		do {
 			let endTurnMsg = NMMatchEndTurn()
@@ -75,22 +78,21 @@ final class MatchScreen: Node {
 		}
 	}
 
-
 	private func handleBinaryMessage(data: PackedByteArray) {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
 			GD.print("MatchScreen message received: \(message)")
 			switch message {
-				case let msg as NMMatchPlayerLeft:
-					//remove(playerId: msg.playerId)
-					break;
-				case let msg as NMMatchTurnEnded:
-					//TODO: 
-					break;
-				case let msg as NMMatchNewTurnStarted:
-					newTurnStarted(newPlayerId: msg.playerId)
-				default:
-					GD.print("Received unsupported binary message type \(message)")
+			/*case let msg as NMMatchPlayerLeft:
+				//remove(playerId: msg.playerId)
+				break
+			case let msg as NMMatchTurnEnded:
+				//TODO:
+				break*/
+			case let msg as NMMatchNewTurnStarted:
+				newTurnStarted(newPlayerId: msg.playerId)
+			default:
+				GD.print("Received unsupported binary message type \(message)")
 			}
 		} catch {
 			GD.print("Failed to decode binary message: \(error)")
@@ -103,4 +105,3 @@ final class MatchScreen: Node {
 		playerListView.updateCurrentPlayer(id: currentPlayerId)
 	}
 }
-

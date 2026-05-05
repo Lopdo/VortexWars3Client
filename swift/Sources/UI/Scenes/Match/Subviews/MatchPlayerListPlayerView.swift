@@ -12,12 +12,11 @@ final class MatchPlayerListPlayerView: Control {
 
 	var player: MatchPlayer!
 
-	func initialize(player: MatchPlayer, isCurrent: Bool) {
+	func initialize(player: MatchPlayer) {
 		self.player = player
 		lblName.text = player.id
-		set(current: isCurrent)
 	}
-	
+
 	func set(current: Bool) {
 		lblCurrent.text = current ? "X" : "O"
 	}

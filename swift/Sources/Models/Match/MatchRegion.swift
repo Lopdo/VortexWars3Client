@@ -1,13 +1,16 @@
 import Foundation
 
 class MatchRegion {
-	let region: Region
+	let region: MapRegion
+	var neighbors: [MatchRegion] = []
+
 	var owner: MatchPlayer?
 
 	var armyCount: Int
 
-	init(region: Region) {
+	init(region: MapRegion, owner: MatchPlayer?, armyCount: Int) {
 		self.region = region
-		self.armyCount = 0
+		self.owner = owner
+		self.armyCount = armyCount
 	}
 }

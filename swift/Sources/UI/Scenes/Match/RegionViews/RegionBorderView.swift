@@ -3,20 +3,27 @@ import SwiftGodot
 
 @Godot
 class RegionBorderView: Node2D {
-	
-	var region: MatchRegion!
-	var map: Map!
 
-	var borderLine: Line2D!
+	private var map: Map!
+	private var mapRegion: MapRegion!
+
+	var playerOwner: MatchPlayer?
+
+	private var borderLine: Line2D!
 	private var externalBorders: [Line2D] = []
-	
+
+	func initialize(map: Map, mapRegion: MapRegion) {
+		self.map = map
+		self.mapRegion = mapRegion
+	}
+
 	override func _ready() {
 		borderLine = createRegionBorder(map: map)
 		addChild(node: borderLine)
 	}
 
 	func updateBorders(match: Match) {
-		guard let owner = region.owner else {
+		guard let owner = playerOwner else {
 			return
 		}
 
@@ -38,7 +45,7 @@ class RegionBorderView: Node2D {
 					currentSegment = segment
 					foundNext = true
 					break
-				} 
+				}
 			}
 			if !foundNext {
 				//finish current line and start a new one
@@ -55,7 +62,7 @@ class RegionBorderView: Node2D {
 		linePoints.append(currentSegment.end)
 		linesPoints.append(linePoints)
 
-        //check if we can merge some lines
+		//check if we can merge some lines
 		var mergedLines: [[Vector2]] = []
 		for points in linesPoints {
 			var merged = false
@@ -76,7 +83,7 @@ class RegionBorderView: Node2D {
 			if !merged {
 				mergedLines.append(points)
 			}
-		} 
+		}
 
 		for points in mergedLines {
 			let line = Line2D()
@@ -94,25 +101,30 @@ class RegionBorderView: Node2D {
 
 	private func getExternalBorderSegments(match: Match) -> [BorderSegment] {
 		var segments: [BorderSegment] = []
-		
-		for tile in region.region.tiles {
-			let relPosX = Float(tile.x - region.region.position.x) * TileRenderInfo.width
-			let relPosY = Float(tile.y - region.region.position.y) * (TileRenderInfo.sideLength + TileRenderInfo.roofHeight)
+
+		for tile in mapRegion.tiles {
+			let relPosX = Float(tile.x - mapRegion.position.x) * TileRenderInfo.width
+			let relPosY =
+				Float(tile.y - mapRegion.position.y)
+				* (TileRenderInfo.sideLength + TileRenderInfo.roofHeight)
 			let xOffset = (tile.y % 2 == 1) ? TileRenderInfo.width / 2 : 0
 			let cornerVector = Vector2(x: relPosX + xOffset, y: relPosY)
-			
+
 			for dir in Map.Direction.allCases {
-				let neighborCoord = tile.getNeighborCoord(dir: dir, mapWidth: match.map.width, mapHeight: match.map.height)
-				
-				if neighborCoord == nil || match.map.tile(at: neighborCoord!) == 0 || 
-				   (!region.region.tiles.contains(neighborCoord!) && match.owner(at: neighborCoord!) != region.owner) {
+				let neighborCoord = tile.getNeighborCoord(
+					dir: dir, mapWidth: match.map.width, mapHeight: match.map.height)
+
+				if neighborCoord == nil || match.map.tile(at: neighborCoord!) == 0
+					|| (!mapRegion.tiles.contains(neighborCoord!)
+						&& match.owner(at: neighborCoord!) != playerOwner)
+				{
 					let startPoint = cornerVector + TileRenderInfo.points[dir]!.0
 					let endPoint = cornerVector + TileRenderInfo.points[dir]!.1
 					segments.append(BorderSegment(start: startPoint, end: endPoint))
 				}
 			}
 		}
-		
+
 		return segments
 	}
 
@@ -138,9 +150,9 @@ class RegionBorderView: Node2D {
 				}
 			}
 		} while !segments.isEmpty
-		
+
 		line.addPoint(position: currentSegment.end)
-		line.defaultColor = region.owner?.borderColor ?? Color.lightGray
+		line.defaultColor = playerOwner?.borderColor ?? Color.lightGray
 		line.width = 2
 
 		return line
@@ -148,30 +160,41 @@ class RegionBorderView: Node2D {
 
 	private func getBorderSegments(map: Map) -> [BorderSegment] {
 		var segments: [BorderSegment] = []
-		
-		for tile in region.region.tiles {
-			let relPosX = Float(tile.x - region.region.position.x) * TileRenderInfo.width
-			let relPosY = Float(tile.y - region.region.position.y) * (TileRenderInfo.sideLength + TileRenderInfo.roofHeight)
+
+		for tile in mapRegion.tiles {
+			let relPosX = Float(tile.x - mapRegion.position.x) * TileRenderInfo.width
+			let relPosY =
+				Float(tile.y - mapRegion.position.y)
+				* (TileRenderInfo.sideLength + TileRenderInfo.roofHeight)
 			let xOffset = (tile.y % 2 == 1) ? TileRenderInfo.width / 2 : 0
 			let cornerVector = Vector2(x: relPosX + xOffset, y: relPosY)
-			
+
 			for dir in Map.Direction.allCases {
-				let neighborCoord = tile.getNeighborCoord(dir: dir, mapWidth: map.width, mapHeight: map.height)
-				
-				if neighborCoord == nil || !region.region.tiles.contains(neighborCoord!) {
+				let neighborCoord = tile.getNeighborCoord(
+					dir: dir, mapWidth: map.width, mapHeight: map.height)
+
+				if neighborCoord == nil || !mapRegion.tiles.contains(neighborCoord!) {
 					let startPoint = cornerVector + TileRenderInfo.points[dir]!.0
 					let endPoint = cornerVector + TileRenderInfo.points[dir]!.1
 					segments.append(BorderSegment(start: startPoint, end: endPoint))
 				}
 			}
 		}
-		
+
 		return segments
+	}
+
+	func getCollisionArea() -> Area2D {
+		let area = Area2D()
+		let collision = CollisionPolygon2D()
+
+		collision.polygon = PackedVector2Array(from: borderLine.points)
+		area.addChild(node: collision)
+		return area
 	}
 }
 
-
-fileprivate struct BorderSegment {
+private struct BorderSegment {
 	let start: Vector2
 	let end: Vector2
 

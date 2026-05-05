@@ -8,8 +8,7 @@ struct MatchLobbyPlayer {
 	var isReady: Bool
 	var isCook: Bool
 
-	
-	init(from player: NMMatchPlayer) {
+	init(from player: NMMatchLobbyPlayer) {
 		id = player.id
 		name = player.name
 
@@ -17,4 +16,3 @@ struct MatchLobbyPlayer {
 		isCook = player.isCook
 	}
 }
-

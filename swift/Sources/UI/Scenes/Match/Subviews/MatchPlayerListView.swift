@@ -9,15 +9,19 @@ final class MatchPlayerListView: Control {
 
 	func add(players: [MatchPlayer], currentPlayerId: String) {
 		for player in players {
-			if let playerView = SceneLoader.load(path: "res://Screens/Match/match_player.tscn") as? MatchPlayerListPlayerView {
-				playerView.initialize(player: player, isCurrent: player.id == currentPlayerId)
+			if let playerView = SceneLoader.load(path: "res://Screens/Match/match_player.tscn")
+				as? MatchPlayerListPlayerView
+			{
+				playerView.initialize(player: player)
 				playerList.addChild(node: playerView)
+				playerView.set(current: player.id == currentPlayerId)
 			}
 		}
 	}
 
 	func updateCurrentPlayer(id: String) {
-		for playerView in playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }) {
+		for playerView in playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView })
+		{
 			playerView.set(current: playerView.player.id == id)
 		}
 	}

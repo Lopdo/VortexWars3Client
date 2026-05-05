@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://d32rqnxbwt36v"]
+[gd_scene format=3 uid="uid://cw8u31epmhhia"]
 
-[node name="MatchLobbyPlayer" type="MatchPlayerListPlayerView" node_paths=PackedStringArray("lbl_name", "lbl_current")]
+[node name="MatchPlayerListPlayerView" type="MatchPlayerListPlayerView" unique_id=2129565963 node_paths=PackedStringArray("lbl_name", "lbl_current")]
 lbl_name = NodePath("MarginContainer/HBoxContainer/LabelName")
 lbl_current = NodePath("MarginContainer/HBoxContainer/LabelCurrent")
 custom_minimum_size = Vector2(0, 80)
@@ -11,8 +11,9 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 0
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1786052355]
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -22,11 +23,11 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1747845273]
 layout_mode = 2
 
-[node name="LabelCurrent" type="Label" parent="MarginContainer/HBoxContainer"]
+[node name="LabelCurrent" type="Label" parent="MarginContainer/HBoxContainer" unique_id=2030692849]
 layout_mode = 2
 
-[node name="LabelName" type="Label" parent="MarginContainer/HBoxContainer"]
+[node name="LabelName" type="Label" parent="MarginContainer/HBoxContainer" unique_id=1453088409]
 layout_mode = 2

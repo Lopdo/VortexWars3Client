@@ -1,6 +1,6 @@
 import NonEmpty
 
-struct Region {
+struct MapRegion {
 	let id: Int
 	let tiles: NonEmpty<[MapCoord]>
 	let relativeTiles: NonEmpty<[RelMapCoord]>
@@ -17,7 +17,7 @@ struct Region {
 		self.id = id
 		self.tiles = tiles
 		
-		self.center = Region.findArmyCenter(tiles: tiles)
+		self.center = MapRegion.findArmyCenter(tiles: tiles)
 
 		let minX = tiles.min { $0.x < $1.x }.x
 		let minY = tiles.min { $0.y < $1.y }.y

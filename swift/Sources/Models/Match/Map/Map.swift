@@ -1,4 +1,5 @@
 import Foundation
+import NetworkModels
 import NonEmpty
 
 struct Map {
@@ -16,17 +17,33 @@ struct Map {
 	let width: Int
 	let height: Int
 
-	let regions: [Region]
+	let regions: [MatchRegion]
 
-	init(tiles: [Int], width: Int, height: Int) {
-		self.tiles = tiles
-		self.width = width
-		self.height = height
-		self.regions = Map.createRegions(from: tiles, width: width, height: height)
+	init(mapData: NMMatchMapData, players: [MatchPlayer]) {
+		self.tiles = mapData.tiles.map { Int($0) }
+		self.width = Int(mapData.width)
+		self.height = Int(mapData.height)
+
+		let mapRegions = Map.createRegions(from: tiles, width: width, height: height)
+
+		regions = mapRegions.map { mapRegion in
+			let mapDataRegion = mapData.regions.first(where: { $0.id == mapRegion.id })
+			let owner = players.first(where: { UInt8($0.index) == mapDataRegion?.ownerIndex })
+			return MatchRegion(
+				region: mapRegion, owner: owner, armyCount: Int(mapDataRegion?.dice ?? 0))
+		}
+
+		for region in regions {
+			if let mapDataRegion = mapData.regions.first(where: { $0.id == region.region.id }) {
+				region.neighbors = regions.filter {
+					mapDataRegion.neighbors.contains(UInt8($0.region.id))
+				}
+			}
+		}
 	}
-	
-	private static func createRegions(from tiles: [Int], width: Int, height: Int) -> [Region] {
-		var regions: [Region] = []
+
+	private static func createRegions(from tiles: [Int], width: Int, height: Int) -> [MapRegion] {
+		var regions: [MapRegion] = []
 		var visited: Set<MapCoord> = Set()
 
 		for y in 0..<height {
@@ -37,12 +54,12 @@ struct Map {
 				}
 
 				let tileValue = tiles[y * width + x]
-				
+
 				if tileValue == 0 {
 					visited.insert(coord)
 					continue
 				}
-				
+
 				var regionTiles: [MapCoord] = []
 				var toVisit: [MapCoord] = [coord]
 
@@ -55,16 +72,18 @@ struct Map {
 					regionTiles.append(current)
 
 					for dir in Direction.allCases {
-						if let neighbor = current.getNeighborCoord(dir: dir, mapWidth: width, mapHeight: height),
-						   tiles[neighbor.y * width + neighbor.x] == tileValue,
-						   !visited.contains(neighbor) {
+						if let neighbor = current.getNeighborCoord(
+							dir: dir, mapWidth: width, mapHeight: height),
+							tiles[neighbor.y * width + neighbor.x] == tileValue,
+							!visited.contains(neighbor)
+						{
 							toVisit.append(neighbor)
 						}
 					}
 				}
 
 				if let nonEmptyTiles = NonEmpty(rawValue: regionTiles) {
-					let region = Region(id: tileValue, tiles: nonEmptyTiles)
+					let region = MapRegion(id: tileValue, tiles: nonEmptyTiles)
 					regions.append(region)
 				}
 			}
@@ -74,7 +93,9 @@ struct Map {
 	}
 
 	func tile(at coord: MapCoord) -> Int {
-		assert(coord.x >= 0 || coord.x < width || coord.y >= 0 || coord.y < height, "Attempting to access tile outside of the bounds: \(coord)")
+		assert(
+			coord.x >= 0 || coord.x < width || coord.y >= 0 || coord.y < height,
+			"Attempting to access tile outside of the bounds: \(coord)")
 
 		return tiles[coord.y * width + coord.x]
 	}

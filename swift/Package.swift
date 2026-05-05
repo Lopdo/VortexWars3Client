@@ -4,33 +4,34 @@
 import PackageDescription
 
 let package = Package(
-    name: "VortexWars3",
-    products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "VortexWars3",
-            type: .dynamic,
-            targets: ["VortexWars3"]),
-    ],
-    dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main"),
-        .package(url: "https://github.com/Lopdo/VW3NetworkModels", exact: "0.0.24"),
-		.package(url: "https://github.com/pointfreeco/swift-nonempty.git", from: "0.3.0")
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "VortexWars3",
-            dependencies: [
-                .product(name: "SwiftGodot", package: "swiftgodot"),
-                .product(name: "NetworkModels", package: "VW3NetworkModels"),
+	name: "VortexWars3",
+	products: [
+		// Products define the executables and libraries a package produces, making them visible to other packages.
+		.library(
+			name: "VortexWars3",
+			type: .dynamic,
+			targets: ["VortexWars3"])
+	],
+	dependencies: [
+		.package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main"),
+		//.package(url: "https://github.com/Lopdo/VW3NetworkModels", exact: "0.0.24"),
+		.package(path: "../../network-models/"),
+		.package(url: "https://github.com/pointfreeco/swift-nonempty.git", from: "0.3.0"),
+	],
+	targets: [
+		// Targets are the basic building blocks of a package, defining a module or a test suite.
+		// Targets can depend on other targets in this package and products from dependencies.
+		.target(
+			name: "VortexWars3",
+			dependencies: [
+				.product(name: "SwiftGodot", package: "swiftgodot"),
+				.product(name: "NetworkModels", package: "network-models"),
 				.product(name: "NonEmpty", package: "swift-nonempty"),
-            ],
-            plugins: [                
-                .plugin(name: "EntryPointGeneratorPlugin", package: "swiftgodot")
-            ]
-        )
-    ],
-    swiftLanguageModes: [.v5]
+			],
+			plugins: [
+				.plugin(name: "EntryPointGeneratorPlugin", package: "swiftgodot")
+			]
+		)
+	],
+	swiftLanguageModes: [.v5]
 )

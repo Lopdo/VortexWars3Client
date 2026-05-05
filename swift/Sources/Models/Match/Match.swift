@@ -1,13 +1,14 @@
 import Foundation
+import NetworkModels
 
 class Match {
 	let map: Map
-	let regions: [MatchRegion]
+	//let regions: [MatchRegion]
 	let players: [MatchPlayer]
 
-	init(map: Map, players: [MatchPlayer]) {
-		self.map = map
-		self.regions = map.regions.map { MatchRegion(region: $0) }.sorted(by: { $0.region.id < $1.region.id })
+	init(mapData: NMMatchMapData, players: [MatchPlayer]) {
+		map = Map(mapData: mapData, players: players)
+
 		self.players = players
 	}
 
@@ -18,7 +19,7 @@ class Match {
 			return nil
 		}
 
-		return regions[tile - 1].owner
+		return map.regions[tile - 1].owner
 	}
 
 }
