@@ -93,18 +93,23 @@ final class MapView: Node2D {
 	private func renderMap() {
 		for region in match.map.regions {
 			let regionView = RegionView()
-			regionView.initialize(map: match.map, region: region.region, playerOwner: region.owner)
+			regionView.initialize(map: match.map, region: region.region)
 			addChild(node: regionView)
 			regionView.position = Vector2(
 				x: Float(region.region.position.x) * TileRenderInfo.width,
 				y: Float(region.region.position.y) * TileRenderInfo.rowHeight)
 
-			regionView.updateBorders(match: match)
+			region.regionView = regionView
 		}
 
 		// Place top layer views (like armies) after all regions are added
 		for regionView in getChildren().compactMap({ $0 as? RegionView }) {
 			regionView.placeTopLayerViews(to: self)
+		}
+
+		for matchRegion in match.map.regions {
+			matchRegion.regionView.set(owner: matchRegion.owner, match: match)
+			matchRegion.regionView.update(armySize: matchRegion.armySize)
 		}
 	}
 

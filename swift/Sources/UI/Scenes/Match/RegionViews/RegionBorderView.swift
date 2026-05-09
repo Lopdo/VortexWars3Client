@@ -7,8 +7,6 @@ class RegionBorderView: Node2D {
 	private var map: Map!
 	private var mapRegion: MapRegion!
 
-	var playerOwner: MatchPlayer?
-
 	private var borderLine: Line2D!
 	private var externalBorders: [Line2D] = []
 
@@ -18,19 +16,17 @@ class RegionBorderView: Node2D {
 	}
 
 	override func _ready() {
-		borderLine = createRegionBorder(map: map)
+		borderLine = createRegionBorder(map: map, owner: nil)
 		addChild(node: borderLine)
 	}
 
-	func updateBorders(match: Match) {
-		guard let owner = playerOwner else {
-			return
-		}
+	func updateBorders(match: Match, owner: MatchPlayer?) {
+		borderLine.defaultColor = owner?.color ?? .lightGray
 
 		externalBorders.forEach { removeChild(node: $0) }
 		externalBorders.removeAll()
 
-		var segments = getExternalBorderSegments(match: match)
+		var segments = getExternalBorderSegments(match: match, owner: owner)
 		var currentSegment = segments.removeFirst()
 		var linesPoints: [[Vector2]] = []
 		var linePoints: [Vector2] = []
@@ -90,7 +86,7 @@ class RegionBorderView: Node2D {
 			line.endCapMode = .box
 			line.beginCapMode = .box
 			line.width = 6
-			line.defaultColor = owner.borderColor
+			line.defaultColor = owner?.borderColor ?? .lightGray
 			for point in points {
 				line.addPoint(position: point)
 			}
@@ -99,7 +95,7 @@ class RegionBorderView: Node2D {
 		}
 	}
 
-	private func getExternalBorderSegments(match: Match) -> [BorderSegment] {
+	private func getExternalBorderSegments(match: Match, owner: MatchPlayer?) -> [BorderSegment] {
 		var segments: [BorderSegment] = []
 
 		for tile in mapRegion.tiles {
@@ -116,7 +112,7 @@ class RegionBorderView: Node2D {
 
 				if neighborCoord == nil || match.map.tile(at: neighborCoord!) == 0
 					|| (!mapRegion.tiles.contains(neighborCoord!)
-						&& match.owner(at: neighborCoord!) != playerOwner)
+						&& match.owner(at: neighborCoord!) != owner)
 				{
 					let startPoint = cornerVector + TileRenderInfo.points[dir]!.0
 					let endPoint = cornerVector + TileRenderInfo.points[dir]!.1
@@ -128,7 +124,7 @@ class RegionBorderView: Node2D {
 		return segments
 	}
 
-	private func createRegionBorder(map: Map) -> Line2D {
+	private func createRegionBorder(map: Map, owner: MatchPlayer?) -> Line2D {
 		let line = Line2D()
 		var segments = getBorderSegments(map: map)
 		//sort segments to form continuous lines
@@ -152,7 +148,7 @@ class RegionBorderView: Node2D {
 		} while !segments.isEmpty
 
 		line.addPoint(position: currentSegment.end)
-		line.defaultColor = playerOwner?.borderColor ?? Color.lightGray
+		line.defaultColor = owner?.borderColor ?? Color.lightGray
 		line.width = 2
 
 		return line

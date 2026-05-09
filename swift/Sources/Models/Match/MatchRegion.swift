@@ -6,11 +6,13 @@ class MatchRegion {
 
 	var owner: MatchPlayer?
 
-	var armyCount: Int
+	var armySize: Int
 
-	init(region: MapRegion, owner: MatchPlayer?, armyCount: Int) {
+	var regionView: RegionView!
+
+	init(region: MapRegion, owner: MatchPlayer?, armySize: Int) {
 		self.region = region
 		self.owner = owner
-		self.armyCount = armyCount
+		self.armySize = armySize
 	}
 }

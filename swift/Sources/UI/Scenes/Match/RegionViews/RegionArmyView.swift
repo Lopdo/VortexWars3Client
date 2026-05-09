@@ -5,6 +5,7 @@ import SwiftGodot
 final class RegionArmyView: Sprite2D {
 
 	let defaltFont = ThemeDB.fallbackFont
+	var armySize: String? = nil
 
 	override func _ready() {
 		texture = ResourceLoader.load(path: "res://res/img/army_logoElves.png") as? Texture2D
@@ -13,10 +14,20 @@ final class RegionArmyView: Sprite2D {
 		}
 	}
 
+	func set(race: String?) {
+		texture = ResourceLoader.load(path: "res://res/img/army_logoElves.png") as? Texture2D
+	}
+
+	func set(armySize: Int) {
+		self.armySize = String(armySize)
+	}
+
 	override func _draw() {
-		//drawRect(Rect2(position: Vector2(x: 22, y: 40), size: Vector2(x: 16, y: 10)), color: Color.white)
-		drawString(
-			font: defaltFont, pos: Vector2(x: 22, y: 32), text: "10", alignment: .center, width: 16,
-			fontSize: 11)
+		if let armySize {
+			drawString(
+				font: defaltFont, pos: Vector2(x: 22, y: 32), text: armySize, alignment: .center,
+				width: 16,
+				fontSize: 11)
+		}
 	}
 }

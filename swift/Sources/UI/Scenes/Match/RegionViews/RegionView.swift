@@ -7,16 +7,15 @@ class RegionView: Sprite2D {
 	private var map: Map!
 	var region: MapRegion!
 
-	unowned var playerOwner: MatchPlayer?
+	//unowned var playerOwner: MatchPlayer?
 
 	private var borderView: RegionBorderView!
 	private var bgView: RegionBGView!
 	var armyView: RegionArmyView!
 
-	func initialize(map: Map, region: MapRegion, playerOwner: MatchPlayer?) {
+	func initialize(map: Map, region: MapRegion) {
 		self.map = map
 		self.region = region
-		self.playerOwner = playerOwner
 	}
 
 	override func _ready() {
@@ -32,7 +31,7 @@ class RegionView: Sprite2D {
 		borderView.initialize(map: map, mapRegion: region)
 		maskView.addChild(node: borderView)
 
-		bgView.set(race: "", color: playerOwner?.color ?? Color.lightGray)
+		bgView.set(terrain: nil, color: .lightGray)
 
 		armyView = RegionArmyView()
 		//addChild(node: armyView)
@@ -40,8 +39,20 @@ class RegionView: Sprite2D {
 		setupMouseDetection()
 	}
 
-	func updateBorders(match: Match) {
-		borderView.updateBorders(match: match)
+	func set(owner: MatchPlayer?, match: Match) {
+		if let owner {
+			bgView.set(terrain: "", color: owner.color)
+			armyView.set(race: "")
+		} else {
+			bgView.set(terrain: nil, color: .lightGray)
+			armyView.set(race: nil)
+		}
+
+		borderView.updateBorders(match: match, owner: owner)
+	}
+
+	func update(armySize: Int) {
+		armyView.set(armySize: armySize)
 	}
 
 	func placeTopLayerViews(to node: Node) {
@@ -65,12 +76,11 @@ class RegionView: Sprite2D {
 	}
 
 	private func onMouseEntered() {
-		bgView.selfModulate =
-			playerOwner?.color.lightened(amount: 0.3) ?? Color.lightGray.lightened(amount: 0.3)
+		bgView.onMouseEntered()
 	}
 
 	private func onMouseExited() {
-		bgView.selfModulate = playerOwner?.color ?? Color.lightGray
+		bgView.onMouseExited()
 	}
 
 }

@@ -30,7 +30,7 @@ struct Map {
 			let mapDataRegion = mapData.regions.first(where: { $0.id == mapRegion.id })
 			let owner = players.first(where: { UInt8($0.index) == mapDataRegion?.ownerIndex })
 			return MatchRegion(
-				region: mapRegion, owner: owner, armyCount: Int(mapDataRegion?.dice ?? 0))
+				region: mapRegion, owner: owner, armySize: Int(mapDataRegion?.dice ?? 0))
 		}
 
 		for region in regions {
