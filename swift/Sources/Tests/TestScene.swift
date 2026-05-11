@@ -252,7 +252,9 @@ final class TestScene: Node {
 				//if let match = matchListDTO.matches.first {
 				joinMatch(matchId: match.id, user: currentUser!)
 			} else {
-				label.text = label.text + "\nMatch with name \(matchName) not found"
+				label.text = label.text + "\nMatch with name \(matchName) not found, retrying in 1s"
+				OS.delayMsec(1_000)
+				findMatch(name: matchName)
 			}
 
 		case .failure(let error):

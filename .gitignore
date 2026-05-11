@@ -5,6 +5,7 @@
 *.exe
 swift/.index-build
 swift/.build
+test_output/
 bin
 *.dll
 
