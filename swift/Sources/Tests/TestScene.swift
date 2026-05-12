@@ -271,7 +271,7 @@ final class TestScene: Node {
 			matchId: matchId,
 			user: user,
 			webSocketClient: webSocketClient!,
-			onJoinSuccess: { joinMsg in
+			onJoinSuccess: { (_, joinMsg) in
 				GD.print("Successfully joined match")
 				self.label.text = self.label.text + "\nSuccessfully joined match"
 				self.readyUp()
@@ -293,7 +293,7 @@ final class TestScene: Node {
 			settings: settings,
 			user: user,
 			webSocketClient: webSocketClient!,
-			onCreateSuccess: { joinMsg in
+			onCreateSuccess: { (_, joinMsg) in
 				GD.print("Successfully created match")
 				self.label.text = self.label.text + "\nSuccessfully created match"
 				self.readyUp()

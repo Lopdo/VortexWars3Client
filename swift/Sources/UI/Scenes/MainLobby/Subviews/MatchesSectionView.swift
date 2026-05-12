@@ -1,11 +1,9 @@
 import Foundation
-import SwiftGodot
 import NetworkModels
+import SwiftGodot
 
 @Godot
 final class MatchesSectionView: Control {
-	
-	private let client = WebSocketClient()
 
 	var user: User!
 
@@ -18,8 +16,6 @@ final class MatchesSectionView: Control {
 	var loadingIndicator: CanvasItem!
 
 	override func _ready() {
-		addChild(node: client)
-
 		loadingIndicator.hide()
 
 		onRefresh()
@@ -28,7 +24,7 @@ final class MatchesSectionView: Control {
 	@Callable
 	func onCreateMatchButtonPressed() {
 		GD.print("Create Match button pressed")
-		
+
 		createMatch()
 	}
 
@@ -53,18 +49,21 @@ final class MatchesSectionView: Control {
 		loadingIndicator.hide()
 
 		switch result {
-			case .success(let matchListDTO):
-				for match in matchListDTO.matches {
-					createMatchView(for: match)
-				}
-			case .failure(let error):
-				GD.print("An error occurred in the HTTP request: \(error)")
-				ErrorManager.showError(message: "An error occurred in the HTTP request. \(error.localizedDescription)")
+		case .success(let matchListDTO):
+			for match in matchListDTO.matches {
+				createMatchView(for: match)
+			}
+		case .failure(let error):
+			GD.print("An error occurred in the HTTP request: \(error)")
+			ErrorManager.showError(
+				message: "An error occurred in the HTTP request. \(error.localizedDescription)")
 		}
 	}
 
 	private func createMatchView(for match: MatchDTO) {
-		if let matchView = SceneLoader.load(path: "res://Screens/MainLobby/match_view.tscn") as? MatchView {
+		if let matchView = SceneLoader.load(path: "res://Screens/MainLobby/match_view.tscn")
+			as? MatchView
+		{
 			matchView.setup(with: match)
 			matchList.addChild(node: matchView)
 			matchView.pressed.connect {
@@ -74,6 +73,10 @@ final class MatchesSectionView: Control {
 	}
 
 	private func joinTapped(match: MatchDTO) {
+
+		let client = WebSocketClient()
+		addChild(node: client)
+
 		MatchService.joinMatch(
 			matchId: match.id,
 			user: user,
@@ -82,11 +85,16 @@ final class MatchesSectionView: Control {
 			onError: { error in
 				GD.print("Failed to join match: \(error)")
 				ErrorManager.showError(message: "Failed to join match: \(error)")
+				self.removeChild(node: client)
 			}
 		)
 	}
-	
+
 	private func createMatch() {
+
+		let client = WebSocketClient()
+		addChild(node: client)
+
 		MatchService.createMatch(
 			settings: NMMatchSettings(mapId: "", gameName: "Test match", maxPlayers: 4),
 			user: user,
@@ -95,15 +103,19 @@ final class MatchesSectionView: Control {
 			onError: { error in
 				GD.print("Failed to create match: \(error)")
 				ErrorManager.showError(message: "Failed to create match: \(error)")
+				self.removeChild(node: client)
 			}
 		)
 	}
-	
-	private func handleJoinSuccess(msg: NMMatchJoined) {
+
+	private func handleJoinSuccess(client: WebSocketClient, msg: NMMatchJoined) {
 		GD.print("Successfully joined match with ID: \(msg.id)")
-		if let lobby = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby.tscn") as? MatchLobby {
+		if let lobby = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby.tscn")
+			as? MatchLobby
+		{
 			lobby.initialize(ws: client, user: user, players: msg.players)
 			changeSceneToNode(node: lobby)
+			removeChild(node: client)
 		}
 	}
 }

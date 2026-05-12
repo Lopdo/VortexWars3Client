@@ -1,6 +1,6 @@
 import Foundation
-import SwiftGodot
 import NetworkModels
+import SwiftGodot
 
 enum MatchError: Error {
 	case authenticationFailed(String)
@@ -13,7 +13,7 @@ enum MatchError: Error {
 }
 
 struct MatchService {
-	
+
 	private static var binaryMsgHandlerToken: Callable?
 
 	static func joinMatch(
@@ -21,71 +21,81 @@ struct MatchService {
 		user: User,
 		webSocketClient: WebSocketClient,
 		onConnected: (() -> Void)? = nil,
-		onJoinSuccess: @escaping (NMMatchJoined) -> Void,
+		onJoinSuccess: @escaping (WebSocketClient, NMMatchJoined) -> Void,
 		onError: @escaping (MatchError) -> Void
 	) {
 		webSocketClient.connectedToServer.connect {
 			onConnected?()
 			sendJoinMatchAuth(user: user, webSocketClient: webSocketClient, onError: onError)
 		}
-		
+
 		webSocketClient.connectionClosed.connect {
 			onError(.connectionClosed)
 		}
-		
+
 		binaryMsgHandlerToken = webSocketClient.dataReceived.connect { data in
 			handleJoinMatchMessage(
 				data: data,
 				webSocketClient: webSocketClient,
-				onJoinSuccess: onJoinSuccess,
+				onJoinSuccess: { msg in onJoinSuccess(webSocketClient, msg) },
 				onError: onError
 			)
 		}
-		
+
 		let url = "ws://127.0.0.1:8080/match/join?id=\(matchId)"
 		let result = webSocketClient.connectTo(url: url)
 		if result != .ok {
-			onError(.networkError(NSError(domain: "MatchService", code: Int(result.rawValue), userInfo: [NSLocalizedDescriptionKey: "Failed to connect to WebSocket"])))
+			onError(
+				.networkError(
+					NSError(
+						domain: "MatchService", code: Int(result.rawValue),
+						userInfo: [NSLocalizedDescriptionKey: "Failed to connect to WebSocket"])))
 		}
 	}
-	
+
 	static func createMatch(
 		settings: NMMatchSettings,
 		user: User,
 		webSocketClient: WebSocketClient,
 		onConnected: (() -> Void)? = nil,
-		onCreateSuccess: @escaping (NMMatchJoined) -> Void,
+		onCreateSuccess: @escaping (WebSocketClient, NMMatchJoined) -> Void,
 		onError: @escaping (MatchError) -> Void
 	) {
 		webSocketClient.connectedToServer.connect {
 			onConnected?()
 			sendCreateMatchAuth(user: user, webSocketClient: webSocketClient, onError: onError)
 		}
-		
+
 		webSocketClient.connectionClosed.connect {
 			onError(.connectionClosed)
 		}
-		
+
 		binaryMsgHandlerToken = webSocketClient.dataReceived.connect { data in
 			handleCreateMatchMessage(
 				settings: settings,
 				data: data,
 				webSocketClient: webSocketClient,
-				onCreateSuccess: onCreateSuccess,
+				onCreateSuccess: { msg in onCreateSuccess(webSocketClient, msg) },
 				onError: onError
 			)
 		}
-		
+
 		let url = "ws://127.0.0.1:8080/match/create"
 		let result = webSocketClient.connectTo(url: url)
 		if result != .ok {
-			onError(.networkError(NSError(domain: "MatchService", code: Int(result.rawValue), userInfo: [NSLocalizedDescriptionKey: "Failed to connect to WebSocket"])))
+			onError(
+				.networkError(
+					NSError(
+						domain: "MatchService", code: Int(result.rawValue),
+						userInfo: [NSLocalizedDescriptionKey: "Failed to connect to WebSocket"])))
 		}
 	}
-	
-	private static func sendJoinMatchAuth(user: User, webSocketClient: WebSocketClient, onError: @escaping (MatchError) -> Void) {
+
+	private static func sendJoinMatchAuth(
+		user: User, webSocketClient: WebSocketClient, onError: @escaping (MatchError) -> Void
+	) {
 		let auth = NMPlayerAuth(playerId: user.player.id, authToken: user.sessionToken)
-		
+
 		do {
 			let data = try NMEncoder.encode(auth)
 			try webSocketClient.send(data: data)
@@ -95,10 +105,12 @@ struct MatchService {
 			onError(.networkError(error))
 		}
 	}
-	
-	private static func sendCreateMatchAuth(user: User, webSocketClient: WebSocketClient, onError: @escaping (MatchError) -> Void) {
+
+	private static func sendCreateMatchAuth(
+		user: User, webSocketClient: WebSocketClient, onError: @escaping (MatchError) -> Void
+	) {
 		let auth = NMPlayerAuth(playerId: user.player.id, authToken: user.sessionToken)
-		
+
 		do {
 			let data = try NMEncoder.encode(auth)
 			try webSocketClient.send(data: data)
@@ -108,7 +120,7 @@ struct MatchService {
 			onError(.networkError(error))
 		}
 	}
-	
+
 	private static func handleJoinMatchMessage(
 		data: PackedByteArray,
 		webSocketClient: WebSocketClient,
@@ -117,7 +129,7 @@ struct MatchService {
 	) {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
-			
+
 			switch message {
 			case let msg as NMPlayerAuthResult:
 				if msg.success {
@@ -128,14 +140,17 @@ struct MatchService {
 					GD.print("Join match auth failed: \(msg.message ?? "Unknown error")")
 					onError(.authenticationFailed(msg.message ?? "Unknown error"))
 				}
-				
+
 			case let msg as NMMatchJoined:
 				GD.print("Successfully joined match: \(msg.id)")
 				if let binaryMsgHandlerToken {
 					webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
 				}
 				onJoinSuccess(msg)
-				
+			case is NMMatchAlreadyStarted:
+				GD.print("Match already started")
+				onError(.matchJoinFailed(String(describing: message)))
+
 			default:
 				GD.print("Received unexpected message in join match: \(type(of: message))")
 				onError(.unknownMessage(String(describing: message)))
@@ -145,7 +160,7 @@ struct MatchService {
 			onError(.decodingError(error))
 		}
 	}
-	
+
 	private static func handleCreateMatchMessage(
 		settings: NMMatchSettings,
 		data: PackedByteArray,
@@ -155,24 +170,25 @@ struct MatchService {
 	) {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
-			
+
 			switch message {
 			case let msg as NMPlayerAuthResult:
 				if msg.success {
 					GD.print("Create match auth successful")
-					sendCreateMatchRequest(settings: settings, webSocketClient: webSocketClient, onError: onError)
+					sendCreateMatchRequest(
+						settings: settings, webSocketClient: webSocketClient, onError: onError)
 				} else {
 					GD.print("Create match auth failed: \(msg.message ?? "Unknown error")")
 					onError(.authenticationFailed(msg.message ?? "Unknown error"))
 				}
-				
+
 			case let msg as NMMatchJoined:
 				GD.print("Successfully created match: \(msg.id)")
 				if let binaryMsgHandlerToken {
 					webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
 				}
 				onCreateSuccess(msg)
-				
+
 			default:
 				GD.print("Received unexpected message in create match: \(type(of: message))")
 				onError(.unknownMessage(String(describing: message)))
@@ -182,10 +198,13 @@ struct MatchService {
 			onError(.decodingError(error))
 		}
 	}
-	
-	private static func sendCreateMatchRequest(settings: NMMatchSettings, webSocketClient: WebSocketClient, onError: @escaping (MatchError) -> Void) {
+
+	private static func sendCreateMatchRequest(
+		settings: NMMatchSettings, webSocketClient: WebSocketClient,
+		onError: @escaping (MatchError) -> Void
+	) {
 		let createMatchMsg = NMCreateMatch(settings: settings)
-		
+
 		do {
 			let data = try NMEncoder.encode(createMatchMsg)
 			try webSocketClient.send(data: data)
