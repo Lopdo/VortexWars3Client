@@ -31,7 +31,7 @@ class RegionView: Sprite2D {
 		borderView.initialize(map: map, mapRegion: region)
 		maskView.addChild(node: borderView)
 
-		bgView.set(terrain: nil, color: .lightGray)
+		bgView.set(terrain: 0, color: .lightGray)
 
 		armyView = RegionArmyView()
 		//addChild(node: armyView)
@@ -41,10 +41,10 @@ class RegionView: Sprite2D {
 
 	func set(owner: MatchPlayer?, match: Match) {
 		if let owner {
-			bgView.set(terrain: "", color: owner.color)
-			armyView.set(race: "")
+			bgView.set(terrain: owner.terrain, color: owner.color)
+			armyView.set(race: owner.race)
 		} else {
-			bgView.set(terrain: nil, color: .lightGray)
+			bgView.set(terrain: 0, color: .lightGray)
 			armyView.set(race: nil)
 		}
 

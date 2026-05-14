@@ -5,6 +5,9 @@ import SwiftGodot
 class MatchPlayer {
 	let id: String
 	let index: Int
+	let name: String
+	let race: Int
+	let terrain: Int
 
 	var color: Color {
 		MatchPlayer.colors[index]
@@ -13,14 +16,12 @@ class MatchPlayer {
 		MatchPlayer.borderColors[index]
 	}
 
-	init(index: Int) {
-		self.index = index
-		self.id = UUID().uuidString
-	}
-
 	init(nmMatchPlayer: NMMatchPlayer) {
 		self.index = Int(nmMatchPlayer.index)
 		id = nmMatchPlayer.id
+		self.name = nmMatchPlayer.name
+		self.race = Int(nmMatchPlayer.race)
+		self.terrain = Int(nmMatchPlayer.terrain)
 	}
 }
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3eq3fm3062qc"
-path="res://.godot/imported/terrain_insectoids.jpg-08d2f0909821809f5e9b059802d9d614.ctex"
+uid="uid://c3o368f0dgm6j"
+path="res://.godot/imported/terrain_0.png-58910fc139e6615af4965d85d7ba4136.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://res/img/terrain_insectoids.jpg"
-dest_files=["res://.godot/imported/terrain_insectoids.jpg-08d2f0909821809f5e9b059802d9d614.ctex"]
+source_file="res://res/img/terrain_0.png"
+dest_files=["res://.godot/imported/terrain_0.png-58910fc139e6615af4965d85d7ba4136.ctex"]
 
 [params]
 

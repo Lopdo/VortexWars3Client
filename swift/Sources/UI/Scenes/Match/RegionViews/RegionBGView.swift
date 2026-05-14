@@ -24,9 +24,9 @@ final class RegionBGView: TextureRect {
 				y: Float(region.size.height) * TileRenderInfo.rowHeight + 100))
 	}
 
-	func set(terrain: String?, color: Color) {
+	func set(terrain: Int, color: Color) {
 		// Additional configuration logic can be added here
-		texture = GD.load(path: "res://res/img/terrain_pumpkins.jpg") as? Texture2D
+		texture = GD.load(path: "res://res/img/terrain_\(terrain).png") as? Texture2D
 
 		ownerColor = color
 		selfModulate = color

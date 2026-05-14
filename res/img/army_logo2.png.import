@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dnm0asyiucyct"
-path="res://.godot/imported/army_logoAliens.png-05455e3622eb36db5431580e0c51c405.ctex"
+path="res://.godot/imported/army_logo2.png-aea67bc24769f1d144e3ab10cc793f8f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://res/img/army_logoAliens.png"
-dest_files=["res://.godot/imported/army_logoAliens.png-05455e3622eb36db5431580e0c51c405.ctex"]
+source_file="res://res/img/army_logo2.png"
+dest_files=["res://.godot/imported/army_logo2.png-aea67bc24769f1d144e3ab10cc793f8f.ctex"]
 
 [params]
 

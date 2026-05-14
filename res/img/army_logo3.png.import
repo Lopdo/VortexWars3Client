@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b50usdqic2fxn"
-path="res://.godot/imported/terrain_pumpkins.jpg-13b54c2316957d9cdd5bd5b457d60575.ctex"
+uid="uid://bwqlnribcdc4g"
+path="res://.godot/imported/army_logo3.png-1a2a7bcf0f39043aa953e77d6d798c56.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://res/img/terrain_pumpkins.jpg"
-dest_files=["res://.godot/imported/terrain_pumpkins.jpg-13b54c2316957d9cdd5bd5b457d60575.ctex"]
+source_file="res://res/img/army_logo3.png"
+dest_files=["res://.godot/imported/army_logo3.png-1a2a7bcf0f39043aa953e77d6d798c56.ctex"]
 
 [params]
 

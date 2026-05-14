@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cmnqxt4laqhag"
-path="res://.godot/imported/army_logoElves.png-3d0e61a38c797f64120c357f743c9433.ctex"
+uid="uid://c01ynmcea185b"
+path="res://.godot/imported/terrain_1.png-46ecbf7affdacaaedf5f553dc7be3d0c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://res/img/army_logoElves.png"
-dest_files=["res://.godot/imported/army_logoElves.png-3d0e61a38c797f64120c357f743c9433.ctex"]
+source_file="res://res/img/terrain_1.png"
+dest_files=["res://.godot/imported/terrain_1.png-46ecbf7affdacaaedf5f553dc7be3d0c.ctex"]
 
 [params]
 
