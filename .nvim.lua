@@ -1,26 +1,6 @@
-local root_dir = vim.fn.getcwd()
-local output_dir = root_dir .. "/test_output"
-local scene = "Test/test_scene.tscn"
-local godot = "godot"
+local output_dir = vim.fn.getcwd() .. "/test_output"
 
--- ===== SCENARIO DEFINITIONS =====
-local scenarios = {
-    ["2p"] = {
-        desc = "Two players",
-        cmds = {
-            godot .. " " .. scene .. " -- -p=lopdo -m=test -a=cm -pc=2",
-            godot .. " " .. scene .. " -- -p=lopdo2 -m=test -a=jm",
-        },
-    },
-    ["3players"] = {
-        desc = "Three players",
-        cmds = {
-            godot .. " " .. scene .. " -- -p=lopdo -m=test -a=cm -pc=3",
-            godot .. " " .. scene .. " -- -p=player2 -m=test -a=jm",
-            godot .. " " .. scene .. " -- -p=player3 -m=test -a=jm",
-        },
-    },
-}
+local scenarios = dofile(vim.fn.getcwd() .. "/scenarios.lua")
 
 local function run_scenario(scenario)
     local s = scenarios[scenario]
@@ -36,10 +16,10 @@ local function run_scenario(scenario)
     vim.notify(("Scenario [%s] starting %d instances..."):format(scenario, total), vim.log.levels.INFO)
 
     for i, cmd in ipairs(s.cmds) do
-        local parts = vim.fn.split(cmd, " ")
         local logfile = output_dir .. ("/player_%d.log"):format(i - 1)
+        local shell_cmd = cmd .. " > " .. logfile .. " 2>&1"
 
-        vim.fn.jobstart(parts, {
+        vim.fn.jobstart({"bash", "-c", shell_cmd}, {
             on_exit = function(_, exit_code)
                 done = done + 1
                 if exit_code ~= 0 then
@@ -53,8 +33,6 @@ local function run_scenario(scenario)
                     end
                 end
             end,
-            stdout_buffered = true,
-            stderr_buffered = true,
         })
     end
 end
