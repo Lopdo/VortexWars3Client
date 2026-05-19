@@ -17,6 +17,8 @@ final class TestScene: Node {
 	var playerCount = 1
 	var readyPlayerCount = 0
 
+	private var goToLobby: Bool = false
+
 	private var currentUser: User?
 	private var webSocketClient: WebSocketClient?
 
@@ -79,6 +81,12 @@ final class TestScene: Node {
 						playerCount = count
 					} else {
 						print("Error: non-integer value in playerCount parameter: \(value)")
+					}
+				case "lobby":
+					if let lobby = Bool(value) {
+						goToLobby = lobby
+					} else {
+						print("Error: non-bool value in lobby parameter: \(value)")
 					}
 				default:
 					print("Unknown flag: \(flag)")
@@ -271,11 +279,7 @@ final class TestScene: Node {
 			matchId: matchId,
 			user: user,
 			webSocketClient: webSocketClient!,
-			onJoinSuccess: { (_, joinMsg) in
-				GD.print("Successfully joined match")
-				self.label.text = self.label.text + "\nSuccessfully joined match"
-				self.readyUp()
-			},
+			onJoinSuccess: handleJoinSuccess,
 			onError: { error in
 				GD.print("Failed to join match: \(error)")
 				self.label.text = self.label.text + "\nFailed to join match: \(error)"
@@ -293,11 +297,7 @@ final class TestScene: Node {
 			settings: settings,
 			user: user,
 			webSocketClient: webSocketClient!,
-			onCreateSuccess: { (_, joinMsg) in
-				GD.print("Successfully created match")
-				self.label.text = self.label.text + "\nSuccessfully created match"
-				self.readyUp()
-			},
+			onCreateSuccess: handleJoinSuccess,
 			onError: { error in
 				GD.print("Failed to create match: \(error)")
 				self.label.text = self.label.text + "\nFailed to create match: \(error)"
@@ -346,6 +346,30 @@ final class TestScene: Node {
 		} else {
 			GD.print("Failed to load MainLobby scene")
 			ErrorManager.showError(message: "Failed to load MainLobby scene")
+		}
+	}
+
+	private func handleJoinSuccess(client: WebSocketClient, msg: NMMatchJoined) {
+		if goToLobby {
+			goToLobby(msg: msg)
+		} else {
+			GD.print("Successfully joined match")
+			self.label.text = self.label.text + "\nSuccessfully joined match"
+			readyUp()
+		}
+	}
+
+	private func goToLobby(msg: NMMatchJoined) {
+		GD.print("Successfully joined match with ID: \(msg.id)")
+		if let lobby = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby.tscn")
+			as? MatchLobby
+		{
+			lobby.initialize(ws: webSocketClient!, user: currentUser!, players: msg.players)
+			changeSceneToNode(node: lobby)
+			removeChild(node: webSocketClient!)
+			if let binaryMsgHandlerToken {
+				webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)
+			}
 		}
 	}
 }

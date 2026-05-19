@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://d2f4onc0yuic7"]
 
-[node name="MatchLobbyPlayer" type="MatchLobbyPlayerView" node_paths=PackedStringArray("lbl_name", "lbl_ready")]
+[node name="MatchLobbyPlayer" type="MatchLobbyPlayerView" unique_id=1414636933 node_paths=PackedStringArray("img_race", "lbl_name", "lbl_ready")]
+img_race = NodePath("MarginContainer/HBoxContainer/TextureRect")
 lbl_name = NodePath("MarginContainer/HBoxContainer/LabelName")
 lbl_ready = NodePath("MarginContainer/HBoxContainer/LabelReady")
 custom_minimum_size = Vector2(0, 80)
@@ -13,7 +14,7 @@ offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1028103911]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -24,11 +25,15 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1625615123]
 layout_mode = 2
 
-[node name="LabelName" type="Label" parent="MarginContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer" unique_id=1038627124]
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 
-[node name="LabelReady" type="Label" parent="MarginContainer/HBoxContainer"]
+[node name="LabelName" type="Label" parent="MarginContainer/HBoxContainer" unique_id=1603649721]
+layout_mode = 2
+
+[node name="LabelReady" type="Label" parent="MarginContainer/HBoxContainer" unique_id=1492655914]
 layout_mode = 2

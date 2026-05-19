@@ -26,36 +26,6 @@ final class MapView: Node2D {
 
 	func set(match: Match) {
 		self.match = match
-		// For testing purposes, create a simple map
-		/*let tiles: [Int] = [
-				0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0,
-				0, 1, 1, 1, 2, 2, 2, 0, 0, 7, 7, 7, 7, 7, 0,
-				0, 1, 1, 1, 2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 0,
-				1, 1, 1, 2, 2, 2, 2, 2, 7, 7, 7, 7, 7, 0, 0,
-				1, 1, 1, 1, 2, 2, 2, 2, 2, 5, 5, 7, 7, 0, 0,
-				1, 1, 1, 3, 2, 2, 5, 5, 5, 5, 5, 7, 0, 0, 0,
-				1, 1, 3, 3, 3, 3, 5, 5, 5, 5, 5, 0, 0, 0, 0,
-				0, 3, 3, 3, 3, 3, 4, 5, 5, 5, 5, 5, 0, 0, 0,
-				0, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 0, 0,
-				0, 0, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 6, 0, 0,
-				0, 0, 3, 3, 3, 4, 4, 4, 4, 6, 6, 6, 6, 0, 0,
-				0, 3, 3, 3, 0, 0, 4, 4, 4, 6, 6, 6, 6, 0, 0,
-				0, 0, 3, 3, 0, 0, 0, 0, 6, 6, 6, 6, 6, 0, 0,
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0,
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-				*/
-		/*let map = Map(
-			tiles: mapData.tiles.map { Int($0) },
-			width: Int(mapData.width),
-			height: Int(mapData.height))
-		
-		match = Match(map: map, players: players)
-		
-		match.regions[0].owner = players[0]
-		match.regions[2].owner = players[0]
-		match.regions[1].owner = players[1]
-		match.regions[3].owner = players[1]
-		*/
 	}
 
 	override func _process(delta: Double) {

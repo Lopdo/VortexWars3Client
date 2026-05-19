@@ -1,10 +1,13 @@
 import Foundation
-import SwiftGodot
 import NetworkModels
+import SwiftGodot
 
 @Godot
 final class MatchLobbyPlayerView: Control {
-	
+
+	@Export
+	var imgRace: TextureRect!
+
 	@Export
 	var lblName: Label!
 
@@ -17,8 +20,10 @@ final class MatchLobbyPlayerView: Control {
 		self.player = player
 		updateName()
 		set(ready: player.isReady)
+		set(race: player.race)
+		set(terrain: player.terrain)
 	}
-	
+
 	func set(ready: Bool) {
 		player.isReady = ready
 		lblReady.text = ready ? "Ready" : "Not ready"
@@ -27,6 +32,15 @@ final class MatchLobbyPlayerView: Control {
 	func set(isCook: Bool) {
 		player.isCook = isCook
 		updateName()
+	}
+
+	func set(race: Int) {
+		let resName = "army_logo\(race)"
+		imgRace.texture = ResourceLoader.load(path: "res://res/img/\(resName).png") as? Texture2D
+	}
+
+	func set(terrain: Int) {
+
 	}
 
 	private func updateName() {

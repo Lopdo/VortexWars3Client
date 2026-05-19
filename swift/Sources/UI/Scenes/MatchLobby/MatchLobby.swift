@@ -6,6 +6,9 @@ import SwiftGodot
 final class MatchLobby: Node {
 
 	@Export
+	var playerInfoView: MatchLobbyPlayerInfoView!
+
+	@Export
 	var playerList: VBoxContainer!
 
 	@Export
@@ -41,9 +44,13 @@ final class MatchLobby: Node {
 		}
 		buttonStart.hide()
 		buttonStart.disabled = true
-		if players.first(where: { $0.id == user.player.id })?.isCook == true {
-			buttonStart.show()
+		if let myMatchPlayer = players.first(where: { $0.id == user.player.id }) {
+			if myMatchPlayer.isCook {
+				buttonStart.show()
+			}
 		}
+
+		playerInfoView.initialize(with: user.player, wsClient: wsClient)
 	}
 
 	private func handleBinaryMessage(data: PackedByteArray) {
@@ -68,6 +75,11 @@ final class MatchLobby: Node {
 			case is NMMatchAlreadyStarted:
 				//TODO: show popup
 				GD.print("Match already started")
+			case let msg as NMRaceChanged:
+				updateRace(playerId: msg.playerId, race: Int(msg.newRace))
+			case let msg as NMTerrainChanged:
+				updateTerrain(playerId: msg.playerId, terrain: Int(msg.newTerrain))
+
 			default:
 				GD.print("Received unsupported binary message type \(message)")
 			}
@@ -107,6 +119,18 @@ final class MatchLobby: Node {
 			playerView.set(ready: isReady)
 		}
 		updateStartButton()
+	}
+
+	private func updateRace(playerId: String, race: Int) {
+		if let playerView = playerView(for: playerId) {
+			playerView.set(race: race)
+		}
+	}
+
+	private func updateTerrain(playerId: String, terrain: Int) {
+		if let playerView = playerView(for: playerId) {
+			playerView.set(terrain: terrain)
+		}
 	}
 
 	private func updateCook(newCookId: String) {
@@ -171,10 +195,12 @@ final class MatchLobby: Node {
 		if let match = SceneLoader.load(path: "res://Screens/Match/match_screen.tscn")
 			as? MatchScreen
 		{
-			changeSceneToNode(node: match)
 			match.initialize(
 				settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer,
 				mapData: msg.mapData, ws: wsClient)
+
+			changeSceneToNode(node: match)
+
 			if let binaryMessageHandler {
 				wsClient.dataReceived.disconnect(binaryMessageHandler)
 			}
