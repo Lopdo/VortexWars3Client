@@ -5,10 +5,8 @@ import SwiftGodot
 @Godot
 final class MatchLobbyPlayerInfoView: Control {
 
-	private var race: Int = 1
-	private let raceCount: Int = 3
-	private var terrain: Int = 1
-	private let terrainCount: Int = 2
+	private var raceIndex: Int = 1
+	private var terrainIndex: Int = 1
 
 	private var wsClient: WebSocketClient!
 	private var player: Player!
@@ -21,16 +19,16 @@ final class MatchLobbyPlayerInfoView: Control {
 
 	@Callable
 	func onNextRace() {
-		race = (race + 1) % raceCount
+		raceIndex = (raceIndex + 1) % player.unlockedRaces.count
 		updateRaceTexture()
 		saveRaceSelection()
 	}
 
 	@Callable
 	func onPrevRace() {
-		race -= 1
-		if race < 0 {
-			race = raceCount - 1
+		raceIndex -= 1
+		if raceIndex < 0 {
+			raceIndex = player.unlockedRaces.count - 1
 		}
 		updateRaceTexture()
 		saveRaceSelection()
@@ -38,24 +36,25 @@ final class MatchLobbyPlayerInfoView: Control {
 
 	@Callable
 	func onNextTerrain() {
-		terrain = (terrain + 1) % terrainCount
+		terrainIndex = (terrainIndex + 1) % player.unlockedTerrains.count
+
 		updateTerrainTexture()
 		saveTerrainSelection()
 	}
 
 	@Callable
 	func onPrevTerrain() {
-		terrain -= 1
-		if terrain < 0 {
-			terrain = terrainCount - 1
+		terrainIndex -= 1
+		if terrainIndex < 0 {
+			terrainIndex = player.unlockedTerrains.count - 1
 		}
 		updateTerrainTexture()
 		saveTerrainSelection()
 	}
 
 	func initialize(with player: Player, wsClient: WebSocketClient) {
-		terrain = player.terrain
-		race = player.race
+		terrainIndex = player.terrain
+		raceIndex = player.race
 		self.wsClient = wsClient
 		self.player = player
 	}
@@ -66,19 +65,19 @@ final class MatchLobbyPlayerInfoView: Control {
 	}
 
 	private func updateRaceTexture() {
-		let resName = "army_logo\(race)"
+		let resName = "army_logo\(player.unlockedRaces[raceIndex])"
 		imgRace.texture = ResourceLoader.load(path: "res://res/img/\(resName).png") as? Texture2D
 	}
 
 	private func updateTerrainTexture() {
-		let resName = "terrain_\(terrain)"
+		let resName = "terrain_\(player.unlockedTerrains[terrainIndex])"
 		imgTerrain.texture = ResourceLoader.load(path: "res://res/img/\(resName).png") as? Texture2D
 	}
 
 	private func saveRaceSelection() {
-		player.race = race
+		player.race = player.unlockedRaces[raceIndex]
 		do {
-			let msg = NMChangeRace(newRace: UInt8(race))
+			let msg = NMChangeRace(newRace: UInt8(player.race))
 			let data = try NMEncoder.encode(msg)
 			try wsClient.send(data: data)
 		} catch {
@@ -88,9 +87,9 @@ final class MatchLobbyPlayerInfoView: Control {
 	}
 
 	private func saveTerrainSelection() {
-		player.terrain = terrain
+		player.terrain = player.unlockedTerrains[terrainIndex]
 		do {
-			let msg = NMChangeTerrain(newTerrain: UInt8(terrain))
+			let msg = NMChangeTerrain(newTerrain: UInt8(player.terrain))
 			let data = try NMEncoder.encode(msg)
 			try wsClient.send(data: data)
 		} catch {

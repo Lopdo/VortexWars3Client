@@ -7,6 +7,8 @@ struct PlayerDTO {
 	let experience: Int
 	let race: Int
 	let terrain: Int
+	let unlockedRaces: [Int]
+	let unlockedTerrains: [Int]
 }
 
 extension PlayerDTO: Decodable {
@@ -17,6 +19,8 @@ extension PlayerDTO: Decodable {
 		case experience
 		case race
 		case terrain
+		case unlockedRaces
+		case unlockedTerrains
 	}
 }
 

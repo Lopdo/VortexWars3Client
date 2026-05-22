@@ -9,14 +9,19 @@ final class Player {
 	var race: Int
 	var terrain: Int
 
-	init(from dto: PlayerDTO) {
-		self.id = dto.id
-		self.name = dto.name
-		self.level = dto.level
-		self.experience = dto.experience
+	var unlockedRaces: [Int]
+	var unlockedTerrains: [Int]
 
-		self.race = dto.race
-		self.terrain = dto.terrain
+	init(from dto: PlayerDTO) {
+		id = dto.id
+		name = dto.name
+		level = dto.level
+		experience = dto.experience
+
+		race = dto.race
+		terrain = dto.terrain
+		unlockedRaces = dto.unlockedRaces
+		unlockedTerrains = dto.unlockedTerrains
 	}
 }
 
