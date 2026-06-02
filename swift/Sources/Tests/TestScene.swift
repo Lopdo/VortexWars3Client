@@ -308,8 +308,7 @@ final class TestScene: Node {
 	func readyUp() {
 		do {
 			let auth = NMMatchPlayerChangeReadyStatus(ready: true)
-			let data = try NMEncoder.encode(auth)
-			try webSocketClient?.send(data: data)
+			try webSocketClient?.send(message: auth)
 		} catch {
 			//TODO: add error handling
 			GD.print("Failed to send message NMMatchPlayerChangeReadyStatus")
@@ -321,9 +320,7 @@ final class TestScene: Node {
 
 	func startGame() {
 		do {
-			let start = NMMatchStartRequested()
-			let data = try NMEncoder.encode(start)
-			try webSocketClient?.send(data: data)
+			try webSocketClient?.send(message: NMMatchStartRequested())
 		} catch {
 			//TODO: add error handling
 			GD.print("Failed to send message NMMatchPlayerChangeReadyStatus")

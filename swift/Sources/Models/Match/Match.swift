@@ -116,8 +116,7 @@ extension Match {
 						let battleMsg = NMMatchBattleInitiated(
 							attackerRegionId: UInt8(sourceRegion.id),
 							targetRegionId: UInt8(region.id))
-						let data = try NMEncoder.encode(battleMsg)
-						try ws.send(data: data)
+						try ws.send(message: battleMsg)
 						state = .myTurn(.combatInitiated(sourceRegion, region))
 					} catch {
 						//TODO: add error handling

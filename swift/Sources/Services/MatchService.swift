@@ -97,11 +97,10 @@ struct MatchService {
 		let auth = NMPlayerAuth(playerId: user.player.id, authToken: user.sessionToken)
 
 		do {
-			let data = try NMEncoder.encode(auth)
-			try webSocketClient.send(data: data)
+			try webSocketClient.send(message: auth)
 			GD.print("Sent join match auth")
 		} catch {
-			GD.print("Failed to encode NMPlayerAuth: \(error)")
+			GD.print("Failed to send NMPlayerAuth: \(error)")
 			onError(.networkError(error))
 		}
 	}
@@ -112,11 +111,10 @@ struct MatchService {
 		let auth = NMPlayerAuth(playerId: user.player.id, authToken: user.sessionToken)
 
 		do {
-			let data = try NMEncoder.encode(auth)
-			try webSocketClient.send(data: data)
+			try webSocketClient.send(message: auth)
 			GD.print("Sent create match auth")
 		} catch {
-			GD.print("Failed to encode NMPlayerAuth: \(error)")
+			GD.print("Failed to send NMPlayerAuth: \(error)")
 			onError(.networkError(error))
 		}
 	}
@@ -134,8 +132,7 @@ struct MatchService {
 			case let msg as NMPlayerAuthResult:
 				if msg.success {
 					GD.print("Join match auth successful")
-					let ackData = try NMEncoder.encode(NMPlayerAuthAck())
-					try webSocketClient.send(data: ackData)
+					try webSocketClient.send(message: NMPlayerAuthAck())
 				} else {
 					GD.print("Join match auth failed: \(msg.message ?? "Unknown error")")
 					onError(.authenticationFailed(msg.message ?? "Unknown error"))
@@ -206,8 +203,7 @@ struct MatchService {
 		let createMatchMsg = NMCreateMatch(settings: settings)
 
 		do {
-			let data = try NMEncoder.encode(createMatchMsg)
-			try webSocketClient.send(data: data)
+			try webSocketClient.send(message: createMatchMsg)
 			GD.print("Sent create match request")
 		} catch {
 			GD.print("Failed to encode NMCreateMatch: \(error)")
