@@ -196,6 +196,7 @@ final class MatchLobby: Node {
 			as? MatchScreen
 		{
 			match.initialize(
+				user: user,
 				settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer,
 				mapData: msg.mapData, ws: wsClient)
 

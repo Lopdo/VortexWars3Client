@@ -335,6 +335,7 @@ final class TestScene: Node {
 			as? MatchScreen
 		{
 			match.initialize(
+				user: currentUser!,
 				settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer,
 				mapData: msg.mapData, ws: webSocketClient!)
 

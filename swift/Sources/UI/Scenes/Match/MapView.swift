@@ -63,6 +63,7 @@ final class MapView: Node2D {
 	private func renderMap() {
 		for region in match.map.regions {
 			let regionView = RegionView()
+			regionView.onMouseClick = match.onRegionClicked
 			regionView.initialize(map: match.map, region: region.region)
 			addChild(node: regionView)
 			regionView.position = Vector2(
@@ -78,8 +79,9 @@ final class MapView: Node2D {
 		}
 
 		for matchRegion in match.map.regions {
-			matchRegion.regionView.set(owner: matchRegion.owner, match: match)
+			matchRegion.regionView.set(owner: matchRegion.owner)
 			matchRegion.regionView.update(armySize: matchRegion.armySize)
+			matchRegion.regionView.updateBorders(map: match.map, owner: matchRegion.owner)
 		}
 	}
 

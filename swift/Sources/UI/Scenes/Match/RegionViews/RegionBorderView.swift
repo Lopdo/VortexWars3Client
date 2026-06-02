@@ -20,13 +20,13 @@ class RegionBorderView: Node2D {
 		addChild(node: borderLine)
 	}
 
-	func updateBorders(match: Match, owner: MatchPlayer?) {
+	func updateBorders(map: Map, owner: MatchPlayer?) {
 		borderLine.defaultColor = owner?.color ?? .lightGray
 
 		externalBorders.forEach { removeChild(node: $0) }
 		externalBorders.removeAll()
 
-		var segments = getExternalBorderSegments(match: match, owner: owner)
+		var segments = getExternalBorderSegments(map: map, owner: owner)
 		var currentSegment = segments.removeFirst()
 		var linesPoints: [[Vector2]] = []
 		var linePoints: [Vector2] = []
@@ -95,7 +95,7 @@ class RegionBorderView: Node2D {
 		}
 	}
 
-	private func getExternalBorderSegments(match: Match, owner: MatchPlayer?) -> [BorderSegment] {
+	private func getExternalBorderSegments(map: Map, owner: MatchPlayer?) -> [BorderSegment] {
 		var segments: [BorderSegment] = []
 
 		for tile in mapRegion.tiles {
@@ -108,11 +108,11 @@ class RegionBorderView: Node2D {
 
 			for dir in Map.Direction.allCases {
 				let neighborCoord = tile.getNeighborCoord(
-					dir: dir, mapWidth: match.map.width, mapHeight: match.map.height)
+					dir: dir, mapWidth: map.width, mapHeight: map.height)
 
-				if neighborCoord == nil || match.map.tile(at: neighborCoord!) == 0
+				if neighborCoord == nil || map.tile(at: neighborCoord!) == 0
 					|| (!mapRegion.tiles.contains(neighborCoord!)
-						&& match.owner(at: neighborCoord!) != owner)
+						&& map.owner(at: neighborCoord!) != owner)
 				{
 					let startPoint = cornerVector + TileRenderInfo.points[dir]!.0
 					let endPoint = cornerVector + TileRenderInfo.points[dir]!.1

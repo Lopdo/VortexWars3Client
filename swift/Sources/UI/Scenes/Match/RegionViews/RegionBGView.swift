@@ -6,6 +6,17 @@ final class RegionBGView: TextureRect {
 
 	var ownerColor: Color = .lightGray
 
+	var isSelected: Bool = false {
+		didSet {
+			updateState()
+		}
+	}
+	var isHighlighted: Bool = false {
+		didSet {
+			updateState()
+		}
+	}
+
 	override func _ready() {
 		stretchMode = .tile
 	}
@@ -32,11 +43,14 @@ final class RegionBGView: TextureRect {
 		selfModulate = color
 	}
 
-	func onMouseEntered() {
-		selfModulate = ownerColor.lightened(amount: 0.3)
+	private func updateState() {
+		if isSelected {
+			selfModulate = ownerColor.lightened(amount: 0.5)
+		} else if isHighlighted {
+			selfModulate = ownerColor.lightened(amount: 0.3)
+		} else {
+			selfModulate = ownerColor
+		}
 	}
 
-	func onMouseExited() {
-		selfModulate = ownerColor
-	}
 }

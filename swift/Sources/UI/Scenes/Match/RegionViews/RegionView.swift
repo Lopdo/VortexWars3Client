@@ -7,11 +7,17 @@ class RegionView: Sprite2D {
 	private var map: Map!
 	var region: MapRegion!
 
-	//unowned var playerOwner: MatchPlayer?
-
 	private var borderView: RegionBorderView!
 	private var bgView: RegionBGView!
 	var armyView: RegionArmyView!
+
+	var isSelected: Bool = false {
+		didSet {
+			bgView.isSelected = isSelected
+		}
+	}
+
+	var onMouseClick: ((Int) -> Void)?
 
 	func initialize(map: Map, region: MapRegion) {
 		self.map = map
@@ -34,12 +40,11 @@ class RegionView: Sprite2D {
 		bgView.set(terrain: 0, color: .lightGray)
 
 		armyView = RegionArmyView()
-		//addChild(node: armyView)
 
 		setupMouseDetection()
 	}
 
-	func set(owner: MatchPlayer?, match: Match) {
+	func set(owner: MatchPlayer?) {
 		if let owner {
 			bgView.set(terrain: owner.terrain, color: owner.color)
 			armyView.set(race: owner.race)
@@ -47,12 +52,14 @@ class RegionView: Sprite2D {
 			bgView.set(terrain: 0, color: .lightGray)
 			armyView.set(race: nil)
 		}
-
-		borderView.updateBorders(match: match, owner: owner)
 	}
 
 	func update(armySize: Int) {
 		armyView.set(armySize: armySize)
+	}
+
+	func updateBorders(map: Map, owner: MatchPlayer?) {
+		borderView.updateBorders(map: map, owner: owner)
 	}
 
 	func placeTopLayerViews(to node: Node) {
@@ -73,14 +80,35 @@ class RegionView: Sprite2D {
 
 		area.mouseEntered.connect(onMouseEntered)
 		area.mouseExited.connect(onMouseExited)
+		area.inputEvent.connect(onInput)
 	}
 
 	private func onMouseEntered() {
-		bgView.onMouseEntered()
+		bgView.isHighlighted = true
 	}
 
 	private func onMouseExited() {
-		bgView.onMouseExited()
+		bgView.isHighlighted = false
 	}
 
+	private let clickRange = 5.0
+	private var mouseDownPosition: Vector2?
+
+	private func onInput(viewport: Node?, event: InputEvent?, shapeIdx: Int64) {
+		if let mouseEvent = event as? InputEventMouseButton {
+			if mouseEvent.buttonIndex == .left {
+				if mouseEvent.pressed {
+					mouseDownPosition = mouseEvent.position
+				} else {
+					if let mouseDownPosition,
+						mouseEvent.position.distanceTo(mouseDownPosition) < clickRange
+					{
+						onMouseClick?(region.id)
+						self.mouseDownPosition = nil
+					}
+				}
+			}
+
+		}
+	}
 }

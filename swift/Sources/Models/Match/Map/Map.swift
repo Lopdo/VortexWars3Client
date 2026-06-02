@@ -93,6 +93,16 @@ struct Map {
 		return regions
 	}
 
+	func owner(at coord: MapCoord) -> MatchPlayer? {
+		let tile = tile(at: coord)
+
+		if tile == 0 {
+			return nil
+		}
+
+		return regions[tile - 1].owner
+	}
+
 	func tile(at coord: MapCoord) -> Int {
 		assert(
 			coord.x >= 0 || coord.x < width || coord.y >= 0 || coord.y < height,
