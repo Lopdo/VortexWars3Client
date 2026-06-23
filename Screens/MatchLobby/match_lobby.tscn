@@ -21,8 +21,8 @@ size_flags_horizontal = 3
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=713648676]
 layout_mode = 2
 
-[node name="MatchLobbyPlayerInfoView" type="MatchLobbyPlayerInfoView" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2007939155 node_paths=PackedStringArray("img_race", "img_terrain")]
-img_race = NodePath("VBoxContainer/RaceSelectionContainer/TextureRect")
+[node name="MatchLobbyPlayerInfoView" type="MatchLobbyPlayerInfoView" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2007939155 node_paths=PackedStringArray("img_faction", "img_terrain")]
+img_faction = NodePath("VBoxContainer/FactionSelectionContainer/TextureRect")
 img_terrain = NodePath("VBoxContainer/TerrainSelectionContainer/TextureRect")
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
@@ -35,24 +35,23 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="RaceSelectionContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer" unique_id=491768370]
+[node name="FactionSelectionContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer" unique_id=491768370]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/RaceSelectionContainer" unique_id=528452063]
+[node name="Button" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/FactionSelectionContainer" unique_id=528452063]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 text = "<
 "
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/RaceSelectionContainer" unique_id=599260251]
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/FactionSelectionContainer" unique_id=599260251]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 
-[node name="Button2" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/RaceSelectionContainer" unique_id=1326824833]
+[node name="Button2" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/FactionSelectionContainer" unique_id=1326824833]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 text = ">
-
 "
 
 [node name="TerrainSelectionContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer" unique_id=798910061]
@@ -72,7 +71,6 @@ layout_mode = 2
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 text = ">
-
 "
 
 [node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1756583111]
@@ -158,8 +156,8 @@ text = "Leave match"
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/RaceSelectionContainer/Button" to="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView" method="onPrevRace"]
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/RaceSelectionContainer/Button2" to="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView" method="onNextRace"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/FactionSelectionContainer/Button" to="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView" method="onPrevFaction"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/FactionSelectionContainer/Button2" to="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView" method="onNextFaction"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/TerrainSelectionContainer/Button" to="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView" method="onPrevTerrain"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView/VBoxContainer/TerrainSelectionContainer/Button2" to="HBoxContainer/VBoxContainer/HBoxContainer/MatchLobbyPlayerInfoView" method="onNextTerrain"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer2/HBoxContainer/ButtonStart" to="." method="onStart"]

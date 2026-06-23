@@ -75,8 +75,8 @@ final class MatchLobby: Node {
 			case is NMMatchAlreadyStarted:
 				//TODO: show popup
 				GD.print("Match already started")
-			case let msg as NMRaceChanged:
-				updateRace(playerId: msg.playerId, race: Int(msg.newRace))
+			case let msg as NMFactionChanged:
+				updateFaction(playerId: msg.playerId, faction: Int(msg.newFaction))
 			case let msg as NMTerrainChanged:
 				updateTerrain(playerId: msg.playerId, terrain: Int(msg.newTerrain))
 
@@ -121,9 +121,9 @@ final class MatchLobby: Node {
 		updateStartButton()
 	}
 
-	private func updateRace(playerId: String, race: Int) {
+	private func updateFaction(playerId: String, faction: Int) {
 		if let playerView = playerView(for: playerId) {
-			playerView.set(race: race)
+			playerView.set(faction: faction)
 		}
 	}
 

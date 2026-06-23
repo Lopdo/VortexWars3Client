@@ -6,7 +6,7 @@ class MatchPlayer {
 	let id: String
 	let index: Int
 	let name: String
-	let race: Int
+	let faction: Int
 	let terrain: Int
 
 	var color: Color {
@@ -20,7 +20,7 @@ class MatchPlayer {
 		self.index = Int(nmMatchPlayer.index)
 		id = nmMatchPlayer.id
 		self.name = nmMatchPlayer.name
-		self.race = Int(nmMatchPlayer.race)
+		self.faction = Int(nmMatchPlayer.faction)
 		self.terrain = Int(nmMatchPlayer.terrain)
 	}
 }

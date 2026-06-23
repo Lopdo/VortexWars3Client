@@ -47,10 +47,10 @@ class RegionView: Sprite2D {
 	func set(owner: MatchPlayer?) {
 		if let owner {
 			bgView.set(terrain: owner.terrain, color: owner.color)
-			armyView.set(race: owner.race)
+			armyView.set(faction: owner.faction)
 		} else {
 			bgView.set(terrain: 0, color: .lightGray)
-			armyView.set(race: nil)
+			armyView.set(faction: nil)
 		}
 	}
 

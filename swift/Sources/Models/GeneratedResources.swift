@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct Race: Sendable {
+public struct Faction: Sendable {
 	public let id: Int
 	public let name: String
 	public let isFree: Bool
@@ -27,10 +27,10 @@ public struct Terrain: Sendable {
 	}
 }
 
-public let races: [Race] = [
-	Race(id: 0, name: "Race 1", isFree: true),
-	Race(id: 1, name: "Race 2", isFree: true),
-	Race(id: 2, name: "Race 3", isFree: false),
+public let factions: [Faction] = [
+	Faction(id: 0, name: "Faction 1", isFree: true),
+	Faction(id: 1, name: "Faction 2", isFree: true),
+	Faction(id: 2, name: "Faction 3", isFree: false),
 ]
 
 public let terrains: [Terrain] = [

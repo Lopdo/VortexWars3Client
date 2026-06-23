@@ -6,10 +6,10 @@ final class Player {
 	let level: Int
 	let experience: Int
 
-	var race: Int
+	var faction: Int
 	var terrain: Int
 
-	var unlockedRaces: [Int]
+	var unlockedFactions: [Int]
 	var unlockedTerrains: [Int]
 
 	init(from dto: PlayerDTO) {
@@ -18,10 +18,9 @@ final class Player {
 		level = dto.level
 		experience = dto.experience
 
-		race = dto.race
+		faction = dto.faction
 		terrain = dto.terrain
-		unlockedRaces = dto.unlockedRaces
+		unlockedFactions = dto.unlockedFactions
 		unlockedTerrains = dto.unlockedTerrains
 	}
 }
-

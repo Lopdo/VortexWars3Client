@@ -14,10 +14,10 @@ final class RegionArmyView: Sprite2D {
 		}
 	}
 
-	func set(race: Int?) {
+	func set(faction: Int?) {
 		let resName: String
-		if let race {
-			resName = "army_logo\(race)"
+		if let faction {
+			resName = "army_logo\(faction)"
 		} else {
 			resName = "army_logoEmpty"
 		}

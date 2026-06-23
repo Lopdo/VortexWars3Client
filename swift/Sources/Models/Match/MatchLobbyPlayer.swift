@@ -5,7 +5,7 @@ struct MatchLobbyPlayer {
 	let id: String
 	let name: String
 
-	var race: Int
+	var faction: Int
 	var terrain: Int
 
 	var isReady: Bool
@@ -14,7 +14,7 @@ struct MatchLobbyPlayer {
 	init(from player: NMMatchLobbyPlayer) {
 		id = player.id
 		name = player.name
-		race = Int(player.race)
+		faction = Int(player.faction)
 		terrain = 0
 
 		isReady = false

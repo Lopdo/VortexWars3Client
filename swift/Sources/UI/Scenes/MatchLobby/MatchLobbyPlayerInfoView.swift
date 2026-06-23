@@ -5,33 +5,33 @@ import SwiftGodot
 @Godot
 final class MatchLobbyPlayerInfoView: Control {
 
-	private var raceIndex: Int = 1
+	private var factionIndex: Int = 1
 	private var terrainIndex: Int = 1
 
 	private var wsClient: WebSocketClient!
 	private var player: Player!
 
 	@Export
-	var imgRace: TextureRect!
+	var imgFaction: TextureRect!
 
 	@Export
 	var imgTerrain: TextureRect!
 
 	@Callable
-	func onNextRace() {
-		raceIndex = (raceIndex + 1) % player.unlockedRaces.count
-		updateRaceTexture()
-		saveRaceSelection()
+	func onNextFaction() {
+		factionIndex = (factionIndex + 1) % player.unlockedFactions.count
+		updateFactionTexture()
+		saveFactionSelection()
 	}
 
 	@Callable
-	func onPrevRace() {
-		raceIndex -= 1
-		if raceIndex < 0 {
-			raceIndex = player.unlockedRaces.count - 1
+	func onPrevFaction() {
+		factionIndex -= 1
+		if factionIndex < 0 {
+			factionIndex = player.unlockedFactions.count - 1
 		}
-		updateRaceTexture()
-		saveRaceSelection()
+		updateFactionTexture()
+		saveFactionSelection()
 	}
 
 	@Callable
@@ -54,19 +54,19 @@ final class MatchLobbyPlayerInfoView: Control {
 
 	func initialize(with player: Player, wsClient: WebSocketClient) {
 		terrainIndex = player.terrain
-		raceIndex = player.race
+		factionIndex = player.faction
 		self.wsClient = wsClient
 		self.player = player
 	}
 
 	override func _ready() {
-		updateRaceTexture()
+		updateFactionTexture()
 		updateTerrainTexture()
 	}
 
-	private func updateRaceTexture() {
-		let resName = "army_logo\(player.unlockedRaces[raceIndex])"
-		imgRace.texture = ResourceLoader.load(path: "res://res/img/\(resName).png") as? Texture2D
+	private func updateFactionTexture() {
+		let resName = "army_logo\(player.unlockedFactions[factionIndex])"
+		imgFaction.texture = ResourceLoader.load(path: "res://res/img/\(resName).png") as? Texture2D
 	}
 
 	private func updateTerrainTexture() {
@@ -74,15 +74,15 @@ final class MatchLobbyPlayerInfoView: Control {
 		imgTerrain.texture = ResourceLoader.load(path: "res://res/img/\(resName).png") as? Texture2D
 	}
 
-	private func saveRaceSelection() {
-		player.race = player.unlockedRaces[raceIndex]
+	private func saveFactionSelection() {
+		player.faction = player.unlockedFactions[factionIndex]
 		do {
-			let msg = NMChangeRace(newRace: UInt8(player.race))
+			let msg = NMChangeFaction(newFaction: UInt8(player.faction))
 			let data = try NMEncoder.encode(msg)
 			try wsClient.send(data: data)
 		} catch {
 			//TODO: add error handling
-			GD.print("Failed to send message NMChangeRace")
+			GD.print("Failed to send message NMChangeFaction")
 		}
 	}
 

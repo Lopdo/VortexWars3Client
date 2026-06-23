@@ -6,7 +6,7 @@ import SwiftGodot
 final class MatchLobbyPlayerView: Control {
 
 	@Export
-	var imgRace: TextureRect!
+	var imgFaction: TextureRect!
 
 	@Export
 	var lblName: Label!
@@ -20,7 +20,7 @@ final class MatchLobbyPlayerView: Control {
 		self.player = player
 		updateName()
 		set(ready: player.isReady)
-		set(race: player.race)
+		set(faction: player.faction)
 		set(terrain: player.terrain)
 	}
 
@@ -34,9 +34,9 @@ final class MatchLobbyPlayerView: Control {
 		updateName()
 	}
 
-	func set(race: Int) {
-		let resName = "army_logo\(race)"
-		imgRace.texture = ResourceLoader.load(path: "res://res/img/\(resName).png") as? Texture2D
+	func set(faction: Int) {
+		let resName = "army_logo\(faction)"
+		imgFaction.texture = ResourceLoader.load(path: "res://res/img/\(resName).png") as? Texture2D
 	}
 
 	func set(terrain: Int) {

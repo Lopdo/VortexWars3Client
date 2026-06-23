@@ -5,9 +5,9 @@ struct PlayerDTO {
 	let name: String
 	let level: Int
 	let experience: Int
-	let race: Int
+	let faction: Int
 	let terrain: Int
-	let unlockedRaces: [Int]
+	let unlockedFactions: [Int]
 	let unlockedTerrains: [Int]
 }
 
@@ -17,10 +17,9 @@ extension PlayerDTO: Decodable {
 		case name
 		case level
 		case experience
-		case race
+		case faction
 		case terrain
-		case unlockedRaces
+		case unlockedFactions
 		case unlockedTerrains
 	}
 }
-

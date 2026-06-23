@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://d2f4onc0yuic7"]
 
-[node name="MatchLobbyPlayer" type="MatchLobbyPlayerView" unique_id=1414636933 node_paths=PackedStringArray("img_race", "lbl_name", "lbl_ready")]
-img_race = NodePath("MarginContainer/HBoxContainer/TextureRect")
+[node name="MatchLobbyPlayer" type="MatchLobbyPlayerView" unique_id=1414636933 node_paths=PackedStringArray("img_faction", "lbl_name", "lbl_ready")]
+img_faction = NodePath("MarginContainer/HBoxContainer/TextureRect")
 lbl_name = NodePath("MarginContainer/HBoxContainer/LabelName")
 lbl_ready = NodePath("MarginContainer/HBoxContainer/LabelReady")
 custom_minimum_size = Vector2(0, 80)
