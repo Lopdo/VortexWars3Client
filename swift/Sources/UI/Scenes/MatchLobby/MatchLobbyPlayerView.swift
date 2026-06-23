@@ -35,7 +35,7 @@ final class MatchLobbyPlayerView: Control {
 	}
 
 	func set(faction: Int) {
-		let resName = "army_logo\(faction)"
+		let resName = "faction_logo\(faction)"
 		imgFaction.texture = ResourceLoader.load(path: "res://res/img/\(resName).png") as? Texture2D
 	}
 

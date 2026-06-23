@@ -7,18 +7,18 @@ class MatchRegion {
 	var id: Int { region.id }
 	var owner: MatchPlayer?
 
-	var armySize: Int {
+	var dice: Int {
 		didSet {
-			regionView.update(armySize: armySize)
+			regionView.update(dice: dice)
 		}
 	}
 
 	var regionView: RegionView!
 
-	init(region: MapRegion, owner: MatchPlayer?, armySize: Int) {
+	init(region: MapRegion, owner: MatchPlayer?, dice: Int) {
 		self.region = region
 		self.owner = owner
-		self.armySize = armySize
+		self.dice = dice
 	}
 
 	func updateBorders(map: Map, owner: MatchPlayer?) {
@@ -31,6 +31,6 @@ class MatchRegion {
 
 extension MatchRegion: CustomDebugStringConvertible {
 	public var debugDescription: String {
-		"\n\(id): \(owner?.index ?? 50); army: \(armySize); neighbors: \(neighbors.map(\.id))"
+		"\n\(id): \(owner?.index ?? 50); dice: \(dice); neighbors: \(neighbors.map(\.id))"
 	}
 }

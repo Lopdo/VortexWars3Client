@@ -65,7 +65,7 @@ final class MatchLobbyPlayerInfoView: Control {
 	}
 
 	private func updateFactionTexture() {
-		let resName = "army_logo\(player.unlockedFactions[factionIndex])"
+		let resName = "faction_logo\(player.unlockedFactions[factionIndex])"
 		imgFaction.texture = ResourceLoader.load(path: "res://res/img/\(resName).png") as? Texture2D
 	}
 

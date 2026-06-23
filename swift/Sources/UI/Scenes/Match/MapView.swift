@@ -73,14 +73,14 @@ final class MapView: Node2D {
 			region.regionView = regionView
 		}
 
-		// Place top layer views (like armies) after all regions are added
+		// Place top layer views (like dice) after all regions are added
 		for regionView in getChildren().compactMap({ $0 as? RegionView }) {
 			regionView.placeTopLayerViews(to: self)
 		}
 
 		for matchRegion in match.map.regions {
 			matchRegion.regionView.set(owner: matchRegion.owner)
-			matchRegion.regionView.update(armySize: matchRegion.armySize)
+			matchRegion.regionView.update(dice: matchRegion.dice)
 			matchRegion.regionView.updateBorders(map: match.map, owner: matchRegion.owner)
 		}
 	}

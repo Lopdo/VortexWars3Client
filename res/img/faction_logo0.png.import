@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnm0asyiucyct"
-path="res://.godot/imported/army_logo2.png-aea67bc24769f1d144e3ab10cc793f8f.ctex"
+uid="uid://ddttqmwji1tgn"
+path="res://.godot/imported/faction_logo0.png-1a6bc3038615115db5bcfc9b852151c0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://res/img/army_logo2.png"
-dest_files=["res://.godot/imported/army_logo2.png-aea67bc24769f1d144e3ab10cc793f8f.ctex"]
+source_file="res://res/img/faction_logo0.png"
+dest_files=["res://.godot/imported/faction_logo0.png-1a6bc3038615115db5bcfc9b852151c0.ctex"]
 
 [params]
 

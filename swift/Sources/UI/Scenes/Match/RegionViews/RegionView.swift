@@ -9,7 +9,7 @@ class RegionView: Sprite2D {
 
 	private var borderView: RegionBorderView!
 	private var bgView: RegionBGView!
-	var armyView: RegionArmyView!
+	var factionView: RegionFactionView!
 
 	var isSelected: Bool = false {
 		didSet {
@@ -39,7 +39,7 @@ class RegionView: Sprite2D {
 
 		bgView.set(terrain: 0, color: .lightGray)
 
-		armyView = RegionArmyView()
+		factionView = RegionFactionView()
 
 		setupMouseDetection()
 	}
@@ -47,15 +47,15 @@ class RegionView: Sprite2D {
 	func set(owner: MatchPlayer?) {
 		if let owner {
 			bgView.set(terrain: owner.terrain, color: owner.color)
-			armyView.set(faction: owner.faction)
+			factionView.set(faction: owner.faction)
 		} else {
 			bgView.set(terrain: 0, color: .lightGray)
-			armyView.set(faction: nil)
+			factionView.set(faction: nil)
 		}
 	}
 
-	func update(armySize: Int) {
-		armyView.set(armySize: armySize)
+	func update(dice: Int) {
+		factionView.set(dice: dice)
 	}
 
 	func updateBorders(map: Map, owner: MatchPlayer?) {
@@ -63,15 +63,15 @@ class RegionView: Sprite2D {
 	}
 
 	func placeTopLayerViews(to node: Node) {
-		node.addChild(node: armyView)
+		node.addChild(node: factionView)
 		let offsetX = region.center.y % 2 == 0 ? 0.0 : TileRenderInfo.width / 2
-		let armyPosX =
+		let dicePosX =
 			Float(region.center.x) * TileRenderInfo.width + TileRenderInfo.width / 2
-			+ offsetX - armyView.texture!.getSize().x / 2
-		let armyPosY =
+			+ offsetX - factionView.texture!.getSize().x / 2
+		let dicePosY =
 			Float(region.center.y) * TileRenderInfo.rowHeight + TileRenderInfo.rowHeight / 2
-			- armyView.texture!.getSize().y / 2
-		armyView.position = Vector2(x: armyPosX, y: armyPosY)
+			- factionView.texture!.getSize().y / 2
+		factionView.position = Vector2(x: dicePosX, y: dicePosY)
 	}
 
 	private func setupMouseDetection() {

@@ -134,8 +134,8 @@ extension Match {
 	func applyBattleResults(msg: NMMatchBattleResults) {
 		let attackerRegion = map.regions[Int(msg.attackerRegionId) - 1]
 		let defenderRegion = map.regions[Int(msg.defenderRegionId) - 1]
-		attackerRegion.armySize = Int(msg.newAttackerDice)
-		defenderRegion.armySize = Int(msg.newDefenderDice)
+		attackerRegion.dice = Int(msg.newAttackerDice)
+		defenderRegion.dice = Int(msg.newDefenderDice)
 		let newOwner = players[Int(msg.newDefenderOwnerIndex)]
 		defenderRegion.owner = newOwner
 		defenderRegion.regionView.set(owner: newOwner)
