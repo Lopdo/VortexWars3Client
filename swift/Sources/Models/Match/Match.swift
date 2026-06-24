@@ -60,13 +60,13 @@ extension Match {
 		// cleanup selections and other stuff
 		if case .myTurn(let turnState) = state {
 			switch turnState {
-			case .targetSelection(let sourceRegion):
-				sourceRegion.regionView.isSelected = false
-			case .combatInitiated(let sourceRegion, let targetRegion):
-				sourceRegion.regionView.isSelected = false
-				targetRegion.regionView.isSelected = false
-			default:
-				break
+				case .targetSelection(let sourceRegion):
+					sourceRegion.regionView.isSelected = false
+				case .combatInitiated(let sourceRegion, let targetRegion):
+					sourceRegion.regionView.isSelected = false
+					targetRegion.regionView.isSelected = false
+				default:
+					break
 			}
 		}
 
@@ -90,18 +90,18 @@ extension Match {
 	private func myRegionClicked(_ region: MatchRegion) {
 		if case .myTurn(let turnState) = state {
 			switch turnState {
-			case .attackerSelection:
-				region.regionView.isSelected = true
-				state = .myTurn(.targetSelection(region))
-			case .targetSelection(let oldRegion):
-				oldRegion.regionView.isSelected = false
-				region.regionView.isSelected = true
-				state = .myTurn(.targetSelection(region))
-			case .reinforcementSelection:
-				//TODO:
-				break
-			default:
-				break
+				case .attackerSelection:
+					region.regionView.isSelected = true
+					state = .myTurn(.targetSelection(region))
+				case .targetSelection(let oldRegion):
+					oldRegion.regionView.isSelected = false
+					region.regionView.isSelected = true
+					state = .myTurn(.targetSelection(region))
+				case .reinforcementSelection:
+					//TODO:
+					break
+				default:
+					break
 			}
 		}
 	}
@@ -109,29 +109,75 @@ extension Match {
 	private func enemyRegionClicked(_ region: MatchRegion) {
 		if case .myTurn(let turnState) = state {
 			switch turnState {
-			case .targetSelection(let sourceRegion):
-				region.regionView.isSelected = true
-				Task {
-					do {
-						let battleMsg = NMMatchBattleInitiated(
-							attackerRegionId: UInt8(sourceRegion.id),
-							targetRegionId: UInt8(region.id))
-						try ws.send(message: battleMsg)
-						state = .myTurn(.combatInitiated(sourceRegion, region))
-					} catch {
-						//TODO: add error handling
-						GD.print("Failed to send message NMMatchEndTurn")
-						region.regionView.isSelected = false
+				case .targetSelection(let sourceRegion):
+					region.regionView.isSelected = true
+					Task {
+						do {
+							let battleMsg = NMMatchBattleInitiated(
+								attackerRegionId: UInt8(sourceRegion.id),
+								targetRegionId: UInt8(region.id))
+							try ws.send(message: battleMsg)
+							state = .myTurn(.combatInitiated(sourceRegion, region))
+						} catch {
+							//TODO: add error handling
+							GD.print("Failed to send message NMMatchEndTurn")
+							region.regionView.isSelected = false
+						}
 					}
-				}
 
-			default:
-				break
+				default:
+					break
 			}
 		}
 	}
 
-	func applyBattleResults(msg: NMMatchBattleResults) {
+	func startBattle(using msg: NMMatchBattleResults) {
+
+		switch state {
+			case .enemyTurn(let turnState):
+				if turnState == .idle {
+					let attackerRegion = map.regions[Int(msg.attackerRegionId) - 1]
+					let defenderRegion = map.regions[Int(msg.defenderRegionId) - 1]
+					attackerRegion.regionView.isSelected = true
+					defenderRegion.regionView.isSelected = true
+				}
+			case .myTurn(let turnState):
+				switch turnState {
+					case .combatInitiated(_, _):
+						state = .myTurn(.combatInProgress)
+						break
+					default:
+						break
+				}
+			default:
+				break
+		}
+
+		Task {
+			try? await Task.sleep(for: .seconds(2))
+			Callable({ _ in
+
+				switch self.state {
+					case .myTurn(let turnState):
+						switch turnState {
+							case .combatInProgress:
+								self.state = .myTurn(.attackerSelection)
+							default:
+								break
+						}
+					default:
+						break
+				}
+
+				self.applyBattleResults(msg: msg)
+
+				return nil
+			})
+			.callDeferred()
+		}
+	}
+
+	private func applyBattleResults(msg: NMMatchBattleResults) {
 		let attackerRegion = map.regions[Int(msg.attackerRegionId) - 1]
 		let defenderRegion = map.regions[Int(msg.defenderRegionId) - 1]
 		attackerRegion.dice = Int(msg.newAttackerDice)
@@ -141,33 +187,8 @@ extension Match {
 		defenderRegion.regionView.set(owner: newOwner)
 		defenderRegion.updateBorders(map: map, owner: newOwner)
 
-		switch state {
-		case .enemyTurn(let turnState):
-			if turnState == .idle {
-				attackerRegion.regionView.isSelected = true
-				defenderRegion.regionView.isSelected = true
-			}
-		case .myTurn(let turnState):
-			switch turnState {
-			case .combatInitiated(_, _):
-				break
-			default:
-				break
-			}
-		default:
-			break
-		}
-
-		Task {
-
-			try? await Task.sleep(for: .seconds(2))
-			Callable({ _ in
-				attackerRegion.regionView.isSelected = false
-				defenderRegion.regionView.isSelected = false
-				return nil
-			})
-			.callDeferred()
-		}
+		attackerRegion.regionView.isSelected = false
+		defenderRegion.regionView.isSelected = false
 	}
 }
 

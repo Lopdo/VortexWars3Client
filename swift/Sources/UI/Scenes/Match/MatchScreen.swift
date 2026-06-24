@@ -9,6 +9,9 @@ final class MatchScreen: Node {
 	var mapContainer: SubViewport!
 
 	@Export
+	var viewBattle: MatchBattleView!
+
+	@Export
 	var playerListView: MatchPlayerListView!
 
 	@Export
@@ -31,6 +34,8 @@ final class MatchScreen: Node {
 		binaryMessageHandler = ws.dataReceived.connect(handleBinaryMessage)
 		ws.getParent()?.removeChild(node: ws)
 		addChild(node: ws)
+
+		viewBattle.hide()
 	}
 
 	func initialize(
@@ -90,18 +95,18 @@ final class MatchScreen: Node {
 			let message = try NMDecoder.decode(data.asBytes())
 			GD.print("MatchScreen message received: \(message)")
 			switch message {
-			/*case let msg as NMMatchPlayerLeft:
-				//remove(playerId: msg.playerId)
-				break
-			case let msg as NMMatchTurnEnded:
-				//TODO:
-				break*/
-			case let msg as NMMatchNewTurnStarted:
-				newTurnStarted(newPlayerId: msg.playerId)
-			case let msg as NMMatchBattleResults:
-				handleBattleResults(msg: msg)
-			default:
-				GD.print("Received unsupported binary message type \(message)")
+				/*case let msg as NMMatchPlayerLeft:
+					//remove(playerId: msg.playerId)
+					break
+				case let msg as NMMatchTurnEnded:
+					//TODO:
+					break*/
+				case let msg as NMMatchNewTurnStarted:
+					newTurnStarted(newPlayerId: msg.playerId)
+				case let msg as NMMatchBattleResults:
+					handleBattleResults(msg: msg)
+				default:
+					GD.print("Received unsupported binary message type \(message)")
 			}
 		} catch {
 			GD.print("Failed to decode binary message: \(error)")
@@ -119,7 +124,8 @@ final class MatchScreen: Node {
 	}
 
 	private func handleBattleResults(msg: NMMatchBattleResults) {
-		match.applyBattleResults(msg: msg)
+		match.startBattle(using: msg)
+		viewBattle.startBattle(battles: msg.battles)
 	}
 
 	private func handle(error: MatchIncosistencyError) {

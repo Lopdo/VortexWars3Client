@@ -26,6 +26,7 @@ final class RegionFactionView: Sprite2D {
 
 	func set(dice: Int) {
 		self.diceText = String(dice)
+		queueRedraw()
 	}
 
 	override func _draw() {

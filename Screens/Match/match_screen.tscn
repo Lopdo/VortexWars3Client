@@ -1,38 +1,51 @@
 [gd_scene format=3 uid="uid://ueqptrlguw1x"]
 
-[node name="MatchScreen" type="MatchScreen" node_paths=PackedStringArray("map_container", "player_list_view", "btn_end_turn")]
-map_container = NodePath("HBoxContainer/SubViewportContainer/SubViewport")
+[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "view_battle", "player_list_view", "btn_end_turn")]
+map_container = NodePath("HBoxContainer/Control/SubViewportContainer/SubViewport")
+view_battle = NodePath("HBoxContainer/Control/MatchBattleView")
 player_list_view = NodePath("HBoxContainer/VBoxContainer/Control")
 btn_end_turn = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/Button")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1822886258]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="HBoxContainer"]
+[node name="Control" type="Control" parent="HBoxContainer" unique_id=1291463798]
 layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HBoxContainer/Control" unique_id=562957700]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="HBoxContainer/SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="HBoxContainer/Control/SubViewportContainer" unique_id=2047402866]
 disable_3d = true
 handle_input_locally = false
 size = Vector2i(998, 648)
 render_target_update_mode = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
+[node name="MatchBattleView" type="MatchBattleView" parent="HBoxContainer/Control" unique_id=559131951 node_paths=PackedStringArray("lbl_attacker", "lbl_defender")]
+lbl_attacker = NodePath("HBoxContainer/Label")
+lbl_defender = NodePath("HBoxContainer/Label2")
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 80.0
+offset_bottom = 40.0
+grow_horizontal = 2
 
-[node name="Control" type="MatchPlayerListView" parent="HBoxContainer/VBoxContainer" node_paths=PackedStringArray("player_list")]
-player_list = NodePath("VBoxContainer")
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/Control"]
+[node name="Panel" type="Panel" parent="HBoxContainer/Control/MatchBattleView" unique_id=2135405417]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -40,11 +53,54 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Control/MatchBattleView" unique_id=1331301314]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/Control/MatchBattleView/HBoxContainer" unique_id=397049411]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "10"
+horizontal_alignment = 1
+
+[node name="Label3" type="Label" parent="HBoxContainer/Control/MatchBattleView/HBoxContainer" unique_id=1573112985]
+layout_mode = 2
+text = "X"
+
+[node name="Label2" type="Label" parent="HBoxContainer/Control/MatchBattleView/HBoxContainer" unique_id=1997641830]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "5"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=1778011993]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Control" type="MatchPlayerListView" parent="HBoxContainer/VBoxContainer" unique_id=1533725742 node_paths=PackedStringArray("player_list")]
+player_list = NodePath("VBoxContainer")
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/Control" unique_id=982860480]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=956906252]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Button" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2008405809]
 layout_mode = 2
 text = "End turn"
 
