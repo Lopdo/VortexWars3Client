@@ -22,7 +22,6 @@ final class MatchScreen: Node {
 	private var match: Match!
 
 	private var ws: WebSocketClient!
-	private var binaryMessageHandler: Callable?
 
 	override func _ready() {
 		setupSubViewport()
@@ -31,7 +30,6 @@ final class MatchScreen: Node {
 		playerListView.add(
 			players: match.players, currentPlayerId: match.currentPlayer.id, user: match.user)
 
-		binaryMessageHandler = ws.dataReceived.connect(handleBinaryMessage)
 		ws.getParent()?.removeChild(node: ws)
 		addChild(node: ws)
 
@@ -50,6 +48,7 @@ final class MatchScreen: Node {
 				mapData: mapData,
 				players: matchPlayers,
 				user: user, currentPlayerId: startingPlayer,
+				matchScreen: self,
 				ws: ws)
 		} catch {
 			handle(error: error)
@@ -78,6 +77,10 @@ final class MatchScreen: Node {
 		}
 	}
 
+	private func handle(error: MatchIncosistencyError) {
+		//TODO: show popup and disconnect player?
+	}
+
 	@Callable
 	func endTurnPressed() {
 		do {
@@ -90,45 +93,4 @@ final class MatchScreen: Node {
 		}
 	}
 
-	private func handleBinaryMessage(data: PackedByteArray) {
-		do {
-			let message = try NMDecoder.decode(data.asBytes())
-			GD.print("MatchScreen message received: \(message)")
-			switch message {
-				/*case let msg as NMMatchPlayerLeft:
-					//remove(playerId: msg.playerId)
-					break
-				case let msg as NMMatchTurnEnded:
-					//TODO:
-					break*/
-				case let msg as NMMatchNewTurnStarted:
-					newTurnStarted(newPlayerId: msg.playerId)
-				case let msg as NMMatchBattleResults:
-					handleBattleResults(msg: msg)
-				default:
-					GD.print("Received unsupported binary message type \(message)")
-			}
-		} catch {
-			GD.print("Failed to decode binary message: \(error)")
-			GD.print(error.localizedDescription)
-		}
-	}
-
-	private func newTurnStarted(newPlayerId: String) {
-		do {
-			try match.newTurnStarted(newCurrentPlayerId: newPlayerId)
-		} catch {
-			handle(error: error)
-		}
-		playerListView.updateCurrentPlayer(id: match.currentPlayer.id)
-	}
-
-	private func handleBattleResults(msg: NMMatchBattleResults) {
-		match.startBattle(using: msg)
-		viewBattle.startBattle(battles: msg.battles)
-	}
-
-	private func handle(error: MatchIncosistencyError) {
-		//TODO: show popup and disconnect player?
-	}
 }

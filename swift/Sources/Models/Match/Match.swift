@@ -15,11 +15,14 @@ class Match {
 	private var state: MatchState = .intro
 	var currentPlayer: MatchPlayer
 	var user: User
-	private var ws: WebSocketClient
+	private let ws: WebSocketClient
+	private unowned let matchScreen: MatchScreen
+
+	private var binaryMessageHandler: Callable?
 
 	init(
 		mapData: NMMatchMapData, players: [MatchPlayer], user: User, currentPlayerId: String,
-		ws: WebSocketClient
+		matchScreen: MatchScreen, ws: WebSocketClient
 	)
 		throws(MatchIncosistencyError)
 	{
@@ -33,12 +36,57 @@ class Match {
 		self.user = user
 		self.currentPlayer = currentPlayer
 		self.ws = ws
+		self.matchScreen = matchScreen
 
 		if currentPlayer.id == user.player.id {
 			state = .myTurn(.attackerSelection)
 		} else {
 			state = .enemyTurn(.idle)
 		}
+
+		binaryMessageHandler = ws.dataReceived.connect(handleBinaryMessage)
+	}
+
+	private func handleBinaryMessage(data: PackedByteArray) {
+		do {
+			let message = try NMDecoder.decode(data.asBytes())
+			GD.print("MatchScreen message received: \(message)")
+			switch message {
+				/*case let msg as NMMatchPlayerLeft:
+					//remove(playerId: msg.playerId)
+					break
+				case let msg as NMMatchTurnEnded:
+					//TODO:
+					break*/
+				case let msg as NMMatchNewTurnStarted:
+					newTurnStarted(newPlayerId: msg.playerId)
+				case let msg as NMMatchBattleResults:
+					handleBattleResults(msg: msg)
+				default:
+					GD.print("Received unsupported binary message type \(message)")
+			}
+		} catch {
+			GD.print("Failed to decode binary message: \(error)")
+			GD.print(error.localizedDescription)
+		}
+	}
+
+	private func handle(error: MatchIncosistencyError) {
+		//TODO: show popup and disconnect player?
+	}
+
+	private func newTurnStarted(newPlayerId: String) {
+		do {
+			try newTurnStarted(newCurrentPlayerId: newPlayerId)
+		} catch {
+			handle(error: error)
+		}
+		matchScreen.playerListView.updateCurrentPlayer(id: currentPlayer.id)
+	}
+
+	private func handleBattleResults(msg: NMMatchBattleResults) {
+		startBattle(using: msg)
+		matchScreen.viewBattle.startBattle(battles: msg.battles)
 	}
 
 }
@@ -170,6 +218,7 @@ extension Match {
 				}
 
 				self.applyBattleResults(msg: msg)
+				self.matchScreen.viewBattle.close()
 
 				return nil
 			})
