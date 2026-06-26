@@ -49,14 +49,14 @@ final class MatchesSectionView: Control {
 		loadingIndicator.hide()
 
 		switch result {
-		case .success(let matchListDTO):
-			for match in matchListDTO.matches {
-				createMatchView(for: match)
-			}
-		case .failure(let error):
-			GD.print("An error occurred in the HTTP request: \(error)")
-			ErrorManager.showError(
-				message: "An error occurred in the HTTP request. \(error.localizedDescription)")
+			case .success(let matchListDTO):
+				for match in matchListDTO.matches {
+					createMatchView(for: match)
+				}
+			case .failure(let error):
+				GD.print("An error occurred in the HTTP request: \(error)")
+				ErrorManager.showError(
+					message: "An error occurred in the HTTP request. \(error.localizedDescription)")
 		}
 	}
 
@@ -113,9 +113,9 @@ final class MatchesSectionView: Control {
 		if let lobby = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby.tscn")
 			as? MatchLobby
 		{
-			lobby.initialize(ws: client, user: user, players: msg.players)
 			changeSceneToNode(node: lobby)
 			removeChild(node: client)
+			lobby.initialize(ws: client, user: user, players: msg.players)
 		}
 	}
 }

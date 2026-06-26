@@ -34,7 +34,6 @@ final class MatchLobby: Node {
 	func initialize(ws: WebSocketClient, user: User, players: [NMMatchLobbyPlayer]) {
 		wsClient = ws
 		binaryMessageHandler = wsClient.dataReceived.connect(handleBinaryMessage)
-		wsClient.getParent()?.removeChild(node: wsClient)
 		addChild(node: wsClient)
 
 		self.user = user
@@ -58,30 +57,30 @@ final class MatchLobby: Node {
 			let message = try NMDecoder.decode(data.asBytes())
 			GD.print("MatchLobby message received: \(message)")
 			switch message {
-			case let msg as NMMatchPlayerJoined:
-				add(player: msg.player)
-			case let msg as NMMatchPlayerLeft:
-				remove(playerId: msg.playerId)
-			case let msg as NMMatchPlayerReadyStatusChanged:
-				GD.print(
-					"NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)"
-				)
-				updateReadyState(playerId: msg.playerId, isReady: msg.ready)
-			case let msg as NMMatchStarted:
-				GD.print("NMMatchStarted received")
-				matchStartReceived(msg: msg)
-			case let msg as NMMatchCookChanged:
-				updateCook(newCookId: msg.playerId)
-			case is NMMatchAlreadyStarted:
-				//TODO: show popup
-				GD.print("Match already started")
-			case let msg as NMFactionChanged:
-				updateFaction(playerId: msg.playerId, faction: Int(msg.newFaction))
-			case let msg as NMTerrainChanged:
-				updateTerrain(playerId: msg.playerId, terrain: Int(msg.newTerrain))
+				case let msg as NMMatchPlayerJoined:
+					add(player: msg.player)
+				case let msg as NMMatchPlayerLeft:
+					remove(playerId: msg.playerId)
+				case let msg as NMMatchPlayerReadyStatusChanged:
+					GD.print(
+						"NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)"
+					)
+					updateReadyState(playerId: msg.playerId, isReady: msg.ready)
+				case let msg as NMMatchStarted:
+					GD.print("NMMatchStarted received")
+					matchStartReceived(msg: msg)
+				case let msg as NMMatchCookChanged:
+					updateCook(newCookId: msg.playerId)
+				case is NMMatchAlreadyStarted:
+					//TODO: show popup
+					GD.print("Match already started")
+				case let msg as NMFactionChanged:
+					updateFaction(playerId: msg.playerId, faction: Int(msg.newFaction))
+				case let msg as NMTerrainChanged:
+					updateTerrain(playerId: msg.playerId, terrain: Int(msg.newTerrain))
 
-			default:
-				GD.print("Received unsupported binary message type \(message)")
+				default:
+					GD.print("Received unsupported binary message type \(message)")
 			}
 		} catch {
 			GD.print("Failed to decode binary message: \(error)")

@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://ueqptrlguw1x"]
 
-[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "view_battle", "player_list_view", "btn_end_turn")]
+[ext_resource type="Texture2D" uid="uid://c3o368f0dgm6j" path="res://res/img/terrain_0.png" id="1_p2kl0"]
+
+[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "view_battle", "view_turn_timer", "player_list_view", "btn_end_turn")]
 map_container = NodePath("HBoxContainer/Control/SubViewportContainer/SubViewport")
 view_battle = NodePath("HBoxContainer/Control/MatchBattleView")
+view_turn_timer = NodePath("HBoxContainer/Control/MatchTurnTimerView")
 player_list_view = NodePath("HBoxContainer/VBoxContainer/Control")
 btn_end_turn = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/Button")
 
@@ -78,6 +81,22 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = "5"
 horizontal_alignment = 1
+
+[node name="MatchTurnTimerView" type="MatchTurnTimerView" parent="HBoxContainer/Control" unique_id=1389941671 node_paths=PackedStringArray("bar")]
+bar = NodePath("TextureProgressBar")
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 140.0
+grow_vertical = 0
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="HBoxContainer/Control/MatchTurnTimerView" unique_id=1162222412]
+layout_mode = 0
+offset_right = 140.0
+offset_bottom = 100.0
+texture_progress = ExtResource("1_p2kl0")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=1778011993]
 custom_minimum_size = Vector2(150, 0)

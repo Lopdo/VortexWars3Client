@@ -45,6 +45,8 @@ class Match {
 		}
 
 		binaryMessageHandler = ws.dataReceived.connect(handleBinaryMessage)
+
+		matchScreen.viewTurnTimer.startTurn()
 	}
 
 	private func handleBinaryMessage(data: PackedByteArray) {
@@ -82,6 +84,7 @@ class Match {
 			handle(error: error)
 		}
 		matchScreen.playerListView.updateCurrentPlayer(id: currentPlayer.id)
+		matchScreen.viewTurnTimer.startTurn()
 	}
 
 	private func handleBattleResults(msg: NMMatchBattleResults) {
