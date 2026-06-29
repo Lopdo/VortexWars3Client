@@ -18,6 +18,10 @@ struct Map {
 	let height: Int
 
 	let regions: [MatchRegion]
+	//@inline(always)
+	func region(id: Int) -> MatchRegion {
+		regions[id - 1]
+	}
 
 	init(mapData: NMMatchMapData, players: [MatchPlayer]) {
 		self.tiles = mapData.tiles.map { Int($0) }
@@ -100,7 +104,7 @@ struct Map {
 			return nil
 		}
 
-		return regions[tile - 1].owner
+		return region(id: tile).owner
 	}
 
 	func tile(at coord: MapCoord) -> Int {

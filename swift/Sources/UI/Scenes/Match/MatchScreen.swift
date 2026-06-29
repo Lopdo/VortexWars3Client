@@ -15,6 +15,9 @@ final class MatchScreen: Node {
 	var viewTurnTimer: MatchTurnTimerView!
 
 	@Export
+	var reinforcementsDistributor: MatchReinforcementsDistributor!
+
+	@Export
 	var playerListView: MatchPlayerListView!
 
 	@Export

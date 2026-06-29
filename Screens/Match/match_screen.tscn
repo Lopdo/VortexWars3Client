@@ -2,10 +2,11 @@
 
 [ext_resource type="Texture2D" uid="uid://c3o368f0dgm6j" path="res://res/img/terrain_0.png" id="1_p2kl0"]
 
-[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "view_battle", "view_turn_timer", "player_list_view", "btn_end_turn")]
+[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "view_battle", "view_turn_timer", "reinforcements_distributor", "player_list_view", "btn_end_turn")]
 map_container = NodePath("HBoxContainer/Control/SubViewportContainer/SubViewport")
 view_battle = NodePath("HBoxContainer/Control/MatchBattleView")
 view_turn_timer = NodePath("HBoxContainer/Control/MatchTurnTimerView")
+reinforcements_distributor = NodePath("MatchReinforcementsDistributor")
 player_list_view = NodePath("HBoxContainer/VBoxContainer/Control")
 btn_end_turn = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/Button")
 
@@ -122,5 +123,10 @@ layout_mode = 2
 [node name="Button" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2008405809]
 layout_mode = 2
 text = "End turn"
+
+[node name="MatchReinforcementsDistributor" type="MatchReinforcementsDistributor" parent="." unique_id=500729881 node_paths=PackedStringArray("timer")]
+timer = NodePath("Timer")
+
+[node name="Timer" type="Timer" parent="MatchReinforcementsDistributor" unique_id=1316475623]
 
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/Button" to="." method="endTurnPressed"]

@@ -27,6 +27,11 @@ class MatchRegion {
 			neighbor.regionView.updateBorders(map: map, owner: neighbor.owner)
 		}
 	}
+
+	func addReinforcements(dice: Int) {
+		self.dice = self.dice + dice
+		regionView.flashHighlight()
+	}
 }
 
 extension MatchRegion: CustomDebugStringConvertible {

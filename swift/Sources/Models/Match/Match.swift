@@ -64,6 +64,8 @@ class Match {
 					newTurnStarted(newPlayerId: msg.playerId)
 				case let msg as NMMatchBattleResults:
 					handleBattleResults(msg: msg)
+				case let msg as NMMatchReinforcementsResults:
+					handleAutomaticReinforcements(msg: msg)
 				default:
 					GD.print("Received unsupported binary message type \(message)")
 			}
@@ -92,13 +94,17 @@ class Match {
 		matchScreen.viewBattle.startBattle(battles: msg.battles)
 	}
 
+	private func handleAutomaticReinforcements(msg: NMMatchReinforcementsResults) {
+		matchScreen.viewTurnTimer.stop()
+		matchScreen.reinforcementsDistributor.startDistribution(results: msg.results, map: map)
+	}
 }
 
 // State management
 extension Match {
 
 	func onRegionClicked(regionId: Int) {
-		let region = map.regions[regionId - 1]
+		let region = map.region(id: regionId)
 
 		if region.owner?.id == user.player.id {
 			myRegionClicked(region)
@@ -187,8 +193,8 @@ extension Match {
 		switch state {
 			case .enemyTurn(let turnState):
 				if turnState == .idle {
-					let attackerRegion = map.regions[Int(msg.attackerRegionId) - 1]
-					let defenderRegion = map.regions[Int(msg.defenderRegionId) - 1]
+					let attackerRegion = map.region(id: Int(msg.attackerRegionId))
+					let defenderRegion = map.region(id: Int(msg.defenderRegionId))
 					attackerRegion.regionView.isSelected = true
 					defenderRegion.regionView.isSelected = true
 				}
@@ -230,8 +236,8 @@ extension Match {
 	}
 
 	private func applyBattleResults(msg: NMMatchBattleResults) {
-		let attackerRegion = map.regions[Int(msg.attackerRegionId) - 1]
-		let defenderRegion = map.regions[Int(msg.defenderRegionId) - 1]
+		let attackerRegion = map.region(id: Int(msg.attackerRegionId))
+		let defenderRegion = map.region(id: Int(msg.defenderRegionId))
 		attackerRegion.dice = Int(msg.newAttackerDice)
 		defenderRegion.dice = Int(msg.newDefenderDice)
 		let newOwner = players[Int(msg.newDefenderOwnerIndex)]

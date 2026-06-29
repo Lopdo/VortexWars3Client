@@ -62,6 +62,14 @@ class RegionView: Sprite2D {
 		borderView.updateBorders(map: map, owner: owner)
 	}
 
+	// temporary highlight of the region, used for WIP effects like reinforgements
+	func flashHighlight() {
+		bgView.selfModulate = bgView.ownerColor.lightened(amount: 0.5)
+		getTree()?.createTimer(timeSec: 0.5)?.timeout.connect {
+			self.bgView.selfModulate = self.bgView.ownerColor
+		}
+	}
+
 	func placeTopLayerViews(to node: Node) {
 		node.addChild(node: factionView)
 		let offsetX = region.center.y % 2 == 0 ? 0.0 : TileRenderInfo.width / 2
