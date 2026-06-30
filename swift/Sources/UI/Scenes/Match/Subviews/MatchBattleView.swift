@@ -11,10 +11,10 @@ final class MatchBattleView: Control {
 	@Export
 	var lblDefender: Label!
 
-	func startBattle(battles: [NMMatchBattle]) {
+	func start(battle: NMMatchBattle) {
 		show()
-		lblAttacker.text = String(battles.first?.battleThrows.first?.attackerThrow ?? 0)
-		lblDefender.text = String(battles.first?.battleThrows.first?.defenderThrow ?? 0)
+		lblAttacker.text = String(battle.battleThrows.first?.attackerThrow ?? 0)
+		lblDefender.text = String(battle.battleThrows.first?.defenderThrow ?? 0)
 	}
 
 	func close() {

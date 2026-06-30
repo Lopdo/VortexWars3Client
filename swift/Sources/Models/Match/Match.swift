@@ -91,7 +91,7 @@ class Match {
 
 	private func handleBattleResults(msg: NMMatchBattleResults) {
 		startBattle(using: msg)
-		matchScreen.viewBattle.startBattle(battles: msg.battles)
+		matchScreen.viewBattle.start(battle: msg.battle)
 	}
 
 	private func handleAutomaticReinforcements(msg: NMMatchReinforcementsResults) {
@@ -210,8 +210,9 @@ extension Match {
 				break
 		}
 
+		matchScreen.viewTurnTimer.pause()
 		Task {
-			try? await Task.sleep(for: .seconds(2))
+			try? await Task.sleep(for: .milliseconds(Timings.battleDuration * msg.battle.battleThrows.count))
 			Callable({ _ in
 
 				switch self.state {
@@ -228,6 +229,8 @@ extension Match {
 
 				self.applyBattleResults(msg: msg)
 				self.matchScreen.viewBattle.close()
+
+				self.matchScreen.viewTurnTimer.unpause()
 
 				return nil
 			})

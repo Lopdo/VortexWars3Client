@@ -26,4 +26,12 @@ final class MatchTurnTimerView: Control {
 
 		hide()
 	}
+
+	func pause() {
+		tween?.pause()
+	}
+
+	func unpause() {
+		tween?.play()
+	}
 }
