@@ -50,47 +50,47 @@ final class TestScene: Node {
 					in: CharacterSet(charactersIn: "\"'"))
 
 				switch flag {
-				case "p", "player":
-					player = value
-				case "pwd", "password":
-					password = value
-				case "m", "match":
-					match = value
-				case "a", "action":
-					switch value.lowercased() {
-					case "jm", "joinmatch":
-						if let match {
-							action = .joinMatch(match)
-						} else {
-							print(
-								"Error: joinMatch action requires preceeding match parameter (-m)")
+					case "p", "player":
+						player = value
+					case "pwd", "password":
+						password = value
+					case "m", "match":
+						match = value
+					case "a", "action":
+						switch value.lowercased() {
+							case "jm", "joinmatch":
+								if let match {
+									action = .joinMatch(match)
+								} else {
+									print(
+										"Error: joinMatch action requires preceeding match parameter (-m)")
+								}
+							case "cm", "creatematch":
+								if let match {
+									action = .createMatch(match)
+								} else {
+									print(
+										"Error: createMatch action requires preceeding match parameter (-m)"
+									)
+								}
+							default:
+								print("Unknown action type: \(value)")
 						}
-					case "cm", "creatematch":
-						if let match {
-							action = .createMatch(match)
+					case "pc", "playerCount":
+						if let count = Int(value) {
+							playerCount = count
 						} else {
-							print(
-								"Error: createMatch action requires preceeding match parameter (-m)"
-							)
+							print("Error: non-integer value in playerCount parameter: \(value)")
+						}
+					case "lobby":
+						if let lobby = Bool(value) {
+							goToLobby = lobby
+						} else {
+							print("Error: non-bool value in lobby parameter: \(value)")
 						}
 					default:
-						print("Unknown action type: \(value)")
-					}
-				case "pc", "playerCount":
-					if let count = Int(value) {
-						playerCount = count
-					} else {
-						print("Error: non-integer value in playerCount parameter: \(value)")
-					}
-				case "lobby":
-					if let lobby = Bool(value) {
-						goToLobby = lobby
-					} else {
-						print("Error: non-bool value in lobby parameter: \(value)")
-					}
-				default:
-					print("Unknown flag: \(flag)")
-					break
+						print("Unknown flag: \(flag)")
+						break
 				}
 			}
 		}
@@ -100,10 +100,10 @@ final class TestScene: Node {
 		guard let action else { return }
 
 		switch action {
-		case .joinMatch(let matchName):
-			executeJoinMatchAction(matchName: matchName)
-		case .createMatch(let matchName):
-			executeCreateMatchAction(matchName: matchName)
+			case .joinMatch(let matchName):
+				executeJoinMatchAction(matchName: matchName)
+			case .createMatch(let matchName):
+				executeCreateMatchAction(matchName: matchName)
 		}
 	}
 
@@ -141,10 +141,10 @@ final class TestScene: Node {
 		text += "\nAction: "
 		if let action {
 			switch action {
-			case .joinMatch(let matchId):
-				text += "joinMatch(\(matchId))"
-			case .createMatch(let matchId):
-				text += "createMatch(\(matchId))"
+				case .joinMatch(let matchId):
+					text += "joinMatch(\(matchId))"
+				case .createMatch(let matchId):
+					text += "createMatch(\(matchId))"
 			}
 		} else {
 			text += "None"
@@ -158,28 +158,28 @@ final class TestScene: Node {
 			let message = try NMDecoder.decode(data.asBytes())
 			GD.print("TestScene message received: \(message)")
 			switch message {
-			case let msg as NMMatchPlayerJoined:
-				_ = msg
-				break
-			case let msg as NMMatchPlayerLeft:
-				_ = msg
-				break
-			case let msg as NMMatchPlayerReadyStatusChanged:
-				if msg.ready {
-					readyPlayerCount += 1
-				} else {
-					readyPlayerCount -= 1
-				}
-				if readyPlayerCount == playerCount {
-					startGame()
-				}
-				GD.print(
-					"NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)"
-				)
-			case let msg as NMMatchStarted:
-				matchStartReceived(msg: msg)
-			default:
-				GD.print("Received unsupported binary message type \(message)")
+				case let msg as NMMatchPlayerJoined:
+					_ = msg
+					break
+				case let msg as NMMatchPlayerLeft:
+					_ = msg
+					break
+				case let msg as NMMatchPlayerReadyStatusChanged:
+					if msg.ready {
+						readyPlayerCount += 1
+					} else {
+						readyPlayerCount -= 1
+					}
+					if readyPlayerCount == playerCount {
+						startGame()
+					}
+					GD.print(
+						"NMMatchPlayerReadyStatusChanged received, playerId: \(msg.playerId), isReady: \(msg.ready)"
+					)
+				case let msg as NMMatchStarted:
+					matchStartReceived(msg: msg)
+				default:
+					GD.print("Received unsupported binary message type \(message)")
 			}
 		} catch {
 			GD.print("Failed to decode binary message: \(error)")
@@ -212,18 +212,18 @@ final class TestScene: Node {
 
 	private func requestCompleted(result: Result<UserDTO, Error>) {
 		switch result {
-		case .success(let userDTO):
-			loginCompleted(userDTO: userDTO)
-		case .failure(let error):
-			label.text = label.text + "\nAn error occurred in the HTTP request: \(error)"
-			switch error {
-			case NetworkManager.NetworkError.serverError(let code) where code == 401:
-				label.text = label.text + "\nInvalid username or password."
-			default:
-				label.text =
-					label.text
-					+ "\nAn error occurred in the HTTP request. \(error.localizedDescription)"
-			}
+			case .success(let userDTO):
+				loginCompleted(userDTO: userDTO)
+			case .failure(let error):
+				label.text = label.text + "\nAn error occurred in the HTTP request: \(error)"
+				switch error {
+					case NetworkManager.NetworkError.serverError(let code) where code == 401:
+						label.text = label.text + "\nInvalid username or password."
+					default:
+						label.text =
+							label.text
+							+ "\nAn error occurred in the HTTP request. \(error.localizedDescription)"
+				}
 		}
 	}
 
@@ -252,21 +252,20 @@ final class TestScene: Node {
 		)
 	}
 
-	private func matchFetchRequestCompleted(result: Result<MatchListDTO, Error>, matchName: String)
-	{
+	private func matchFetchRequestCompleted(result: Result<MatchListDTO, Error>, matchName: String) {
 		switch result {
-		case .success(let matchListDTO):
-			if let match = matchListDTO.matches.first(where: { $0.name == matchName }) {
-				//if let match = matchListDTO.matches.first {
-				joinMatch(matchId: match.id, user: currentUser!)
-			} else {
-				label.text = label.text + "\nMatch with name \(matchName) not found, retrying in 1s"
-				OS.delayMsec(1_000)
-				findMatch(name: matchName)
-			}
+			case .success(let matchListDTO):
+				if let match = matchListDTO.matches.first(where: { $0.name == matchName }) {
+					//if let match = matchListDTO.matches.first {
+					joinMatch(matchId: match.id, user: currentUser!)
+				} else {
+					label.text = label.text + "\nMatch with name \(matchName) not found, retrying in 1s"
+					OS.delayMsec(1_000)
+					findMatch(name: matchName)
+				}
 
-		case .failure(let error):
-			GD.print("An error occurred in the HTTP request: \(error)")
+			case .failure(let error):
+				GD.print("An error occurred in the HTTP request: \(error)")
 		}
 	}
 
@@ -362,9 +361,9 @@ final class TestScene: Node {
 		if let lobby = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby.tscn")
 			as? MatchLobby
 		{
+			removeChild(node: webSocketClient!)
 			lobby.initialize(ws: webSocketClient!, user: currentUser!, players: msg.players)
 			changeSceneToNode(node: lobby)
-			removeChild(node: webSocketClient!)
 			if let binaryMsgHandlerToken {
 				webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)
 			}

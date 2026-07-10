@@ -110,7 +110,9 @@ final class MatchLobby: Node {
 	}
 
 	private func remove(playerId: String) {
-		playerList.removeChild(node: playerView(for: playerId))
+		if let view = playerView(for: playerId) {
+			playerList.removeChild(node: view)
+		}
 	}
 
 	private func updateReadyState(playerId: String, isReady: Bool) {

@@ -2,13 +2,15 @@
 
 [ext_resource type="Texture2D" uid="uid://c3o368f0dgm6j" path="res://res/img/terrain_0.png" id="1_p2kl0"]
 
-[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "view_battle", "view_turn_timer", "reinforcements_distributor", "player_list_view", "btn_end_turn")]
+[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "lbl_reinforcement_dice", "btn_end_turn", "view_battle", "view_turn_timer", "player_list_view", "reinforcements_auto_distributor", "reinforcements_manual_distributor")]
 map_container = NodePath("HBoxContainer/Control/SubViewportContainer/SubViewport")
+lbl_reinforcement_dice = NodePath("HBoxContainer/Control/ReinforcementDice")
+btn_end_turn = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/Button")
 view_battle = NodePath("HBoxContainer/Control/MatchBattleView")
 view_turn_timer = NodePath("HBoxContainer/Control/MatchTurnTimerView")
-reinforcements_distributor = NodePath("MatchReinforcementsDistributor")
-player_list_view = NodePath("HBoxContainer/VBoxContainer/Control")
-btn_end_turn = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/Button")
+player_list_view = NodePath("HBoxContainer/VBoxContainer/MatchPlayerListView")
+reinforcements_auto_distributor = NodePath("MatchReinforcementsAutoDistributor")
+reinforcements_manual_distributor = NodePath("MatchReinforcementsManualDistributor")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1822886258]
 anchors_preset = 15
@@ -83,7 +85,7 @@ theme_override_font_sizes/font_size = 25
 text = "5"
 horizontal_alignment = 1
 
-[node name="MatchTurnTimerView" type="MatchTurnTimerView" parent="HBoxContainer/Control" unique_id=1389941671 node_paths=PackedStringArray("bar")]
+[node name="MatchTurnTimerView" type="MatchTurnTimerView" parent="HBoxContainer/Control" unique_id=1901474219 node_paths=PackedStringArray("bar")]
 bar = NodePath("TextureProgressBar")
 layout_mode = 1
 anchors_preset = 2
@@ -99,16 +101,27 @@ offset_right = 140.0
 offset_bottom = 100.0
 texture_progress = ExtResource("1_p2kl0")
 
+[node name="ReinforcementDice" type="Label" parent="HBoxContainer/Control" unique_id=1873530012]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 29
+text = "10"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=1778011993]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
-[node name="Control" type="MatchPlayerListView" parent="HBoxContainer/VBoxContainer" unique_id=1533725742 node_paths=PackedStringArray("player_list")]
+[node name="MatchPlayerListView" type="MatchPlayerListView" parent="HBoxContainer/VBoxContainer" unique_id=1533725742 node_paths=PackedStringArray("player_list")]
 player_list = NodePath("VBoxContainer")
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/Control" unique_id=982860480]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MatchPlayerListView" unique_id=982860480]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -124,9 +137,15 @@ layout_mode = 2
 layout_mode = 2
 text = "End turn"
 
-[node name="MatchReinforcementsDistributor" type="MatchReinforcementsDistributor" parent="." unique_id=500729881 node_paths=PackedStringArray("timer")]
+[node name="MatchReinforcementsAutoDistributor" type="MatchReinforcementsAutoDistributor" parent="." unique_id=1214161482 node_paths=PackedStringArray("timer")]
 timer = NodePath("Timer")
 
-[node name="Timer" type="Timer" parent="MatchReinforcementsDistributor" unique_id=1316475623]
+[node name="Timer" type="Timer" parent="MatchReinforcementsAutoDistributor" unique_id=1692634021]
+
+[node name="MatchReinforcementsManualDistributor" type="MatchReinforcementsManualDistributor" parent="." unique_id=1858842536 node_paths=PackedStringArray("timer", "lbl_dice")]
+timer = NodePath("Timer")
+lbl_dice = NodePath("../HBoxContainer/Control/ReinforcementDice")
+
+[node name="Timer" type="Timer" parent="MatchReinforcementsManualDistributor" unique_id=65739365]
 
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/Button" to="." method="endTurnPressed"]

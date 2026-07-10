@@ -9,19 +9,22 @@ final class MatchScreen: Node {
 	var mapContainer: SubViewport!
 
 	@Export
-	var viewBattle: MatchBattleView!
-
-	@Export
-	var viewTurnTimer: MatchTurnTimerView!
-
-	@Export
-	var reinforcementsDistributor: MatchReinforcementsDistributor!
-
-	@Export
-	var playerListView: MatchPlayerListView!
+	var lblReinforcementDice: Label!
 
 	@Export
 	var btnEndTurn: Button!
+
+	@Export(.nodeType)
+	var viewBattle: MatchBattleView!
+	@Export(.nodeType)
+	var viewTurnTimer: MatchTurnTimerView!
+	@Export(.nodeType)
+	var playerListView: MatchPlayerListView!
+
+	@Export(.nodeType)
+	var reinforcementsAutoDistributor: MatchReinforcementsAutoDistributor!
+	@Export(.nodeType)
+	var reinforcementsManualDistributor: MatchReinforcementsManualDistributor!
 
 	private var mapView: MapView!
 
@@ -30,6 +33,7 @@ final class MatchScreen: Node {
 	private var ws: WebSocketClient!
 
 	override func _ready() {
+
 		setupSubViewport()
 		createMapView()
 
@@ -40,6 +44,8 @@ final class MatchScreen: Node {
 		addChild(node: ws)
 
 		viewBattle.hide()
+		lblReinforcementDice.hide()
+
 	}
 
 	func initialize(
@@ -61,6 +67,9 @@ final class MatchScreen: Node {
 		}
 
 		self.ws = ws
+
+		reinforcementsManualDistributor.initialize(map: match.map)
+		reinforcementsAutoDistributor.initialize(map: match.map)
 	}
 
 	private func setupSubViewport() {
@@ -89,14 +98,7 @@ final class MatchScreen: Node {
 
 	@Callable
 	func endTurnPressed() {
-		do {
-			let endTurnMsg = NMMatchEndTurn()
-			let data = try NMEncoder.encode(endTurnMsg)
-			try ws.send(data: data)
-		} catch {
-			//TODO: add error handling
-			GD.print("Failed to send message NMMatchEndTurn")
-		}
+		match.endTurn()
 	}
 
 }

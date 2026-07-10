@@ -5,7 +5,7 @@ import SwiftGodot
 @Godot
 final class MapView: Node2D {
 
-	@Export
+	@Export(.nodeType)
 	private var camera: CameraZoomAndPan!
 
 	@Export

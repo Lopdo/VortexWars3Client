@@ -4,7 +4,7 @@ import SwiftGodot
 @Godot
 final class RegionFactionView: Sprite2D {
 
-	let defaltFont = ThemeDB.fallbackFont
+	let defaultFont = ThemeDB.fallbackFont
 	var diceText: String? = nil
 
 	override func _ready() {
@@ -30,9 +30,11 @@ final class RegionFactionView: Sprite2D {
 	}
 
 	override func _draw() {
-		if let diceText {
+		if let diceText,
+			let defaultFont
+		{
 			drawString(
-				font: defaltFont, pos: Vector2(x: 22, y: 32), text: diceText, alignment: .center,
+				font: defaultFont, pos: Vector2(x: 22, y: 32), text: diceText, alignment: .center,
 				width: 16,
 				fontSize: 11)
 		}

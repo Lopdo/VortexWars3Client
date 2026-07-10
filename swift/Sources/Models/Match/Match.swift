@@ -7,12 +7,25 @@ enum MatchIncosistencyError: Error {
 	case regionNotFound
 }
 
+private struct PendingState {
+	let state: MatchState
+	let timestamp: Date
+}
+
 class Match {
 	let map: Map
 	//let regions: [MatchRegion]
 	let players: [MatchPlayer]
 
 	private var state: MatchState = .intro
+	{
+		didSet {
+			GD.print("state: \(state)")
+		}
+	}
+
+	private var pendingState: PendingState?
+
 	var currentPlayer: MatchPlayer
 	var user: User
 	private let ws: WebSocketClient
@@ -60,12 +73,19 @@ class Match {
 				case let msg as NMMatchTurnEnded:
 					//TODO:
 					break*/
+				case let msg as NMMatchEndTurn:
+					//just a placeholder, nothing is needed to be done for now, since we are reacting to new turn
+					break
 				case let msg as NMMatchNewTurnStarted:
 					newTurnStarted(newPlayerId: msg.playerId)
 				case let msg as NMMatchBattleResults:
 					handleBattleResults(msg: msg)
 				case let msg as NMMatchReinforcementsResults:
 					handleAutomaticReinforcements(msg: msg)
+				case let msg as NMMatchStartManualReinforcements:
+					handleManualReinforcements(msg: msg)
+				case let msg as NMMatchManualReinforcementPlacementConfirmed:
+					handleManualReinforcementsConfirmation(msg: msg)
 				default:
 					GD.print("Received unsupported binary message type \(message)")
 			}
@@ -96,7 +116,14 @@ class Match {
 
 	private func handleAutomaticReinforcements(msg: NMMatchReinforcementsResults) {
 		matchScreen.viewTurnTimer.stop()
-		matchScreen.reinforcementsDistributor.startDistribution(results: msg.results, map: map)
+		// This can happen if timer runs in manual distribution mode and we still have some reinforcements
+		matchScreen.reinforcementsManualDistributor.stopDistribution()
+		matchScreen.reinforcementsAutoDistributor.startDistribution(results: msg.results)
+	}
+
+	private func handleManualReinforcements(msg: NMMatchStartManualReinforcements) {
+		matchScreen.viewTurnTimer.startReinforcements(count: Int(msg.reinforcementsCount))
+		startManualReinforcements(playerId: msg.playerId, dice: Int(msg.reinforcementsCount))
 	}
 }
 
@@ -113,21 +140,95 @@ extension Match {
 		}
 	}
 
-	func placeReinforcements() {
-		// cleanup selections and other stuff
+	func endTurn() {
 		if case .myTurn(let turnState) = state {
 			switch turnState {
-				case .targetSelection(let sourceRegion):
-					sourceRegion.regionView.isSelected = false
-				case .combatInitiated(let sourceRegion, let targetRegion):
-					sourceRegion.regionView.isSelected = false
-					targetRegion.regionView.isSelected = false
+				case .attackerSelection:
+					do {
+						let endTurnMsg = NMMatchEndTurn()
+						try ws.send(message: endTurnMsg)
+					} catch {
+						//TODO: add error handling
+						GD.print("Failed to send message NMMatchEndTurn")
+					}
+				case .reinforcementSelection(_):
+					do {
+						let endReinforcementsMsg = NMMatchEndReinforcements()
+						try ws.send(message: endReinforcementsMsg)
+					} catch {
+						//TODO: add error handling
+						GD.print("Failed to send message NMMatchEndReinforcements")
+					}
+
 				default:
 					break
 			}
 		}
+	}
 
-		state = .reinforcements
+	func startManualReinforcements(playerId: String, dice: Int) {
+		if case .enemyTurn(let turnState) = state {
+			switch turnState {
+				case .idle:
+					state = .enemyTurn(.reinforcementSelection)
+				case .combatInProgress:
+					pendingState = PendingState(
+						state: .enemyTurn(.reinforcementSelection),
+						timestamp: .now)
+				case .reinforcementSelection:
+					GD.print("duplicate manual reinforcementSelection message received")
+					break
+			}
+		} else if case .myTurn(let turnState) = state {
+			switch turnState {
+				case .attackerSelection:
+					state = .myTurn(.reinforcementSelection(dice))
+					matchScreen.reinforcementsManualDistributor.startDistribution(dice: dice, sendReinforcements: sendManualReinforcements)
+				case .combatInitiated(let sourceRegion, let targetRegion):
+					sourceRegion.regionView.isSelected = false
+					targetRegion.regionView.isSelected = false
+					state = .myTurn(.reinforcementSelection(dice))
+					matchScreen.reinforcementsManualDistributor.startDistribution(dice: dice, sendReinforcements: sendManualReinforcements)
+				case .targetSelection(let sourceRegion):
+					sourceRegion.regionView.isSelected = false
+				case .combatInProgress:
+					pendingState = PendingState(
+						state: .myTurn(.reinforcementSelection(dice)),
+						timestamp: .now)
+				case .reinforcementSelection:
+					GD.print("duplicate manual reinforcementSelection message received")
+					break
+			}
+		}
+	}
+
+	private func sendManualReinforcements(_ reinforcements: [Int: Int]) {
+		do {
+			let reinfs = reinforcements.keys.map { NMMatchReinforcementsResult(regionId: UInt8($0), dice: UInt8(reinforcements[$0]!)) }
+			let reinfMsg = NMMatchManualReinforcementPlaced(reinforcements: reinfs)
+			try ws.send(message: reinfMsg)
+		} catch {
+			//TODO: add error handling
+			GD.print("Failed to send message NMMatchManualReinforcementPlaced")
+		}
+	}
+
+	private func handleManualReinforcementsConfirmation(msg: NMMatchManualReinforcementPlacementConfirmed) {
+		if case .enemyTurn(let turnState) = state {
+			switch turnState {
+				case .reinforcementSelection:
+					matchScreen.reinforcementsAutoDistributor.startDistribution(results: msg.reinforcements)
+				default:
+					GD.print("ERROR: Received NMMatchManualReinforcementPlacementConfirmed messaga while in \(state)")
+			}
+		} else if case .myTurn(let turnState) = state {
+			switch turnState {
+				case .reinforcementSelection:
+					matchScreen.reinforcementsManualDistributor.confirm(reinforcements: msg.reinforcements)
+				default:
+					GD.print("ERROR: Received NMMatchManualReinforcementPlacementConfirmed messaga while in \(state)")
+			}
+		}
 	}
 
 	func newTurnStarted(newCurrentPlayerId: String) throws(MatchIncosistencyError) {
@@ -135,6 +236,8 @@ extension Match {
 			throw .playerNotFound
 		}
 		currentPlayer = newCurrentPlayer
+
+		matchScreen.lblReinforcementDice.hide()
 
 		// update state
 		if currentPlayer.id == user.player.id {
@@ -154,8 +257,8 @@ extension Match {
 					oldRegion.regionView.isSelected = false
 					region.regionView.isSelected = true
 					state = .myTurn(.targetSelection(region))
-				case .reinforcementSelection:
-					//TODO:
+				case .reinforcementSelection(_):
+					matchScreen.reinforcementsManualDistributor.regionSelected(region: region)
 					break
 				default:
 					break
@@ -168,19 +271,19 @@ extension Match {
 			switch turnState {
 				case .targetSelection(let sourceRegion):
 					region.regionView.isSelected = true
-					Task {
-						do {
-							let battleMsg = NMMatchBattleInitiated(
-								attackerRegionId: UInt8(sourceRegion.id),
-								targetRegionId: UInt8(region.id))
-							try ws.send(message: battleMsg)
-							state = .myTurn(.combatInitiated(sourceRegion, region))
-						} catch {
-							//TODO: add error handling
-							GD.print("Failed to send message NMMatchEndTurn")
-							region.regionView.isSelected = false
-						}
+					//Task {
+					do {
+						let battleMsg = NMMatchBattleInitiated(
+							attackerRegionId: UInt8(sourceRegion.id),
+							targetRegionId: UInt8(region.id))
+						try ws.send(message: battleMsg)
+						state = .myTurn(.combatInitiated(sourceRegion, region))
+					} catch {
+						//TODO: add error handling
+						GD.print("Failed to send message NMMatchEndTurn")
+						region.regionView.isSelected = false
 					}
+				//}
 
 				default:
 					break
@@ -256,7 +359,6 @@ extension Match {
 enum MatchState {
 	case intro
 	case myTurn(MyTurnState)
-	case reinforcements
 	case enemyTurn(EnemyTurnState)
 	case gameOver
 }
@@ -266,10 +368,11 @@ enum MyTurnState {
 	case targetSelection(MatchRegion)
 	case combatInitiated(MatchRegion, MatchRegion)
 	case combatInProgress
-	case reinforcementSelection
+	case reinforcementSelection(Int)
 }
 
 enum EnemyTurnState {
 	case idle
 	case combatInProgress
+	case reinforcementSelection
 }

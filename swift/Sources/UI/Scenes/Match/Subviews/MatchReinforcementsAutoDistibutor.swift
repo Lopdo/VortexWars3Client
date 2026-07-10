@@ -2,7 +2,7 @@ import NetworkModels
 import SwiftGodot
 
 @Godot
-final class MatchReinforcementsDistributor: Node {
+final class MatchReinforcementsAutoDistributor: Node {
 
 	@Export
 	private var timer: SwiftGodot.Timer!
@@ -10,15 +10,22 @@ final class MatchReinforcementsDistributor: Node {
 	private var reinforcements: [NMMatchReinforcementsResult] = []
 	private var map: Map!
 
+	func initialize(map: Map) {
+		self.map = map
+	}
+
 	override func _ready() {
 		timer.waitTime = 0.25
 		timer.timeout.connect(onTimer)
 	}
 
-	func startDistribution(results: [NMMatchReinforcementsResult], map: Map) {
-		timer.start()
-		self.map = map
-		reinforcements = results.reversed()
+	func startDistribution(results: [NMMatchReinforcementsResult]) {
+		if timer.isStopped() {
+			timer.start()
+			reinforcements = results.reversed()
+		} else {
+			reinforcements += results
+		}
 	}
 
 	private func onTimer() {

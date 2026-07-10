@@ -13,6 +13,8 @@ struct Map {
 		case nw
 	}
 
+	static let maxDice: Int = 8
+
 	private let tiles: [Int]
 	let width: Int
 	let height: Int

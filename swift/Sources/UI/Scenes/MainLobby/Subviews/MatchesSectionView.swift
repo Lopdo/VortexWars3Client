@@ -31,7 +31,7 @@ final class MatchesSectionView: Control {
 	@Callable
 	func onRefresh() {
 		let matchViews = matchList.getChildren()
-		for mv in matchViews {
+		for mv in matchViews.compactMap({ $0 }) {
 			matchList.removeChild(node: mv)
 		}
 
