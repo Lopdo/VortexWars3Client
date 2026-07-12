@@ -39,3 +39,9 @@ extension MatchRegion: CustomDebugStringConvertible {
 		"\n\(id): \(owner?.index ?? 50); dice: \(dice); neighbors: \(neighbors.map(\.id))"
 	}
 }
+
+extension MatchRegion: Equatable {
+	static func == (lhs: MatchRegion, rhs: MatchRegion) -> Bool {
+		return lhs.id == rhs.id
+	}
+}

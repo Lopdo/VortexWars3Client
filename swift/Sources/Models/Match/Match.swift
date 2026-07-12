@@ -270,8 +270,10 @@ extension Match {
 		if case .myTurn(let turnState) = state {
 			switch turnState {
 				case .targetSelection(let sourceRegion):
+					guard region.neighbors.contains(sourceRegion) else {
+						return
+					}
 					region.regionView.isSelected = true
-					//Task {
 					do {
 						let battleMsg = NMMatchBattleInitiated(
 							attackerRegionId: UInt8(sourceRegion.id),
@@ -283,7 +285,6 @@ extension Match {
 						GD.print("Failed to send message NMMatchEndTurn")
 						region.regionView.isSelected = false
 					}
-				//}
 
 				default:
 					break
