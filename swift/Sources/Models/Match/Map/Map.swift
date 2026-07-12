@@ -1,6 +1,7 @@
 import Foundation
 import NetworkModels
 import NonEmpty
+import SwiftGodot
 
 struct Map {
 
@@ -12,8 +13,6 @@ struct Map {
 		case w
 		case nw
 	}
-
-	static let maxDice: Int = 8
 
 	private let tiles: [Int]
 	let width: Int
@@ -32,11 +31,14 @@ struct Map {
 
 		let mapRegions = Map.createRegions(from: tiles, width: width, height: height)
 
-		regions = mapRegions.map { mapRegion in
-			let mapDataRegion = mapData.regions.first(where: { $0.id == mapRegion.id })
-			let owner = players.first(where: { UInt8($0.index) == mapDataRegion?.ownerIndex })
+		regions = mapRegions.compactMap { mapRegion in
+			guard let mapDataRegion = mapData.regions.first(where: { $0.id == mapRegion.id }) else {
+				GD.print("ERROR: region \(mapRegion.id) not found in map data")
+				return nil
+			}
+			let owner = players.first(where: { UInt8($0.index) == mapDataRegion.ownerIndex })
 			return MatchRegion(
-				region: mapRegion, owner: owner, dice: Int(mapDataRegion?.dice ?? 0))
+				region: mapRegion, owner: owner, dice: Int(mapDataRegion.dice), maxDice: Int(mapDataRegion.maxDice))
 		}
 		.sorted(by: { $0.region.id < $1.region.id })
 

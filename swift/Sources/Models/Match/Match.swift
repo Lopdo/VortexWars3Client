@@ -14,7 +14,6 @@ private struct PendingState {
 
 class Match {
 	let map: Map
-	//let regions: [MatchRegion]
 	let players: [MatchPlayer]
 
 	private var state: MatchState = .intro

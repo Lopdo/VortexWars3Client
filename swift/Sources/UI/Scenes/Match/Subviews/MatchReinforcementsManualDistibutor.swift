@@ -78,7 +78,7 @@ final class MatchReinforcementsManualDistributor: Node {
 
 	func regionSelected(region: MatchRegion) {
 		guard !timer.isStopped() else { return }
-		guard dice > 0, region.dice < Map.maxDice else { return }
+		guard dice > 0, region.dice < region.maxDice else { return }
 
 		region.addReinforcements(dice: 1)
 		dice -= 1

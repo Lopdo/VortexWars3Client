@@ -2,6 +2,7 @@ import Foundation
 
 class MatchRegion {
 	let region: MapRegion
+	let maxDice: Int
 	var neighbors: [MatchRegion] = []
 
 	var id: Int { region.id }
@@ -15,10 +16,11 @@ class MatchRegion {
 
 	var regionView: RegionView!
 
-	init(region: MapRegion, owner: MatchPlayer?, dice: Int) {
+	init(region: MapRegion, owner: MatchPlayer?, dice: Int, maxDice: Int) {
 		self.region = region
 		self.owner = owner
 		self.dice = dice
+		self.maxDice = maxDice
 	}
 
 	func updateBorders(map: Map, owner: MatchPlayer?) {
