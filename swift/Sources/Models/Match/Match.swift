@@ -64,7 +64,7 @@ class Match {
 	private func handleBinaryMessage(data: PackedByteArray) {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
-			GD.print("MatchScreen message received: \(message)")
+			GD.print("Match message received: \(message)")
 			switch message {
 				/*case let msg as NMMatchPlayerLeft:
 					//remove(playerId: msg.playerId)
@@ -76,7 +76,7 @@ class Match {
 					//just a placeholder, nothing is needed to be done for now, since we are reacting to new turn
 					break
 				case let msg as NMMatchNewTurnStarted:
-					newTurnStarted(newPlayerId: msg.playerId)
+					handleNewTurnStart(newPlayerId: msg.playerId)
 				case let msg as NMMatchBattleResults:
 					handleBattleResults(msg: msg)
 				case let msg as NMMatchReinforcementsResults:
@@ -98,7 +98,7 @@ class Match {
 		//TODO: show popup and disconnect player?
 	}
 
-	private func newTurnStarted(newPlayerId: String) {
+	private func handleNewTurnStart(newPlayerId: String) {
 		do {
 			try newTurnStarted(newCurrentPlayerId: newPlayerId)
 		} catch {
@@ -121,8 +121,7 @@ class Match {
 	}
 
 	private func handleManualReinforcements(msg: NMMatchStartManualReinforcements) {
-		matchScreen.viewTurnTimer.startReinforcements(count: Int(msg.reinforcementsCount))
-		startManualReinforcements(playerId: msg.playerId, dice: Int(msg.reinforcementsCount))
+		startManualReinforcements(dice: Int(msg.reinforcementsCount))
 	}
 }
 
@@ -165,16 +164,17 @@ extension Match {
 		}
 	}
 
-	func startManualReinforcements(playerId: String, dice: Int) {
+	func startManualReinforcements(dice: Int) {
 		if case .enemyTurn(let turnState) = state {
 			switch turnState {
 				case .idle:
-					state = .enemyTurn(.reinforcementSelection)
+					state = .enemyTurn(.reinforcementSelection(dice))
+					matchScreen.viewTurnTimer.startReinforcements(count: dice)
 				case .combatInProgress:
 					pendingState = PendingState(
-						state: .enemyTurn(.reinforcementSelection),
+						state: .enemyTurn(.reinforcementSelection(dice)),
 						timestamp: .now)
-				case .reinforcementSelection:
+				case .reinforcementSelection(_):
 					GD.print("duplicate manual reinforcementSelection message received")
 					break
 			}
@@ -183,17 +183,23 @@ extension Match {
 				case .attackerSelection:
 					state = .myTurn(.reinforcementSelection(dice))
 					matchScreen.reinforcementsManualDistributor.startDistribution(dice: dice, sendReinforcements: sendManualReinforcements)
+					matchScreen.viewTurnTimer.startReinforcements(count: dice)
 				case .combatInitiated(let sourceRegion, let targetRegion):
 					sourceRegion.regionView.isSelected = false
 					targetRegion.regionView.isSelected = false
 					state = .myTurn(.reinforcementSelection(dice))
 					matchScreen.reinforcementsManualDistributor.startDistribution(dice: dice, sendReinforcements: sendManualReinforcements)
+					matchScreen.viewTurnTimer.startReinforcements(count: dice)
 				case .targetSelection(let sourceRegion):
 					sourceRegion.regionView.isSelected = false
+					state = .myTurn(.reinforcementSelection(dice))
+					matchScreen.reinforcementsManualDistributor.startDistribution(dice: dice, sendReinforcements: sendManualReinforcements)
+					matchScreen.viewTurnTimer.startReinforcements(count: dice)
 				case .combatInProgress:
 					pendingState = PendingState(
 						state: .myTurn(.reinforcementSelection(dice)),
 						timestamp: .now)
+					GD.print("pending state set")
 				case .reinforcementSelection:
 					GD.print("duplicate manual reinforcementSelection message received")
 					break
@@ -237,6 +243,7 @@ extension Match {
 		currentPlayer = newCurrentPlayer
 
 		matchScreen.lblReinforcementDice.hide()
+		matchScreen.reinforcementsAutoDistributor.finishDistribution()
 
 		// update state
 		if currentPlayer.id == user.player.id {
@@ -272,12 +279,13 @@ extension Match {
 					guard region.neighbors.contains(sourceRegion) else {
 						return
 					}
-					region.regionView.isSelected = true
+
 					do {
 						let battleMsg = NMMatchBattleInitiated(
 							attackerRegionId: UInt8(sourceRegion.id),
 							targetRegionId: UInt8(region.id))
 						try ws.send(message: battleMsg)
+						region.regionView.isSelected = true
 						state = .myTurn(.combatInitiated(sourceRegion, region))
 					} catch {
 						//TODO: add error handling
@@ -295,7 +303,7 @@ extension Match {
 
 		switch state {
 			case .enemyTurn(let turnState):
-				if turnState == .idle {
+				if case .idle = turnState {
 					let attackerRegion = map.region(id: Int(msg.attackerRegionId))
 					let defenderRegion = map.region(id: Int(msg.defenderRegionId))
 					attackerRegion.regionView.isSelected = true
@@ -318,22 +326,31 @@ extension Match {
 			try? await Task.sleep(for: .milliseconds(Timings.battleDuration * msg.battle.battleThrows.count))
 			Callable({ _ in
 
-				switch self.state {
-					case .myTurn(let turnState):
-						switch turnState {
-							case .combatInProgress:
-								self.state = .myTurn(.attackerSelection)
-							default:
-								break
-						}
-					default:
-						break
-				}
-
 				self.applyBattleResults(msg: msg)
 				self.matchScreen.viewBattle.close()
 
 				self.matchScreen.viewTurnTimer.unpause()
+
+				if let pendingState = self.pendingState {
+					if case .myTurn(let turnState) = pendingState.state {
+						if case .reinforcementSelection(let dice) = turnState {
+							self.state = .myTurn(.attackerSelection)
+							self.startManualReinforcements(dice: dice)
+							GD.print("pending state used")
+						}
+					} else if case .enemyTurn(let turnState) = pendingState.state {
+						if case .reinforcementSelection(let dice) = turnState {
+							self.state = .enemyTurn(.idle)
+							self.startManualReinforcements(dice: dice)
+						}
+					}
+				} else {
+					if case .myTurn(_) = self.state {
+						self.state = .myTurn(.attackerSelection)
+					} else {
+						self.state = .enemyTurn(.idle)
+					}
+				}
 
 				return nil
 			})
@@ -374,5 +391,5 @@ enum MyTurnState {
 enum EnemyTurnState {
 	case idle
 	case combatInProgress
-	case reinforcementSelection
+	case reinforcementSelection(Int)
 }

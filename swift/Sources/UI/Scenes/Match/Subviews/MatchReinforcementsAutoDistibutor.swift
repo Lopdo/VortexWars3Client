@@ -21,11 +21,27 @@ final class MatchReinforcementsAutoDistributor: Node {
 
 	func startDistribution(results: [NMMatchReinforcementsResult]) {
 		if timer.isStopped() {
-			timer.start()
+			if results.count > 1 {
+				timer.start()
+			}
 			reinforcements = results.reversed()
+			// Start first batch immediatelly
+			onTimer()
 		} else {
 			reinforcements += results
 		}
+	}
+
+	// This methods shows all remaining reinforcements at the same time,
+	// used when we get new turn message before we are done with this.
+	// We don't want to hold up game because of this
+	func finishDistribution() {
+		timer.stop()
+		for r in reinforcements {
+			let region = map.region(id: Int(r.regionId))
+			region.addReinforcements(dice: Int(r.dice))
+		}
+		reinforcements.removeAll()
 	}
 
 	private func onTimer() {

@@ -27,6 +27,11 @@ class RegionBorderView: Node2D {
 		externalBorders.removeAll()
 
 		var segments = getExternalBorderSegments(map: map, owner: owner)
+		if segments.isEmpty {
+			// We don't have any external borders, no need to draw anything (internal are already drawn)
+			return
+		}
+
 		var currentSegment = segments.removeFirst()
 		var linesPoints: [[Vector2]] = []
 		var linePoints: [Vector2] = []
