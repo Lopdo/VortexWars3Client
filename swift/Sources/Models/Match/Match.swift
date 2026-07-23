@@ -85,6 +85,8 @@ class Match {
 					handleManualReinforcements(msg: msg)
 				case let msg as NMMatchManualReinforcementPlacementConfirmed:
 					handleManualReinforcementsConfirmation(msg: msg)
+				case let msg as NMMatchStrengthChanged:
+					handleStrengthUpdate(msg: msg)
 				default:
 					GD.print("Received unsupported binary message type \(message)")
 			}
@@ -122,6 +124,10 @@ class Match {
 
 	private func handleManualReinforcements(msg: NMMatchStartManualReinforcements) {
 		startManualReinforcements(dice: Int(msg.reinforcementsCount))
+	}
+
+	private func handleStrengthUpdate(msg: NMMatchStrengthChanged) {
+		matchScreen.updateStrengths(msg.updates)
 	}
 }
 

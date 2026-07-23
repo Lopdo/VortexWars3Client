@@ -10,6 +10,9 @@ final class MatchPlayerListPlayerView: Control {
 	@Export
 	var lblCurrent: Label!
 
+	@Export
+	var lblStrength: Label!
+
 	var player: MatchPlayer!
 
 	func initialize(player: MatchPlayer, isMe: Bool) {
@@ -19,6 +22,10 @@ final class MatchPlayerListPlayerView: Control {
 
 	func set(current: Bool) {
 		lblCurrent.text = current ? "X" : "_"
+	}
+
+	func set(strength: Int) {
+		lblStrength.text = "[\(strength)]"
 	}
 
 }

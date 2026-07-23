@@ -15,14 +15,21 @@ final class MatchPlayerListView: Control {
 				playerView.initialize(player: player, isMe: user.player.id == player.id)
 				playerList.addChild(node: playerView)
 				playerView.set(current: player.id == currentPlayerId)
+				playerView.set(strength: player.strength)
 			}
 		}
 	}
 
 	func updateCurrentPlayer(id: String) {
-		for playerView in playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView })
-		{
+		for playerView in playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }) {
 			playerView.set(current: playerView.player.id == id)
+		}
+	}
+
+	func update(strength: Int, playerIndex: Int) {
+		if let playerView = playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }).first(where: { $0.player.index == playerIndex })
+		{
+			playerView.set(strength: strength)
 		}
 	}
 }

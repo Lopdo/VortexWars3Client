@@ -9,6 +9,8 @@ class MatchPlayer {
 	let faction: Int
 	let terrain: Int
 
+	var strength: Int
+
 	var color: Color {
 		MatchPlayer.colors[index]
 	}
@@ -22,6 +24,7 @@ class MatchPlayer {
 		self.name = nmMatchPlayer.name
 		self.faction = Int(nmMatchPlayer.faction)
 		self.terrain = Int(nmMatchPlayer.terrain)
+		self.strength = Int(nmMatchPlayer.strength)
 	}
 }
 

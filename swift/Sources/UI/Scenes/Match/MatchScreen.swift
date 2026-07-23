@@ -101,4 +101,10 @@ final class MatchScreen: Node {
 		match.endTurn()
 	}
 
+	func updateStrengths(_ strengts: [NMMatchPlayerStrength]) {
+		for s in strengts {
+			playerListView.update(strength: Int(s.strength), playerIndex: Int(s.playerIndex))
+		}
+	}
+
 }
