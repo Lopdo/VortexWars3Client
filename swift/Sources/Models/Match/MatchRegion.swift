@@ -13,6 +13,7 @@ class MatchRegion {
 			regionView.update(dice: dice)
 		}
 	}
+	var defenceBoost: Bool = false
 
 	var regionView: RegionView!
 
@@ -33,6 +34,11 @@ class MatchRegion {
 	func addReinforcements(dice: Int) {
 		self.dice = self.dice + dice
 		regionView.flashHighlight()
+	}
+
+	func setDefenceBoost(active: Bool) {
+		defenceBoost = active
+		regionView.setDefenceBoost(active: active)
 	}
 }
 

@@ -11,13 +11,46 @@ final class MatchBattleView: Control {
 	@Export
 	var lblDefender: Label!
 
+	private var timer: SwiftGodot.Timer!
+
+	private var battleThrows: [NMMatchBattleThrows] = []
+
+	override func _ready() {
+		timer = SwiftGodot.Timer()
+		addChild(node: timer)
+		timer.waitTime = Double(Timings.battleDuration) / 1000
+		timer.timeout.connect(onTimer)
+	}
+
 	func start(battle: NMMatchBattle) {
+		self.battleThrows = battle.battleThrows.reversed()
+
 		show()
-		lblAttacker.text = String(battle.battleThrows.first?.attackerThrow ?? 0)
-		lblDefender.text = String(battle.battleThrows.first?.defenderThrow ?? 0)
+
+		if battleThrows.count > 1 {
+			timer.start()
+		}
+		if let firstBattleThrows = battleThrows.popLast() {
+			showBattleThrows(firstBattleThrows)
+		}
+	}
+
+	private func showBattleThrows(_ battleThrows: NMMatchBattleThrows) {
+		lblAttacker.text = String(battleThrows.attackerThrow)
+		lblDefender.text = String(battleThrows.defenderThrow)
 	}
 
 	func close() {
 		hide()
+	}
+
+	private func onTimer() {
+		if let firstBattleThrows = battleThrows.popLast() {
+			showBattleThrows(firstBattleThrows)
+		}
+
+		if battleThrows.isEmpty {
+			timer.stop()
+		}
 	}
 }

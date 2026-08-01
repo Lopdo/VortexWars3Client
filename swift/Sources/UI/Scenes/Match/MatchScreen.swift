@@ -38,7 +38,7 @@ final class MatchScreen: Node {
 		createMapView()
 
 		playerListView.add(
-			players: match.players, currentPlayerId: match.currentPlayer.id, user: match.user)
+			players: match.players, currentPlayerId: match.currentPlayer.id, user: match.user, match: match)
 
 		ws.getParent()?.removeChild(node: ws)
 		addChild(node: ws)
@@ -107,4 +107,11 @@ final class MatchScreen: Node {
 		}
 	}
 
+	func updateAttackBoost(count: Int, playerId: String) {
+		playerListView.updateAttackBoost(count: count, playerId: playerId)
+	}
+
+	func updateDefenceBoost(count: Int, playerId: String) {
+		playerListView.updateDefenceBoost(count: count, playerId: playerId)
+	}
 }

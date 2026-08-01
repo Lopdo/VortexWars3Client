@@ -25,7 +25,14 @@ class Match {
 
 	private var pendingState: PendingState?
 
-	var currentPlayer: MatchPlayer
+	var currentPlayer: MatchPlayer {
+		willSet {
+			currentPlayer.attackBoostActive = false
+			matchScreen.playerListView.setAttackBoost(active: false, playerId: currentPlayer.id)
+			matchScreen.playerListView.setDefenceBoost(active: false, playerId: currentPlayer.id)
+		}
+	}
+
 	var user: User
 	private let ws: WebSocketClient
 	private unowned let matchScreen: MatchScreen
@@ -87,6 +94,10 @@ class Match {
 					handleManualReinforcementsConfirmation(msg: msg)
 				case let msg as NMMatchStrengthChanged:
 					handleStrengthUpdate(msg: msg)
+				case let msg as NMMatchDefenceBoostPlacementConfirmed:
+					handleDefenceBoostPlacement(msg: msg)
+				case let msg as NMMatchDefenceBoostPlacementInvalid:
+					handleDefenceBoostPlacementInvalid(msg: msg)
 				default:
 					GD.print("Received unsupported binary message type \(message)")
 			}
@@ -128,6 +139,50 @@ class Match {
 
 	private func handleStrengthUpdate(msg: NMMatchStrengthChanged) {
 		matchScreen.updateStrengths(msg.updates)
+	}
+
+	private func handleDefenceBoostPlacement(msg: NMMatchDefenceBoostPlacementConfirmed) {
+		if case .enemyTurn(_) = state {
+			matchScreen.updateDefenceBoost(count: Int(msg.remainingBoosts), playerId: currentPlayer.id)
+			map.region(id: Int(msg.regionId)).regionView.setDefenceBoost(active: true)
+		}
+	}
+
+	private func handleDefenceBoostPlacementInvalid(msg: NMMatchDefenceBoostPlacementInvalid) {
+		if case .myTurn(_) = state {
+			matchScreen.updateDefenceBoost(count: Int(msg.remainingBoosts), playerId: currentPlayer.id)
+			map.region(id: Int(msg.regionId)).regionView.setDefenceBoost(active: false)
+		}
+	}
+
+	func activateAttackBoost() {
+		if case .myTurn(let turnState) = state {
+			switch turnState {
+				case .attackerSelection, .targetSelection(_):
+					currentPlayer.attackBoostActive.toggle()
+					matchScreen.playerListView.setAttackBoost(active: currentPlayer.attackBoostActive, playerId: currentPlayer.id)
+				default:
+					break
+			}
+		}
+	}
+
+	func activateDefenceBoost() {
+		if case .myTurn(let turnState) = state {
+			switch turnState {
+				case .attackerSelection:
+					matchScreen.playerListView.setDefenceBoost(active: true, playerId: currentPlayer.id)
+					state = .myTurn(.defenceBoostSelection)
+				case .defenceBoostSelection:
+					matchScreen.playerListView.setDefenceBoost(active: false, playerId: currentPlayer.id)
+					state = .myTurn(.attackerSelection)
+				case .targetSelection(let region):
+					region.regionView.isSelected = false
+					matchScreen.playerListView.setDefenceBoost(active: true, playerId: currentPlayer.id)
+					state = .myTurn(.defenceBoostSelection)
+				default: break
+			}
+		}
 	}
 }
 
@@ -186,7 +241,7 @@ extension Match {
 			}
 		} else if case .myTurn(let turnState) = state {
 			switch turnState {
-				case .attackerSelection:
+				case .attackerSelection, .defenceBoostSelection:
 					state = .myTurn(.reinforcementSelection(dice))
 					matchScreen.reinforcementsManualDistributor.startDistribution(dice: dice, sendReinforcements: sendManualReinforcements)
 					matchScreen.viewTurnTimer.startReinforcements(count: dice)
@@ -265,6 +320,23 @@ extension Match {
 				case .attackerSelection:
 					region.regionView.isSelected = true
 					state = .myTurn(.targetSelection(region))
+				case .defenceBoostSelection:
+					guard !region.defenceBoost else {
+						return
+					}
+
+					do {
+						try ws.send(message: NMMatchDefenceBoostPlaced(regionId: UInt8(region.id)))
+						region.setDefenceBoost(active: true)
+						currentPlayer.defenceBoosts -= 1
+						matchScreen.updateDefenceBoost(count: currentPlayer.defenceBoosts, playerId: currentPlayer.id)
+						matchScreen.playerListView.setDefenceBoost(active: false, playerId: currentPlayer.id)
+						state = .myTurn(.attackerSelection)
+					} catch {
+						//TODO: add error handling
+						GD.print("Failed to send message NMMatchDefenceBoostPlaced")
+					}
+
 				case .targetSelection(let oldRegion):
 					oldRegion.regionView.isSelected = false
 					region.regionView.isSelected = true
@@ -289,10 +361,14 @@ extension Match {
 					do {
 						let battleMsg = NMMatchBattleInitiated(
 							attackerRegionId: UInt8(sourceRegion.id),
-							targetRegionId: UInt8(region.id))
+							targetRegionId: UInt8(region.id),
+							attackBoostActive: currentPlayer.attackBoostActive)
 						try ws.send(message: battleMsg)
 						region.regionView.isSelected = true
+						matchScreen.playerListView.setAttackBoost(active: false, playerId: currentPlayer.id)
 						state = .myTurn(.combatInitiated(sourceRegion, region))
+						currentPlayer.attackBoostActive = false
+						matchScreen.playerListView.setAttackBoost(active: currentPlayer.attackBoostActive, playerId: currentPlayer.id)
 					} catch {
 						//TODO: add error handling
 						GD.print("Failed to send message NMMatchEndTurn")
@@ -376,6 +452,15 @@ extension Match {
 
 		attackerRegion.regionView.isSelected = false
 		defenderRegion.regionView.isSelected = false
+
+		if msg.battle.savedByAttackBoost {
+			currentPlayer.attackBoosts -= 1
+			matchScreen.playerListView.updateAttackBoost(count: currentPlayer.attackBoosts, playerId: currentPlayer.id)
+		}
+
+		if msg.battle.thwartedByDefenseBoost {
+			defenderRegion.regionView.setDefenceBoost(active: false)
+		}
 	}
 }
 
@@ -388,6 +473,7 @@ enum MatchState {
 
 enum MyTurnState {
 	case attackerSelection
+	case defenceBoostSelection
 	case targetSelection(MatchRegion)
 	case combatInitiated(MatchRegion, MatchRegion)
 	case combatInProgress

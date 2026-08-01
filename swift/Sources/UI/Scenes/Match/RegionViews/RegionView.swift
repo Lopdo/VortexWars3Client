@@ -58,6 +58,10 @@ class RegionView: Sprite2D {
 		factionView.set(dice: dice)
 	}
 
+	func setDefenceBoost(active: Bool) {
+		factionView.setDefenceBoost(active: active)
+	}
+
 	func updateBorders(map: Map, owner: MatchPlayer?) {
 		borderView.updateBorders(map: map, owner: owner)
 	}

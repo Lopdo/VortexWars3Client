@@ -10,6 +10,10 @@ class MatchPlayer {
 	let terrain: Int
 
 	var strength: Int
+	var attackBoosts: Int
+	var defenceBoosts: Int
+
+	var attackBoostActive: Bool = false
 
 	var color: Color {
 		MatchPlayer.colors[index]
@@ -25,6 +29,8 @@ class MatchPlayer {
 		self.faction = Int(nmMatchPlayer.faction)
 		self.terrain = Int(nmMatchPlayer.terrain)
 		self.strength = Int(nmMatchPlayer.strength)
+		self.attackBoosts = Int(nmMatchPlayer.attackBoosts)
+		self.defenceBoosts = Int(nmMatchPlayer.defenceBoosts)
 	}
 }
 

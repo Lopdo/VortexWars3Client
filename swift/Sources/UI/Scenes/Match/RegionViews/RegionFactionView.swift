@@ -7,6 +7,8 @@ final class RegionFactionView: Sprite2D {
 	let defaultFont = ThemeDB.fallbackFont
 	var diceText: String? = nil
 
+	var defenceBoost: Bool = false
+
 	override func _ready() {
 		texture = ResourceLoader.load(path: "res://res/img/faction_logoEmpty.png") as? Texture2D
 		if let texture {
@@ -29,6 +31,11 @@ final class RegionFactionView: Sprite2D {
 		queueRedraw()
 	}
 
+	func setDefenceBoost(active: Bool) {
+		defenceBoost = active
+		queueRedraw()
+	}
+
 	override func _draw() {
 		if let diceText,
 			let defaultFont
@@ -36,7 +43,7 @@ final class RegionFactionView: Sprite2D {
 			drawString(
 				font: defaultFont, pos: Vector2(x: 22, y: 32), text: diceText, alignment: .center,
 				width: 16,
-				fontSize: 11)
+				fontSize: defenceBoost ? 20 : 11)
 		}
 	}
 }

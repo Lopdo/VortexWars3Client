@@ -1,9 +1,11 @@
 [gd_scene format=3 uid="uid://cw8u31epmhhia"]
 
-[node name="MatchPlayerListPlayerView" type="MatchPlayerListPlayerView" unique_id=2129565963 node_paths=PackedStringArray("lbl_name", "lbl_current", "lbl_strength")]
+[node name="MatchPlayerListPlayerView" type="MatchPlayerListPlayerView" unique_id=2129565963 node_paths=PackedStringArray("lbl_name", "lbl_current", "lbl_strength", "btn_defence_boost", "btn_attack_boost")]
 lbl_name = NodePath("MarginContainer/VBoxContainer/HBoxContainer/LabelName")
 lbl_current = NodePath("MarginContainer/VBoxContainer/HBoxContainer/LabelCurrent")
-lbl_strength = NodePath("MarginContainer/VBoxContainer/LabelStrength")
+lbl_strength = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/LabelStrength")
+btn_defence_boost = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/ButtonDefenceBoost")
+btn_attack_boost = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/ButtonAttackBoost")
 custom_minimum_size = Vector2(0, 80)
 anchors_preset = 14
 anchor_top = 0.5
@@ -36,5 +38,21 @@ layout_mode = 2
 [node name="LabelName" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1453088409]
 layout_mode = 2
 
-[node name="LabelStrength" type="Label" parent="MarginContainer/VBoxContainer" unique_id=122971566]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1942723529]
 layout_mode = 2
+
+[node name="LabelStrength" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=122971566]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonAttackBoost" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=842220831]
+layout_mode = 2
+text = "(0) Attack"
+
+[node name="ButtonDefenceBoost" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1917948439]
+layout_mode = 2
+text = "(0) Defence
+"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/ButtonAttackBoost" to="." method="onAttackBoostTapped"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/ButtonDefenceBoost" to="." method="onDefenceBoostTapped"]
