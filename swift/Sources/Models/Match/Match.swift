@@ -20,6 +20,7 @@ class Match {
 	{
 		didSet {
 			GD.print("state: \(state)")
+			stateChanged(from: oldValue, to: state)
 		}
 	}
 
@@ -35,7 +36,7 @@ class Match {
 
 	var user: User
 	private let ws: WebSocketClient
-	private unowned let matchScreen: MatchScreen
+	unowned let matchScreen: MatchScreen
 
 	private var binaryMessageHandler: Callable?
 
@@ -79,7 +80,7 @@ class Match {
 				case let msg as NMMatchTurnEnded:
 					//TODO:
 					break*/
-				case let msg as NMMatchEndTurn:
+				case is NMMatchEndTurn:
 					//just a placeholder, nothing is needed to be done for now, since we are reacting to new turn
 					break
 				case let msg as NMMatchNewTurnStarted:
@@ -202,7 +203,7 @@ extension Match {
 	func endTurn() {
 		if case .myTurn(let turnState) = state {
 			switch turnState {
-				case .attackerSelection:
+				case .attackerSelection, .targetSelection(_), .defenceBoostSelection:
 					do {
 						let endTurnMsg = NMMatchEndTurn()
 						try ws.send(message: endTurnMsg)

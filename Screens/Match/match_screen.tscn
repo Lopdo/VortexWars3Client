@@ -137,15 +137,9 @@ layout_mode = 2
 layout_mode = 2
 text = "End turn"
 
-[node name="MatchReinforcementsAutoDistributor" type="MatchReinforcementsAutoDistributor" parent="." unique_id=1214161482 node_paths=PackedStringArray("timer")]
-timer = NodePath("Timer")
+[node name="MatchReinforcementsAutoDistributor" type="MatchReinforcementsAutoDistributor" parent="." unique_id=1214161482]
 
-[node name="Timer" type="Timer" parent="MatchReinforcementsAutoDistributor" unique_id=1692634021]
-
-[node name="MatchReinforcementsManualDistributor" type="MatchReinforcementsManualDistributor" parent="." unique_id=1858842536 node_paths=PackedStringArray("timer", "lbl_dice")]
-timer = NodePath("Timer")
+[node name="MatchReinforcementsManualDistributor" type="MatchReinforcementsManualDistributor" parent="." unique_id=1858842536 node_paths=PackedStringArray("lbl_dice")]
 lbl_dice = NodePath("../HBoxContainer/Control/ReinforcementDice")
-
-[node name="Timer" type="Timer" parent="MatchReinforcementsManualDistributor" unique_id=65739365]
 
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/Button" to="." method="endTurnPressed"]

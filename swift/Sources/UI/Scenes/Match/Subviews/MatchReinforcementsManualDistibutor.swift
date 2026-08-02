@@ -4,8 +4,7 @@ import SwiftGodot
 @Godot
 final class MatchReinforcementsManualDistributor: Node {
 
-	@Export
-	private var timer: SwiftGodot.Timer!
+	private var timer: Timer!
 
 	@Export
 	private var lblDice: Label!
@@ -27,6 +26,8 @@ final class MatchReinforcementsManualDistributor: Node {
 	}
 
 	override func _ready() {
+		timer = Timer()
+		addChild(node: timer)
 		timer.waitTime = 1
 		timer.timeout.connect(onTimer)
 	}

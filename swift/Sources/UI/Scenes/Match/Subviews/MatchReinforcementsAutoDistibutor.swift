@@ -4,8 +4,7 @@ import SwiftGodot
 @Godot
 final class MatchReinforcementsAutoDistributor: Node {
 
-	@Export
-	private var timer: SwiftGodot.Timer!
+	private var timer: Timer!
 
 	private var reinforcements: [NMMatchReinforcementsResult] = []
 	private var map: Map!
@@ -15,6 +14,8 @@ final class MatchReinforcementsAutoDistributor: Node {
 	}
 
 	override func _ready() {
+		timer = Timer()
+		addChild(node: timer)
 		timer.waitTime = 0.25
 		timer.timeout.connect(onTimer)
 	}
