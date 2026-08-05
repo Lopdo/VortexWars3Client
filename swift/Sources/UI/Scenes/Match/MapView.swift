@@ -2,6 +2,12 @@ import Foundation
 import NetworkModels
 import SwiftGodot
 
+extension MapView: SceneLoadable {
+	static var pathToScene: String {
+		"res://Screens/Match/map_view.tscn"
+	}
+}
+
 @Godot
 final class MapView: Node2D {
 

@@ -61,14 +61,11 @@ final class MatchesSectionView: Control {
 	}
 
 	private func createMatchView(for match: MatchDTO) {
-		if let matchView = SceneLoader.load(path: "res://Screens/MainLobby/match_view.tscn")
-			as? MatchView
-		{
-			matchView.setup(with: match)
-			matchList.addChild(node: matchView)
-			matchView.pressed.connect {
-				self.joinTapped(match: match)
-			}
+		let matchView = MatchView.loadScene()
+		matchView.setup(with: match)
+		matchList.addChild(node: matchView)
+		matchView.pressed.connect {
+			self.joinTapped(match: match)
 		}
 	}
 
@@ -110,12 +107,9 @@ final class MatchesSectionView: Control {
 
 	private func handleJoinSuccess(client: WebSocketClient, msg: NMMatchJoined) {
 		GD.print("Successfully joined match with ID: \(msg.id)")
-		if let lobby = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby.tscn")
-			as? MatchLobby
-		{
-			changeSceneToNode(node: lobby)
-			removeChild(node: client)
-			lobby.initialize(ws: client, user: user, players: msg.players)
-		}
+		let lobby = MatchLobby.loadScene()
+		changeSceneToNode(node: lobby)
+		removeChild(node: client)
+		lobby.initialize(ws: client, user: user, players: msg.players)
 	}
 }

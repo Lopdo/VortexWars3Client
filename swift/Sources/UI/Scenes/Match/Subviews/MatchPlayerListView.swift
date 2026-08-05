@@ -9,23 +9,20 @@ final class MatchPlayerListView: Control {
 
 	func add(players: [MatchPlayer], currentPlayerId: String, user: User, match: Match) {
 		for player in players {
-			if let playerView = SceneLoader.load(path: "res://Screens/Match/match_player.tscn")
-				as? MatchPlayerListPlayerView
-			{
-				playerView.initialize(player: player, isMe: user.player.id == player.id, match: match)
-				playerList.addChild(node: playerView)
-				playerView.set(current: player.id == currentPlayerId)
-				playerView.set(strength: player.strength)
-				if player.attackBoosts == 0 {
-					playerView.disableAttackBoosts()
-				} else {
-					playerView.setAttackBoost(count: player.attackBoosts)
-				}
-				if player.defenceBoosts == 0 {
-					playerView.disableDefenceBoosts()
-				} else {
-					playerView.setDefenceBoost(count: player.defenceBoosts)
-				}
+			let playerView = MatchPlayerListPlayerView.loadScene()
+			playerView.initialize(player: player, isMe: user.player.id == player.id, match: match)
+			playerList.addChild(node: playerView)
+			playerView.set(current: player.id == currentPlayerId)
+			playerView.set(strength: player.strength)
+			if player.attackBoosts == 0 {
+				playerView.disableAttackBoosts()
+			} else {
+				playerView.setAttackBoost(count: player.attackBoosts)
+			}
+			if player.defenceBoosts == 0 {
+				playerView.disableDefenceBoosts()
+			} else {
+				playerView.setDefenceBoost(count: player.defenceBoosts)
 			}
 		}
 	}

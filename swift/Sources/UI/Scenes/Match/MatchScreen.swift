@@ -2,6 +2,12 @@ import Foundation
 import NetworkModels
 import SwiftGodot
 
+extension MatchScreen: SceneLoadable {
+	static var pathToScene: String {
+		"res://Screens/Match/match_screen.tscn"
+	}
+}
+
 @Godot
 final class MatchScreen: Node {
 
@@ -81,15 +87,9 @@ final class MatchScreen: Node {
 	}
 
 	private func createMapView() {
-		if let mapView = SceneLoader.load(path: "res://Screens/Match/map_view.tscn") as? MapView {
-			self.mapView = mapView
-			mapView.set(match: match)
-			mapContainer.addChild(node: mapView)
-		} else {
-			//TODO: handle error in more restrictive way, something is very wrong, kick user out?
-			GD.print("Failed to load map view")
-			ErrorManager.showError(message: "Failed to load map view")
-		}
+		self.mapView = MapView.loadScene()
+		mapView.set(match: match)
+		mapContainer.addChild(node: mapView)
 	}
 
 	private func handle(error: MatchIncosistencyError) {

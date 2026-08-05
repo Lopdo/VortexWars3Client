@@ -2,6 +2,12 @@ import Foundation
 import NetworkModels
 import SwiftGodot
 
+extension MatchLobbyPlayerView: SceneLoadable {
+	static var pathToScene: String {
+		"res://Screens/MatchLobby/match_lobby_player.tscn"
+	}
+}
+
 @Godot
 final class MatchLobbyPlayerView: Control {
 

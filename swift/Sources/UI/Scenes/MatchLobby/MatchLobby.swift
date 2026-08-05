@@ -2,6 +2,12 @@ import Foundation
 import NetworkModels
 import SwiftGodot
 
+extension MatchLobby: SceneLoadable {
+	static var pathToScene: String {
+		"res://Screens/MatchLobby/match_lobby.tscn"
+	}
+}
+
 @Godot
 final class MatchLobby: Node {
 
@@ -89,12 +95,9 @@ final class MatchLobby: Node {
 	}
 
 	private func add(player: NMMatchLobbyPlayer) {
-		if let matchView = SceneLoader.load(
-			path: "res://Screens/MatchLobby/match_lobby_player.tscn") as? MatchLobbyPlayerView
-		{
-			matchView.initialize(player: MatchLobbyPlayer(from: player))
-			playerList.addChild(node: matchView)
-		}
+		let matchView = MatchLobbyPlayerView.loadScene()
+		matchView.initialize(player: MatchLobbyPlayer(from: player))
+		playerList.addChild(node: matchView)
 	}
 
 	private func playerView(for playerId: String) -> MatchLobbyPlayerView? {
@@ -168,15 +171,9 @@ final class MatchLobby: Node {
 	@Callable
 	func onExit() {
 		wsClient.close()
-		if let lobby = SceneLoader.load(path: "res://Screens/MainLobby/main_lobby.tscn")
-			as? MainLobby
-		{
-			lobby.initialize(user: user)
-			changeSceneToNode(node: lobby)
-		} else {
-			GD.print("Failed to load MainLobby scene")
-			ErrorManager.showError(message: "Failed to load MainLobby scene")
-		}
+		let lobby = MainLobby.loadScene()
+		lobby.initialize(user: user)
+		changeSceneToNode(node: lobby)
 	}
 
 	@Callable
@@ -193,24 +190,18 @@ final class MatchLobby: Node {
 	}
 
 	private func matchStartReceived(msg: NMMatchStarted) {
-		if let match = SceneLoader.load(path: "res://Screens/Match/match_screen.tscn")
-			as? MatchScreen
-		{
-			match.initialize(
-				user: user,
-				settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer,
-				mapData: msg.mapData, ws: wsClient)
+		let match = MatchScreen.loadScene()
+		match.initialize(
+			user: user,
+			settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer,
+			mapData: msg.mapData, ws: wsClient)
 
-			changeSceneToNode(node: match)
+		changeSceneToNode(node: match)
 
-			if let binaryMessageHandler {
-				wsClient.dataReceived.disconnect(binaryMessageHandler)
-			}
-			binaryMessageHandler = nil
-		} else {
-			GD.print("Failed to load MainLobby scene")
-			ErrorManager.showError(message: "Failed to load MainLobby scene")
+		if let binaryMessageHandler {
+			wsClient.dataReceived.disconnect(binaryMessageHandler)
 		}
+		binaryMessageHandler = nil
 
 	}
 }

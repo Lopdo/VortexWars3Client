@@ -1,6 +1,12 @@
 import Foundation
 import SwiftGodot
 
+extension MatchPlayerListPlayerView: SceneLoadable {
+	static var pathToScene: String {
+		"res://Screens/Match/match_player.tscn"
+	}
+}
+
 @Godot
 final class MatchPlayerListPlayerView: Control {
 

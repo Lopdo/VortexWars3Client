@@ -327,22 +327,16 @@ final class TestScene: Node {
 	}
 
 	private func matchStartReceived(msg: NMMatchStarted) {
-		if let match = SceneLoader.load(path: "res://Screens/Match/match_screen.tscn")
-			as? MatchScreen
-		{
-			match.initialize(
-				user: currentUser!,
-				settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer,
-				mapData: msg.mapData, ws: webSocketClient!)
+		let match = MatchScreen.loadScene()
+		match.initialize(
+			user: currentUser!,
+			settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer,
+			mapData: msg.mapData, ws: webSocketClient!)
 
-			changeSceneToNode(node: match)
+		changeSceneToNode(node: match)
 
-			if let binaryMsgHandlerToken {
-				webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)
-			}
-		} else {
-			GD.print("Failed to load MainLobby scene")
-			ErrorManager.showError(message: "Failed to load MainLobby scene")
+		if let binaryMsgHandlerToken {
+			webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)
 		}
 	}
 
@@ -358,15 +352,12 @@ final class TestScene: Node {
 
 	private func goToLobby(msg: NMMatchJoined) {
 		GD.print("Successfully joined match with ID: \(msg.id)")
-		if let lobby = SceneLoader.load(path: "res://Screens/MatchLobby/match_lobby.tscn")
-			as? MatchLobby
-		{
-			removeChild(node: webSocketClient!)
-			lobby.initialize(ws: webSocketClient!, user: currentUser!, players: msg.players)
-			changeSceneToNode(node: lobby)
-			if let binaryMsgHandlerToken {
-				webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)
-			}
+		let lobby = MatchLobby.loadScene()
+		removeChild(node: webSocketClient!)
+		lobby.initialize(ws: webSocketClient!, user: currentUser!, players: msg.players)
+		changeSceneToNode(node: lobby)
+		if let binaryMsgHandlerToken {
+			webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)
 		}
 	}
 }

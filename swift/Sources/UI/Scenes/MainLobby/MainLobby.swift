@@ -1,6 +1,12 @@
 import Foundation
-import SwiftGodot
 import NetworkModels
+import SwiftGodot
+
+extension MainLobby: SceneLoadable {
+	static var pathToScene: String {
+		"res://Screens/MainLobby/main_lobby.tscn"
+	}
+}
 
 @Godot
 final class MainLobby: Node {
@@ -17,10 +23,10 @@ final class MainLobby: Node {
 	var matchesSectionView: MatchesSectionView!
 
 	private var user: User!
-	
+
 	override func _ready() {
 		addChild(node: client)
-		
+
 		client.connectedToServer.connect(connectedToServer)
 		client.connectionClosed.connect {
 			GD.print("Client just disconnected with code: \(self.client.socket.getCloseCode()), reason: \(self.client.socket.getCloseReason())")
@@ -30,7 +36,7 @@ final class MainLobby: Node {
 
 		matchesSectionView.user = user
 	}
-	
+
 	func initialize(user: User) {
 		self.user = user
 		connectToWebSocket()
@@ -40,7 +46,7 @@ final class MainLobby: Node {
 		let host = "127.0.0.1:8080/chat/lobby"
 		GD.print("Connecting to host: \(host)")
 		let err = client.connectTo(url: "ws://\(host)")
-		if err != .ok {	
+		if err != .ok {
 			GD.print("Error connecting to host: \(err)")
 		}
 	}
@@ -73,7 +79,7 @@ final class MainLobby: Node {
 			}
 		}
 	}
-	
+
 	private func initializeLobby(players: [NMLobbyMember]) {
 		for player in players {
 			addPlayer(name: player.playerName, id: player.playerId)
@@ -141,3 +147,4 @@ final class MainLobby: Node {
 		GD.print(message)
 	}
 }
+
