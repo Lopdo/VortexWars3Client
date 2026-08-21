@@ -20,6 +20,9 @@ final class MatchScreen: Node {
 	@Export
 	var btnEndTurn: Button!
 
+	@Export
+	var btnQuit: Button!
+
 	@Export(.nodeType)
 	var viewBattle: MatchBattleView!
 	@Export(.nodeType)
@@ -76,6 +79,13 @@ final class MatchScreen: Node {
 
 		reinforcementsManualDistributor.initialize(map: match.map)
 		reinforcementsAutoDistributor.initialize(map: match.map)
+
+		if startingPlayer == user.player.id {
+			btnEndTurn.show()
+		} else {
+			btnEndTurn.hide()
+		}
+
 	}
 
 	private func setupSubViewport() {
@@ -101,6 +111,26 @@ final class MatchScreen: Node {
 		match.endTurn()
 	}
 
+	@Callable
+	func quitPressed() {
+		//TODO: send some goodbye/cleanup message. It might be useful to know player initiated disconnect
+
+		ws.close()
+
+		let lobby = MainLobby.loadScene()
+		lobby.initialize(user: match.user)
+		changeSceneToNode(node: lobby)
+	}
+
+	func updateCurrentPlayer(id: String, amICurrent: Bool) {
+		playerListView.updateCurrentPlayer(id: id)
+		if amICurrent {
+			btnEndTurn.show()
+		} else {
+			btnEndTurn.hide()
+		}
+	}
+
 	func updateStrengths(_ strengts: [NMMatchPlayerStrength]) {
 		for s in strengts {
 			playerListView.update(strength: Int(s.strength), playerIndex: Int(s.playerIndex))
@@ -113,5 +143,18 @@ final class MatchScreen: Node {
 
 	func updateDefenceBoost(count: Int, playerId: String) {
 		playerListView.updateDefenceBoost(count: count, playerId: playerId)
+	}
+
+	func showDefeatPopup(position: Int, gameOver: Bool) {
+		let popup = PlayerEliminatedPopup.loadScene()
+		popup.initialize(position: position, gameOver: gameOver)
+		popup.onQuitCallback = quitPressed
+		addChild(node: popup)
+	}
+
+	func gameOver() {
+		viewTurnTimer.stop()
+		playerListView.updateCurrentPlayer(id: "")
+		btnEndTurn.hide()
 	}
 }

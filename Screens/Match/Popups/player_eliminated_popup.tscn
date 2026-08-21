@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://by85cmscglp05"]
+
+[node name="PlayerEliminatedPopup" type="PlayerEliminatedPopup" unique_id=1182446648 node_paths=PackedStringArray("lbl_title", "lbl_position", "btn_quit", "btn_close")]
+lbl_title = NodePath("ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/Label")
+lbl_position = NodePath("ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/Label2")
+btn_quit = NodePath("ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ButtonQuit")
+btn_close = NodePath("ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ButtonClose")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=662642380]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.298039)
+
+[node name="CenterContainer" type="CenterContainer" parent="ColorRect" unique_id=941789005]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="ColorRect/CenterContainer" unique_id=425534328]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="ColorRect/CenterContainer/PanelContainer" unique_id=122344431]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/CenterContainer/PanelContainer" unique_id=1739816833]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/CenterContainer/PanelContainer/MarginContainer" unique_id=1252339164]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Label" type="Label" parent="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1730896926]
+layout_mode = 2
+text = "Error!"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1794369926]
+layout_mode = 2
+text = "you ended up in X place"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1055761511]
+layout_mode = 2
+
+[node name="ButtonQuit" type="Button" parent="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1807590859]
+layout_mode = 2
+text = "Quit"
+
+[node name="Control" type="Control" parent="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1068123582]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonClose" type="Button" parent="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1811370809]
+layout_mode = 2
+text = "Close"
+
+[connection signal="pressed" from="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ButtonQuit" to="." method="onQuit"]
+[connection signal="pressed" from="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ButtonClose" to="." method="onClose"]

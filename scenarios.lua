@@ -13,12 +13,12 @@ return {
             "godot Test/test_scene.tscn -- -p=lopdo2 -m=test -a=jm -lobby=true",
         },
     },
-    ["3players"] = {
+    ["3p"] = {
         desc = "Three players",
         cmds = {
             "godot Test/test_scene.tscn -- -p=lopdo -m=test -a=cm -pc=3",
-            "godot Test/test_scene.tscn -- -p=player2 -m=test -a=jm",
-            "godot Test/test_scene.tscn -- -p=player3 -m=test -a=jm",
+            "godot Test/test_scene.tscn -- -p=lopdo2 -m=test -a=jm",
+            "godot Test/test_scene.tscn -- -p=lopdo3 -m=test -a=jm",
         },
     },
 }

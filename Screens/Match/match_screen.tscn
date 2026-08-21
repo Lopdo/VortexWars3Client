@@ -2,10 +2,11 @@
 
 [ext_resource type="Texture2D" uid="uid://c3o368f0dgm6j" path="res://res/img/terrain_0.png" id="1_p2kl0"]
 
-[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "lbl_reinforcement_dice", "btn_end_turn", "view_battle", "view_turn_timer", "player_list_view", "reinforcements_auto_distributor", "reinforcements_manual_distributor")]
+[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "lbl_reinforcement_dice", "btn_end_turn", "btn_quit", "view_battle", "view_turn_timer", "player_list_view", "reinforcements_auto_distributor", "reinforcements_manual_distributor")]
 map_container = NodePath("HBoxContainer/Control/SubViewportContainer/SubViewport")
 lbl_reinforcement_dice = NodePath("HBoxContainer/Control/ReinforcementDice")
-btn_end_turn = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/Button")
+btn_end_turn = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/ButtonEndTurn")
+btn_quit = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/ButtonQuit")
 view_battle = NodePath("HBoxContainer/Control/MatchBattleView")
 view_turn_timer = NodePath("HBoxContainer/Control/MatchTurnTimerView")
 player_list_view = NodePath("HBoxContainer/VBoxContainer/MatchPlayerListView")
@@ -133,13 +134,22 @@ grow_vertical = 2
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2008405809]
+[node name="ButtonEndTurn" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2008405809]
 layout_mode = 2
 text = "End turn"
+
+[node name="Control" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1213902114]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonQuit" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=667733084]
+layout_mode = 2
+text = "Quit"
 
 [node name="MatchReinforcementsAutoDistributor" type="MatchReinforcementsAutoDistributor" parent="." unique_id=1214161482]
 
 [node name="MatchReinforcementsManualDistributor" type="MatchReinforcementsManualDistributor" parent="." unique_id=1858842536 node_paths=PackedStringArray("lbl_dice")]
 lbl_dice = NodePath("../HBoxContainer/Control/ReinforcementDice")
 
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/Button" to="." method="endTurnPressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonEndTurn" to="." method="endTurnPressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonQuit" to="." method="quitPressed"]

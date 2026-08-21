@@ -26,6 +26,8 @@ class Match {
 
 	private var pendingState: PendingState?
 
+	private var queuedEliminationMessage: NMMatchPlayerEliminated?
+
 	var currentPlayer: MatchPlayer {
 		willSet {
 			currentPlayer.attackBoostActive = false
@@ -99,6 +101,10 @@ class Match {
 					handleDefenceBoostPlacement(msg: msg)
 				case let msg as NMMatchDefenceBoostPlacementInvalid:
 					handleDefenceBoostPlacementInvalid(msg: msg)
+				case let msg as NMMatchPlayerEliminated:
+					handlePlayerEliminated(msg: msg)
+				case let msg as NMMatchGameOver:
+					handleGameOver(msg: msg)
 				default:
 					GD.print("Received unsupported binary message type \(message)")
 			}
@@ -118,7 +124,7 @@ class Match {
 		} catch {
 			handle(error: error)
 		}
-		matchScreen.playerListView.updateCurrentPlayer(id: currentPlayer.id)
+		matchScreen.updateCurrentPlayer(id: currentPlayer.id, amICurrent: currentPlayer.id == user.player.id)
 		matchScreen.viewTurnTimer.startTurn()
 	}
 
@@ -184,6 +190,31 @@ class Match {
 				default: break
 			}
 		}
+	}
+
+	func handlePlayerEliminated(msg: NMMatchPlayerEliminated) {
+		players[Int(msg.playerIndex)].isEliminated = true
+
+		if players[Int(msg.playerIndex)].id == user.player.id {
+			queuedEliminationMessage = msg
+			//matchScreen.showDefeatPopup(position: Int(msg.position), gameOver: msg.gameOver)
+		}
+
+		if msg.gameOver {
+			gameOver()
+			queuedEliminationMessage = msg
+		}
+	}
+
+	func handleGameOver(msg: NMMatchGameOver) {
+		//TODO: show game over popup
+
+		gameOver()
+	}
+
+	private func gameOver() {
+		state = .gameOver
+		matchScreen.gameOver()
 	}
 }
 
@@ -413,6 +444,13 @@ extension Match {
 				self.matchScreen.viewBattle.close()
 
 				self.matchScreen.viewTurnTimer.unpause()
+
+				if let eliminationMsg = self.queuedEliminationMessage {
+					if self.players[Int(eliminationMsg.playerIndex)].id == self.user.player.id {
+						self.matchScreen.showDefeatPopup(position: Int(eliminationMsg.position), gameOver: eliminationMsg.gameOver)
+					}
+					self.queuedEliminationMessage = nil
+				}
 
 				if let pendingState = self.pendingState {
 					if case .myTurn(let turnState) = pendingState.state {
