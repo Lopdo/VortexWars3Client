@@ -57,9 +57,7 @@ final class MatchLobbyPlayerInfoView: Control {
 		factionIndex = player.faction
 		self.wsClient = wsClient
 		self.player = player
-	}
 
-	override func _ready() {
 		updateFactionTexture()
 		updateTerrainTexture()
 	}
