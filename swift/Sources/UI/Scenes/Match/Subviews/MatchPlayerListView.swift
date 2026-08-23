@@ -27,6 +27,18 @@ final class MatchPlayerListView: Control {
 		}
 	}
 
+	func playerDisconnected(playerId: String) {
+		if let playerView = playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }).first(where: { $0.player.id == playerId }) {
+			playerView.set(disconnected: true)
+		}
+	}
+
+	func playerReconnected(playerId: String) {
+		if let playerView = playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }).first(where: { $0.player.id == playerId }) {
+			playerView.set(disconnected: false)
+		}
+	}
+
 	func updateCurrentPlayer(id: String) {
 		for playerView in playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }) {
 			playerView.set(current: playerView.player.id == id)

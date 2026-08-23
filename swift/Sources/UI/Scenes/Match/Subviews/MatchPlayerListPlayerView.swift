@@ -25,6 +25,9 @@ final class MatchPlayerListPlayerView: Control {
 	@Export
 	var btnAttackBoost: Button!
 
+	@Export
+	var disconnectedIndicator: CanvasItem!
+
 	unowned var player: MatchPlayer!
 	unowned var match: Match!
 
@@ -40,6 +43,14 @@ final class MatchPlayerListPlayerView: Control {
 
 	func set(current: Bool) {
 		lblCurrent.text = current ? "X" : "_"
+	}
+
+	func set(disconnected: Bool) {
+		if disconnected {
+			disconnectedIndicator.show()
+		} else {
+			disconnectedIndicator.hide()
+		}
 	}
 
 	func set(strength: Int) {

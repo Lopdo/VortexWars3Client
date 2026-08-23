@@ -122,6 +122,14 @@ final class MatchScreen: Node {
 		changeSceneToNode(node: lobby)
 	}
 
+	func playerDisconnected(playerId: String) {
+		playerListView.playerDisconnected(playerId: playerId)
+	}
+
+	func playerReconnected(playerId: String) {
+		playerListView.playerReconnected(playerId: playerId)
+	}
+
 	func updateCurrentPlayer(id: String, amICurrent: Bool) {
 		playerListView.updateCurrentPlayer(id: id)
 		if amICurrent {

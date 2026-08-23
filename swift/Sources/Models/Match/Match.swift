@@ -76,10 +76,10 @@ class Match {
 			let message = try NMDecoder.decode(data.asBytes())
 			GD.print("Match message received: \(message)")
 			switch message {
-				/*case let msg as NMMatchPlayerLeft:
-					//remove(playerId: msg.playerId)
+				case let msg as NMMatchPlayerLeft:
+					handlePlayerDisonnected(playerId: msg.playerId)
 					break
-				case let msg as NMMatchTurnEnded:
+				/*case let msg as NMMatchTurnEnded:
 					//TODO:
 					break*/
 				case is NMMatchEndTurn:
@@ -116,6 +116,10 @@ class Match {
 
 	private func handle(error: MatchIncosistencyError) {
 		//TODO: show popup and disconnect player?
+	}
+
+	private func handlePlayerDisonnected(playerId: String) {
+		matchScreen.playerDisconnected(playerId: playerId)
 	}
 
 	private func handleNewTurnStart(newPlayerId: String) {
