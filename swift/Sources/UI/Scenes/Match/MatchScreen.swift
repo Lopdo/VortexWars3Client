@@ -153,9 +153,9 @@ final class MatchScreen: Node {
 		playerListView.updateDefenceBoost(count: count, playerId: playerId)
 	}
 
-	func showDefeatPopup(position: Int, gameOver: Bool) {
+	func showDefeatPopup(result: MatchEliminationResult) {
 		let popup = PlayerEliminatedPopup.loadScene()
-		popup.initialize(position: position, gameOver: gameOver)
+		popup.initialize(result: result)
 		popup.onQuitCallback = quitPressed
 		addChild(node: popup)
 	}

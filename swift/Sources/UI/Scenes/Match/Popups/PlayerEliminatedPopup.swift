@@ -24,16 +24,25 @@ final class PlayerEliminatedPopup: Control {
 
 	var onQuitCallback: (() -> Void)!
 
-	func initialize(position: Int, gameOver: Bool) {
-		if position == 1 {
+	func initialize(result: MatchEliminationResult) {
+		if result.position == 1 {
 			lblTitle.text = "You won!"
 			lblPosition.text = "You defeated all enemies"
 		} else {
-			lblTitle.text = "You were defeated"
-			lblPosition.text = "You finished in \(position). place"
+			switch result.reason {
+				case .elimination:
+					lblTitle.text = "You were defeated"
+				case .surrender:
+					lblTitle.text = "You surrendered"
+				case .inactivity:
+					lblTitle.text = "You were kicked for inactivity"
+				case .mod:
+					lblTitle.text = "You have been kicked by moderator"
+			}
+			lblPosition.text = "You finished in \(result.position). place"
 		}
 
-		if gameOver {
+		if result.gameOver {
 			btnClose.hide()
 		}
 	}

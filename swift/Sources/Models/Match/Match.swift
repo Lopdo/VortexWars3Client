@@ -103,6 +103,8 @@ class Match {
 					handleDefenceBoostPlacementInvalid(msg: msg)
 				case let msg as NMMatchPlayerEliminated:
 					handlePlayerEliminated(msg: msg)
+				case let msg as NMMatchPlayerKicked:
+					handlePlayerKicked(msg: msg)
 				case let msg as NMMatchGameOver:
 					handleGameOver(msg: msg)
 				default:
@@ -200,8 +202,18 @@ class Match {
 		players[Int(msg.playerIndex)].isEliminated = true
 
 		if players[Int(msg.playerIndex)].id == user.player.id {
-			queuedEliminationMessage = msg
-			//matchScreen.showDefeatPopup(position: Int(msg.position), gameOver: msg.gameOver)
+			// if we are eliminate during enemy's battle phase, we have been defeated in that battle
+			// and we need to wait for the battle to finish (animations, sounds etc). We should wait for
+			// that to finish even if the elimination happened for some other reason and just happened
+			// to be timed for the battle for same reasons.
+			// otherwise we can display the popup right away
+			if case .enemyTurn(let turnState) = state,
+				case .combatInProgress = turnState
+			{
+				queuedEliminationMessage = msg
+			} else {
+				matchScreen.showDefeatPopup(result: MatchEliminationResult(msg: msg))
+			}
 		}
 
 		if msg.gameOver {
@@ -219,6 +231,10 @@ class Match {
 	private func gameOver() {
 		state = .gameOver
 		matchScreen.gameOver()
+	}
+
+	private func handlePlayerKicked(msg: NMMatchPlayerKicked) {
+		GD.print("Player \(msg.playerId) got kicked because \(msg.reason)")
 	}
 }
 
@@ -451,7 +467,7 @@ extension Match {
 
 				if let eliminationMsg = self.queuedEliminationMessage {
 					if self.players[Int(eliminationMsg.playerIndex)].id == self.user.player.id {
-						self.matchScreen.showDefeatPopup(position: Int(eliminationMsg.position), gameOver: eliminationMsg.gameOver)
+						self.matchScreen.showDefeatPopup(result: MatchEliminationResult(msg: eliminationMsg))
 					}
 					self.queuedEliminationMessage = nil
 				}
