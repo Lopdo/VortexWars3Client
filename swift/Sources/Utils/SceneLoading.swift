@@ -26,13 +26,16 @@ extension Node {
 
 	func changeSceneToNode(node: Node) {
 		if let tree = getTree(),
-			let curScene = tree.currentScene
+			let mainScene = tree.currentScene as? MainScene
 		{
-			tree.root?.addChild(node: node)
-			tree.root?.removeChild(node: curScene)
-			tree.currentScene = node
+			for child in mainScene.gameLayer.getChildren().compactMap({ $0 }) {
+				mainScene.gameLayer.removeChild(node: child)
+			}
+
+			mainScene.gameLayer.addChild(node: node)
 		} else {
 			GD.print("Failed to change scene")
+			//GD.print("tree: \(getTree()); currentScene: \(getTree()?.currentScene)")
 			ErrorManager.showError(message: "Failed to change scene")
 		}
 	}

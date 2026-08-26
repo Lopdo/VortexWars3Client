@@ -18,8 +18,6 @@ final class MainScene: CanvasLayer {
 		{
 			gameLayer.addChild(node: login)
 		}
-		//var login = GD.load("res://Screens/Login/login_screen.tscn").instantiate()
-		//gameLayer.addChild(node: login)
 	}
 
 	func createPopup() {
@@ -27,4 +25,3 @@ final class MainScene: CanvasLayer {
 	}
 
 }
-

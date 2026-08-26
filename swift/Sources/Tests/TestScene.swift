@@ -333,7 +333,7 @@ final class TestScene: Node {
 			settings: msg.settings, players: msg.players, startingPlayer: msg.startingPlayer,
 			mapData: msg.mapData, ws: webSocketClient!)
 
-		changeSceneToNode(node: match)
+		changeSceneToNode2(node: match)
 
 		if let binaryMsgHandlerToken {
 			webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)
@@ -355,9 +355,31 @@ final class TestScene: Node {
 		let lobby = MatchLobby.loadScene()
 		removeChild(node: webSocketClient!)
 		lobby.initialize(ws: webSocketClient!, user: currentUser!, players: msg.players)
-		changeSceneToNode(node: lobby)
+		changeSceneToNode2(node: lobby)
 		if let binaryMsgHandlerToken {
 			webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)
+		}
+	}
+
+	private func changeSceneToNode2(node: Node) {
+		if let tree = getTree(),
+			let currScene = tree.currentScene
+		{
+			// We need to load main scene first to get the gameLayer and error layer funcionality
+			if let mainScene = GD.load(path: "res://Screens/Main.tscn") as? PackedScene,
+				let main = mainScene.instantiate()
+			{
+				tree.root?.addChild(node: main)
+				tree.root?.removeChild(node: currScene)
+				tree.currentScene = main
+
+				tree.root?.changeSceneToNode(node: node)
+			}
+
+		} else {
+			GD.print("Failed to change scene")
+			//GD.print("tree: \(getTree()); currentScene: \(getTree()?.currentScene)")
+			ErrorManager.showError(message: "Failed to change scene")
 		}
 	}
 }
