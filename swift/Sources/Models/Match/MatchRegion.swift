@@ -1,4 +1,5 @@
 import Foundation
+import SwiftGodot
 
 class MatchRegion {
 	let region: MapRegion
@@ -39,6 +40,10 @@ class MatchRegion {
 	func setDefenceBoost(active: Bool) {
 		defenceBoost = active
 		regionView.setDefenceBoost(active: active)
+	}
+
+	func markAsDefeated() {
+		regionView.markAsDefeated()
 	}
 }
 

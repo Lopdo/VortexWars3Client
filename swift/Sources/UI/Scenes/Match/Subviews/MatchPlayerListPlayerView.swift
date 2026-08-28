@@ -28,6 +28,15 @@ final class MatchPlayerListPlayerView: Control {
 	@Export
 	var disconnectedIndicator: CanvasItem!
 
+	@Export
+	var colorRect: ColorRect!
+
+	@Export
+	var viewDetails: CanvasItem!
+
+	@Export
+	var viewDefeated: CanvasItem!
+
 	unowned var player: MatchPlayer!
 	unowned var match: Match!
 
@@ -39,6 +48,8 @@ final class MatchPlayerListPlayerView: Control {
 			btnAttackBoost.disabled = true
 			btnDefenceBoost.disabled = true
 		}
+		colorRect.color = player.color
+		viewDefeated.hide()
 	}
 
 	func set(current: Bool) {
@@ -51,6 +62,11 @@ final class MatchPlayerListPlayerView: Control {
 		} else {
 			disconnectedIndicator.hide()
 		}
+	}
+
+	func markAsDefeated() {
+		viewDefeated.show()
+		viewDetails.hide()
 	}
 
 	func set(strength: Int) {

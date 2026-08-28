@@ -66,6 +66,15 @@ class RegionView: Sprite2D {
 		borderView.updateBorders(map: map, owner: owner)
 	}
 
+	func markAsDefeated() {
+		bgView.selfModulate = Color.fromHsv(
+			h: Double(bgView.ownerColor.hue),
+			s: Double(bgView.ownerColor.saturation / 4),
+			v: Double(bgView.ownerColor.value))
+		//bgView.selfModulate = bgView.ownerColor.darkened(amount: 0.5)
+
+	}
+
 	// temporary highlight of the region, used for WIP effects like reinforgements
 	func flashHighlight() {
 		bgView.selfModulate = bgView.ownerColor.lightened(amount: 0.5)

@@ -199,21 +199,23 @@ class Match {
 	}
 
 	func handlePlayerEliminated(msg: NMMatchPlayerEliminated) {
-		players[Int(msg.playerIndex)].isEliminated = true
+		if msg.reason == .elimination {
+			players[Int(msg.playerIndex)].isEliminated = true
+		} else {
+			players[Int(msg.playerIndex)].didSurrender = true
+		}
 
-		if players[Int(msg.playerIndex)].id == user.player.id {
-			// if we are eliminate during enemy's battle phase, we have been defeated in that battle
-			// and we need to wait for the battle to finish (animations, sounds etc). We should wait for
-			// that to finish even if the elimination happened for some other reason and just happened
-			// to be timed for the battle for same reasons.
-			// otherwise we can display the popup right away
-			if case .enemyTurn(let turnState) = state,
-				case .combatInProgress = turnState
-			{
-				queuedEliminationMessage = msg
-			} else {
-				matchScreen.showDefeatPopup(result: MatchEliminationResult(msg: msg))
-			}
+		// if we are eliminate during enemy's battle phase, we have been defeated in that battle
+		// and we need to wait for the battle to finish (animations, sounds etc). We should wait for
+		// that to finish even if the elimination happened for some other reason and just happened
+		// to be timed for the battle for same reasons.
+		// otherwise we can display the popup right away
+		if case .enemyTurn(let turnState) = state,
+			case .combatInProgress = turnState
+		{
+			queuedEliminationMessage = msg
+		} else {
+			matchScreen.playerEliminated(players[Int(msg.playerIndex)], result: MatchEliminationResult(msg: msg))
 		}
 
 		if msg.gameOver {
@@ -234,7 +236,7 @@ class Match {
 	}
 
 	private func handlePlayerKicked(msg: NMMatchPlayerKicked) {
-		GD.print("Player \(msg.playerId) got kicked because \(msg.reason)")
+		matchScreen.playerKicked(playerId: msg.playerId)
 	}
 }
 
@@ -466,9 +468,8 @@ extension Match {
 				self.matchScreen.viewTurnTimer.unpause()
 
 				if let eliminationMsg = self.queuedEliminationMessage {
-					if self.players[Int(eliminationMsg.playerIndex)].id == self.user.player.id {
-						self.matchScreen.showDefeatPopup(result: MatchEliminationResult(msg: eliminationMsg))
-					}
+					self.matchScreen.playerEliminated(
+						self.players[Int(eliminationMsg.playerIndex)], result: MatchEliminationResult(msg: eliminationMsg))
 					self.queuedEliminationMessage = nil
 				}
 

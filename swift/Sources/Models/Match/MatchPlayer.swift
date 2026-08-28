@@ -16,6 +16,7 @@ class MatchPlayer {
 	var attackBoostActive: Bool = false
 
 	var isEliminated: Bool
+	var didSurrender: Bool
 
 	var color: Color {
 		MatchPlayer.colors[index]
@@ -34,6 +35,8 @@ class MatchPlayer {
 		self.attackBoosts = Int(nmMatchPlayer.attackBoosts)
 		self.defenceBoosts = Int(nmMatchPlayer.defenceBoosts)
 		self.isEliminated = nmMatchPlayer.isEliminated
+		//self.didSurrender = nmMatchPlayer.didSurrender
+		self.didSurrender = false
 	}
 }
 

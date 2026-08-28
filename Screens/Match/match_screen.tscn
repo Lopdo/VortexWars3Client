@@ -2,11 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://c3o368f0dgm6j" path="res://res/img/terrain_0.png" id="1_p2kl0"]
 
-[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "lbl_reinforcement_dice", "btn_end_turn", "btn_quit", "view_battle", "view_turn_timer", "player_list_view", "reinforcements_auto_distributor", "reinforcements_manual_distributor")]
+[node name="MatchScreen" type="MatchScreen" unique_id=150655152 node_paths=PackedStringArray("map_container", "lbl_reinforcement_dice", "btn_end_turn", "btn_quit", "btn_surrender", "color_rect", "view_battle", "view_turn_timer", "player_list_view", "reinforcements_auto_distributor", "reinforcements_manual_distributor")]
 map_container = NodePath("HBoxContainer/Control/SubViewportContainer/SubViewport")
 lbl_reinforcement_dice = NodePath("HBoxContainer/Control/ReinforcementDice")
 btn_end_turn = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/ButtonEndTurn")
 btn_quit = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/ButtonQuit")
+btn_surrender = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/ButtonSurrender")
+color_rect = NodePath("ColorRect")
 view_battle = NodePath("HBoxContainer/Control/MatchBattleView")
 view_turn_timer = NodePath("HBoxContainer/Control/MatchTurnTimerView")
 player_list_view = NodePath("HBoxContainer/VBoxContainer/MatchPlayerListView")
@@ -37,7 +39,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="HBoxContainer/Control/SubViewportContainer" unique_id=2047402866]
 disable_3d = true
 handle_input_locally = false
-size = Vector2i(998, 648)
+size = Vector2i(932, 648)
 render_target_update_mode = 4
 
 [node name="MatchBattleView" type="MatchBattleView" parent="HBoxContainer/Control" unique_id=559131951 node_paths=PackedStringArray("lbl_attacker", "lbl_defender")]
@@ -146,10 +148,19 @@ size_flags_horizontal = 3
 layout_mode = 2
 text = "Quit"
 
+[node name="ButtonSurrender" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1594850650]
+layout_mode = 2
+text = "Surrender"
+
 [node name="MatchReinforcementsAutoDistributor" type="MatchReinforcementsAutoDistributor" parent="." unique_id=1214161482]
 
 [node name="MatchReinforcementsManualDistributor" type="MatchReinforcementsManualDistributor" parent="." unique_id=1858842536 node_paths=PackedStringArray("lbl_dice")]
 lbl_dice = NodePath("../HBoxContainer/Control/ReinforcementDice")
 
+[node name="ColorRect" type="ColorRect" parent="." unique_id=936911738]
+offset_right = 8.0
+offset_bottom = 16.0
+
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonEndTurn" to="." method="endTurnPressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonQuit" to="." method="quitPressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonSurrender" to="." method="surrenderPressed"]

@@ -23,6 +23,12 @@ final class MatchScreen: Node {
 	@Export
 	var btnQuit: Button!
 
+	@Export
+	var btnSurrender: Button!
+
+	@Export
+	var colorRect: ColorRect!
+
 	@Export(.nodeType)
 	var viewBattle: MatchBattleView!
 	@Export(.nodeType)
@@ -86,6 +92,12 @@ final class MatchScreen: Node {
 			btnEndTurn.hide()
 		}
 
+		btnSurrender.show()
+		btnQuit.hide()
+
+		if let mePlayer = matchPlayers.first(where: { $0.id == user.player.id }) {
+			colorRect.color = mePlayer.color
+		}
 	}
 
 	private func setupSubViewport() {
@@ -113,8 +125,27 @@ final class MatchScreen: Node {
 
 	@Callable
 	func quitPressed() {
-		//TODO: send some goodbye/cleanup message. It might be useful to know player initiated disconnect
+		ConfirmationPopup.show(on: getTree()?.currentScene, text: "Are you sure you want to quit the game?", confirmText: "Quit") { [unowned self] in
+			//TODO: send some goodbye/cleanup message. It might be useful to know player initiated disconnect
 
+			self.quitGame()
+		}
+	}
+
+	@Callable
+	func surrenderPressed() {
+		ConfirmationPopup.show(on: getTree()?.currentScene, text: "Are you sure you want to surrender?", confirmText: "Surrender") { [unowned self] in
+			do {
+				try self.ws.send(message: NMMatchSurrender())
+			} catch {
+				//TODO: add error handling
+				GD.print("Failed to send message NMMatchSurrender")
+			}
+		}
+		btnSurrender.disabled = true
+	}
+
+	private func quitGame() {
 		ws.close()
 
 		let lobby = MainLobby.loadScene()
@@ -153,16 +184,40 @@ final class MatchScreen: Node {
 		playerListView.updateDefenceBoost(count: count, playerId: playerId)
 	}
 
-	func showDefeatPopup(result: MatchEliminationResult) {
+	func playerEliminated(_ player: MatchPlayer, result: MatchEliminationResult) {
+
+		if player.didSurrender {
+			playerKicked(playerId: player.id)
+		}
+
+		//show him as eliminated in player list
+
+		if player.id == match.user.player.id {
+			showDefeatPopup(result: result)
+		}
+	}
+
+	func playerKicked(playerId: String) {
+		match.map.regions.filter { $0.owner?.id == playerId }.forEach { $0.markAsDefeated() }
+		playerListView.playerWasDefeated(playerId: playerId)
+	}
+
+	private func showDefeatPopup(result: MatchEliminationResult) {
 		let popup = PlayerEliminatedPopup.loadScene()
 		popup.initialize(result: result)
-		popup.onQuitCallback = quitPressed
+		popup.onQuitCallback = quitGame
 		addChild(node: popup)
+
+		btnSurrender.hide()
+		btnQuit.show()
 	}
 
 	func gameOver() {
 		viewTurnTimer.stop()
 		playerListView.updateCurrentPlayer(id: "")
 		btnEndTurn.hide()
+
+		btnSurrender.hide()
+		btnQuit.show()
 	}
 }

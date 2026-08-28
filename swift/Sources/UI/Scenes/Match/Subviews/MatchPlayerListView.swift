@@ -27,18 +27,26 @@ final class MatchPlayerListView: Control {
 		}
 	}
 
+	private func playerView(for playerId: String) -> MatchPlayerListPlayerView? {
+		playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }).first(where: { $0.player.id == playerId })
+	}
 	func playerDisconnected(playerId: String) {
-		if let playerView = playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }).first(where: { $0.player.id == playerId }) {
+		if let playerView = playerView(for: playerId) {
 			playerView.set(disconnected: true)
 		}
 	}
 
 	func playerReconnected(playerId: String) {
-		if let playerView = playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }).first(where: { $0.player.id == playerId }) {
+		if let playerView = playerView(for: playerId) {
 			playerView.set(disconnected: false)
 		}
 	}
 
+	func playerWasDefeated(playerId: String) {
+		if let playerView = playerView(for: playerId) {
+			playerView.markAsDefeated()
+		}
+	}
 	func updateCurrentPlayer(id: String) {
 		for playerView in playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }) {
 			playerView.set(current: playerView.player.id == id)
@@ -53,25 +61,25 @@ final class MatchPlayerListView: Control {
 	}
 
 	func updateAttackBoost(count: Int, playerId: String) {
-		if let playerView = playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }).first(where: { $0.player.id == playerId }) {
+		if let playerView = playerView(for: playerId) {
 			playerView.setAttackBoost(count: count)
 		}
 	}
 
 	func updateDefenceBoost(count: Int, playerId: String) {
-		if let playerView = playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }).first(where: { $0.player.id == playerId }) {
+		if let playerView = playerView(for: playerId) {
 			playerView.setDefenceBoost(count: count)
 		}
 	}
 
 	func setAttackBoost(active: Bool, playerId: String) {
-		if let playerView = playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }).first(where: { $0.player.id == playerId }) {
+		if let playerView = playerView(for: playerId) {
 			playerView.setAttackBoost(active: active)
 		}
 	}
 
 	func setDefenceBoost(active: Bool, playerId: String) {
-		if let playerView = playerList.getChildren().compactMap({ $0 as? MatchPlayerListPlayerView }).first(where: { $0.player.id == playerId }) {
+		if let playerView = playerView(for: playerId) {
 			playerView.setDefenceBoost(active: active)
 		}
 	}
