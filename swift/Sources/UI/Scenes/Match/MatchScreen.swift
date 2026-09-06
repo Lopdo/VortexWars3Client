@@ -186,9 +186,7 @@ final class MatchScreen: Node {
 
 	func playerEliminated(_ player: MatchPlayer, result: MatchEliminationResult) {
 
-		if player.didSurrender {
-			playerKicked(playerId: player.id)
-		}
+		playerKicked(playerId: player.id)
 
 		//show him as eliminated in player list
 

@@ -205,12 +205,16 @@ class Match {
 			players[Int(msg.playerIndex)].didSurrender = true
 		}
 
-		// if we are eliminate during enemy's battle phase, we have been defeated in that battle
+		// if we are eliminated during enemy's battle phase, we have been defeated in that battle
 		// and we need to wait for the battle to finish (animations, sounds etc). We should wait for
 		// that to finish even if the elimination happened for some other reason and just happened
 		// to be timed for the battle for same reasons.
 		// otherwise we can display the popup right away
 		if case .enemyTurn(let turnState) = state,
+			case .combatInProgress = turnState
+		{
+			queuedEliminationMessage = msg
+		} else if case .myTurn(let turnState) = state,
 			case .combatInProgress = turnState
 		{
 			queuedEliminationMessage = msg
@@ -440,6 +444,7 @@ extension Match {
 		switch state {
 			case .enemyTurn(let turnState):
 				if case .idle = turnState {
+					state = .enemyTurn(.combatInProgress)
 					let attackerRegion = map.region(id: Int(msg.attackerRegionId))
 					let defenderRegion = map.region(id: Int(msg.defenderRegionId))
 					attackerRegion.regionView.isSelected = true
