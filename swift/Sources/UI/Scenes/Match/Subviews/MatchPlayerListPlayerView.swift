@@ -35,6 +35,9 @@ final class MatchPlayerListPlayerView: Control {
 	var viewDetails: CanvasItem!
 
 	@Export
+	var viewBoosts: CanvasItem!
+
+	@Export
 	var viewDefeated: CanvasItem!
 
 	unowned var player: MatchPlayer!
@@ -50,6 +53,9 @@ final class MatchPlayerListPlayerView: Control {
 		}
 		colorRect.color = player.color
 		viewDefeated.hide()
+		if !match.settings.boosterEnabled {
+			viewBoosts.hide()
+		}
 	}
 
 	func set(current: Bool) {

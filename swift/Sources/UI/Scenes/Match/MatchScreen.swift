@@ -75,6 +75,7 @@ final class MatchScreen: Node {
 				mapData: mapData,
 				players: matchPlayers,
 				user: user, currentPlayerId: startingPlayer,
+				settings: settings,
 				matchScreen: self,
 				ws: ws)
 		} catch {

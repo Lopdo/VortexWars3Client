@@ -11,6 +11,8 @@ final class MatchTurnTimerView: Control {
 	private var tween: Tween?
 
 	func startTurn() {
+		tween?.stop()
+
 		bar.value = bar.maxValue
 		tween = createTween()
 		_ = tween?.tweenProperty(

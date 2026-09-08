@@ -40,10 +40,12 @@ class Match {
 	private let ws: WebSocketClient
 	unowned let matchScreen: MatchScreen
 
+	var settings: NMMatchSettings
+
 	private var binaryMessageHandler: Callable?
 
 	init(
-		mapData: NMMatchMapData, players: [MatchPlayer], user: User, currentPlayerId: String,
+		mapData: NMMatchMapData, players: [MatchPlayer], user: User, currentPlayerId: String, settings: NMMatchSettings,
 		matchScreen: MatchScreen, ws: WebSocketClient
 	)
 		throws(MatchIncosistencyError)
@@ -59,6 +61,7 @@ class Match {
 		self.currentPlayer = currentPlayer
 		self.ws = ws
 		self.matchScreen = matchScreen
+		self.settings = settings
 
 		if currentPlayer.id == user.player.id {
 			state = .myTurn(.attackerSelection)

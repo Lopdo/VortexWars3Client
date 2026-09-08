@@ -93,7 +93,14 @@ final class MatchesSectionView: Control {
 		addChild(node: client)
 
 		MatchService.createMatch(
-			settings: NMMatchSettings(mapId: "", gameName: "Test match", maxPlayers: 4),
+			settings: NMMatchSettings(
+				mapType: .random(.medium),
+				gameName: "Test match",
+				maxPlayers: 4,
+				startCondition: .full,
+				combatRule: .hardcore,
+				reinforcementsRule: .manual,
+				boosterEnabled: true),
 			user: user,
 			webSocketClient: client,
 			onCreateSuccess: handleJoinSuccess,

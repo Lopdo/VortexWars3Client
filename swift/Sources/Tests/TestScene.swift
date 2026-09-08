@@ -291,7 +291,15 @@ final class TestScene: Node {
 
 		webSocketClient = createWebSocketClient()
 
-		let settings = NMMatchSettings(mapId: "123", gameName: matchName, maxPlayers: 4)
+		let settings = NMMatchSettings(
+			mapType: .random(.large),
+			gameName: matchName,
+			maxPlayers: 4,
+			startCondition: .full,
+			combatRule: .attrition,
+			reinforcementsRule: .manual,
+			boosterEnabled: true)
+
 		MatchService.createMatch(
 			settings: settings,
 			user: user,
