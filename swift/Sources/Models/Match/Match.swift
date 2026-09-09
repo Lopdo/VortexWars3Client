@@ -110,6 +110,8 @@ class Match {
 					handlePlayerKicked(msg: msg)
 				case let msg as NMMatchGameOver:
 					handleGameOver(msg: msg)
+				case let msg as NMMatchEmptyRegionCaptured:
+					handleEmptyRegionCaptured(msg: msg)
 				default:
 					GD.print("Received unsupported binary message type \(message)")
 			}
@@ -139,7 +141,14 @@ class Match {
 
 	private func handleBattleResults(msg: NMMatchBattleResults) {
 		startBattle(using: msg)
-		matchScreen.viewBattle.start(battle: msg.battle)
+	}
+
+	private func handleEmptyRegionCaptured(msg: NMMatchEmptyRegionCaptured) {
+		let region = map.region(id: Int(msg.regionId))
+		region.dice = Int(msg.dice)
+		let newOwner = players[Int(msg.playerIndex)]
+		region.owner = newOwner
+		region.regionView.set(owner: newOwner)
 	}
 
 	private func handleAutomaticReinforcements(msg: NMMatchReinforcementsResults) {
@@ -154,6 +163,10 @@ class Match {
 	}
 
 	private func handleStrengthUpdate(msg: NMMatchStrengthChanged) {
+		for update in msg.updates {
+			players[Int(update.playerIndex)].strength = Int(update.strength)
+		}
+
 		matchScreen.updateStrengths(msg.updates)
 	}
 
@@ -414,6 +427,19 @@ extension Match {
 	private func enemyRegionClicked(_ region: MatchRegion) {
 		if case .myTurn(let turnState) = state {
 			switch turnState {
+				case .attackerSelection:
+					if settings.startCondition == .empty
+						&& currentPlayer.strength == 0
+						&& region.owner == nil
+					{
+						do {
+							try ws.send(message: NMMatchCaptureEmptyRegion(regionId: UInt8(region.id)))
+							region.regionView.markAsPendingResults(owner: currentPlayer)
+						} catch {
+							//TODO: add error handling
+							GD.print("Failed to send message NMMatchDefenceBoostPlaced")
+						}
+					}
 				case .targetSelection(let sourceRegion):
 					guard region.neighbors.contains(sourceRegion) else {
 						return
@@ -443,68 +469,77 @@ extension Match {
 	}
 
 	func startBattle(using msg: NMMatchBattleResults) {
-
-		switch state {
-			case .enemyTurn(let turnState):
-				if case .idle = turnState {
-					state = .enemyTurn(.combatInProgress)
-					let attackerRegion = map.region(id: Int(msg.attackerRegionId))
-					let defenderRegion = map.region(id: Int(msg.defenderRegionId))
-					attackerRegion.regionView.isSelected = true
-					defenderRegion.regionView.isSelected = true
-				}
-			case .myTurn(let turnState):
-				switch turnState {
-					case .combatInitiated(_, _):
-						state = .myTurn(.combatInProgress)
-						break
-					default:
-						break
-				}
-			default:
-				break
-		}
-
-		matchScreen.viewTurnTimer.pause()
-		Task {
-			try? await Task.sleep(for: .milliseconds(Timings.battleDuration * msg.battle.battleThrows.count))
-			Callable({ _ in
-
-				self.applyBattleResults(msg: msg)
-				self.matchScreen.viewBattle.close()
-
-				self.matchScreen.viewTurnTimer.unpause()
-
-				if let eliminationMsg = self.queuedEliminationMessage {
-					self.matchScreen.playerEliminated(
-						self.players[Int(eliminationMsg.playerIndex)], result: MatchEliminationResult(msg: eliminationMsg))
-					self.queuedEliminationMessage = nil
-				}
-
-				if let pendingState = self.pendingState {
-					if case .myTurn(let turnState) = pendingState.state {
-						if case .reinforcementSelection(let dice) = turnState {
-							self.state = .myTurn(.attackerSelection)
-							self.startManualReinforcements(dice: dice)
-							GD.print("pending state used")
-						}
-					} else if case .enemyTurn(let turnState) = pendingState.state {
-						if case .reinforcementSelection(let dice) = turnState {
-							self.state = .enemyTurn(.idle)
-							self.startManualReinforcements(dice: dice)
-						}
+		if msg.battle.battleThrows.isEmpty {
+			applyBattleResults(msg: msg)
+			if case .myTurn(_) = self.state {
+				self.state = .myTurn(.attackerSelection)
+			} else {
+				self.state = .enemyTurn(.idle)
+			}
+		} else {
+			switch state {
+				case .enemyTurn(let turnState):
+					if case .idle = turnState {
+						state = .enemyTurn(.combatInProgress)
+						let attackerRegion = map.region(id: Int(msg.attackerRegionId))
+						let defenderRegion = map.region(id: Int(msg.defenderRegionId))
+						attackerRegion.regionView.isSelected = true
+						defenderRegion.regionView.isSelected = true
 					}
-				} else {
-					if case .myTurn(_) = self.state {
-						self.state = .myTurn(.attackerSelection)
+				case .myTurn(let turnState):
+					switch turnState {
+						case .combatInitiated(_, _):
+							state = .myTurn(.combatInProgress)
+							break
+						default:
+							break
+					}
+				default:
+					break
+			}
+
+			matchScreen.viewTurnTimer.pause()
+			matchScreen.viewBattle.start(battle: msg.battle)
+			Task {
+				try? await Task.sleep(for: .milliseconds(Timings.battleDuration * msg.battle.battleThrows.count))
+				Callable({ _ in
+
+					self.applyBattleResults(msg: msg)
+					self.matchScreen.viewBattle.close()
+
+					self.matchScreen.viewTurnTimer.unpause()
+
+					if let eliminationMsg = self.queuedEliminationMessage {
+						self.matchScreen.playerEliminated(
+							self.players[Int(eliminationMsg.playerIndex)], result: MatchEliminationResult(msg: eliminationMsg))
+						self.queuedEliminationMessage = nil
+					}
+
+					if let pendingState = self.pendingState {
+						if case .myTurn(let turnState) = pendingState.state {
+							if case .reinforcementSelection(let dice) = turnState {
+								self.state = .myTurn(.attackerSelection)
+								self.startManualReinforcements(dice: dice)
+								GD.print("pending state used")
+							}
+						} else if case .enemyTurn(let turnState) = pendingState.state {
+							if case .reinforcementSelection(let dice) = turnState {
+								self.state = .enemyTurn(.idle)
+								self.startManualReinforcements(dice: dice)
+							}
+						}
 					} else {
-						self.state = .enemyTurn(.idle)
+						if case .myTurn(_) = self.state {
+							self.state = .myTurn(.attackerSelection)
+						} else {
+							self.state = .enemyTurn(.idle)
+						}
 					}
-				}
 
-				return nil
-			})
-			.callDeferred()
+					return nil
+				})
+				.callDeferred()
+			}
 		}
 	}
 
@@ -530,6 +565,7 @@ extension Match {
 			defenderRegion.regionView.setDefenceBoost(active: false)
 		}
 	}
+
 }
 
 enum MatchState {

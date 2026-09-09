@@ -75,6 +75,16 @@ class RegionView: Sprite2D {
 
 	}
 
+	func markAsPendingResults(owner: MatchPlayer?) {
+		if let owner {
+			bgView.set(terrain: owner.terrain, color: owner.color)
+			factionView.set(faction: owner.faction)
+		} else {
+			bgView.set(terrain: 0, color: .lightGray)
+			factionView.set(faction: nil)
+		}
+	}
+
 	// temporary highlight of the region, used for WIP effects like reinforgements
 	func flashHighlight() {
 		bgView.selfModulate = bgView.ownerColor.lightened(amount: 0.5)
