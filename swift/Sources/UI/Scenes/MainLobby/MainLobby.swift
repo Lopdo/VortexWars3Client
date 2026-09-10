@@ -35,11 +35,71 @@ final class MainLobby: Node {
 		client.dataReceived.connect(handleBinaryMessage)
 
 		matchesSectionView.user = user
+		checkCurrentMatch()
 	}
 
 	func initialize(user: User) {
 		self.user = user
 		connectToWebSocket()
+	}
+
+	func checkCurrentMatch() {
+
+		let bodyDict: [String: String] = [
+			"playerId": user.player.id
+		]
+
+		let jsonData = try! JSONSerialization.data(withJSONObject: bodyDict)
+
+		NetworkManager.jsonRequest(
+			node: self,
+			url: "/match/current",
+			method: .get,
+			body: jsonData,
+			completion: requestCompleted
+		)
+	}
+
+	private func requestCompleted(result: Result<CurrentMatchDTO, Error>) {
+		//loadingIndicator.hide()
+
+		switch result {
+			case .success(let currentMatchDTO):
+				if let match = currentMatchDTO.match {
+					ConfirmationPopup.show(
+						on: getTree()?.currentScene,
+						text: "Do you want to rejoin the game \(match.name)",
+						confirmText: "Rejoin"
+					) { [unowned self] in
+						let client = WebSocketClient()
+						addChild(node: client)
+
+						MatchService.joinMatch(
+							on: self,
+							matchId: match.id,
+							user: user,
+							webSocketClient: client,
+							onError: { error in
+								GD.print("Failed to join match: \(error)")
+								ErrorManager.showError(message: "Failed to join match: \(error)")
+								self.removeChild(node: client)
+							}
+						)
+					}
+				}
+			case .failure(let error):
+				GD.print("An error occurred in the HTTP request: \(error)")
+				ErrorManager.showError(
+					message: "An error occurred in the HTTP request. \(error.localizedDescription)")
+		}
+	}
+
+	private func handleJoinSuccess(client: WebSocketClient, msg: NMMatchJoined) {
+		GD.print("Successfully joined match with ID: \(msg.id)")
+		let lobby = MatchLobby.loadScene()
+		changeSceneToNode(node: lobby)
+		removeChild(node: client)
+		lobby.initialize(ws: client, user: user, players: msg.players)
 	}
 
 	private func connectToWebSocket() {

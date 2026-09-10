@@ -18,11 +18,12 @@ class MatchRegion {
 
 	var regionView: RegionView!
 
-	init(region: MapRegion, owner: MatchPlayer?, dice: Int, maxDice: Int) {
+	init(region: MapRegion, owner: MatchPlayer?, dice: Int, maxDice: Int, hasDefenceBoost: Bool) {
 		self.region = region
 		self.owner = owner
 		self.dice = dice
 		self.maxDice = maxDice
+		self.defenceBoost = hasDefenceBoost
 	}
 
 	func updateBorders(map: Map, owner: MatchPlayer?) {

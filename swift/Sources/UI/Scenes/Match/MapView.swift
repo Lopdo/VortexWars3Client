@@ -77,6 +77,7 @@ final class MapView: Node2D {
 				y: Float(region.region.position.y) * TileRenderInfo.rowHeight)
 
 			region.regionView = regionView
+			regionView.setDefenceBoost(active: region.defenceBoost)
 		}
 
 		// Place top layer views (like dice) after all regions are added

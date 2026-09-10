@@ -75,10 +75,10 @@ final class MatchesSectionView: Control {
 		addChild(node: client)
 
 		MatchService.joinMatch(
+			on: self,
 			matchId: match.id,
 			user: user,
 			webSocketClient: client,
-			onJoinSuccess: handleJoinSuccess,
 			onError: { error in
 				GD.print("Failed to join match: \(error)")
 				ErrorManager.showError(message: "Failed to join match: \(error)")
@@ -93,6 +93,7 @@ final class MatchesSectionView: Control {
 		addChild(node: client)
 
 		MatchService.createMatch(
+			on: self,
 			settings: NMMatchSettings(
 				mapType: .random(.medium),
 				gameName: "Test match",
@@ -103,7 +104,6 @@ final class MatchesSectionView: Control {
 				boosterEnabled: true),
 			user: user,
 			webSocketClient: client,
-			onCreateSuccess: handleJoinSuccess,
 			onError: { error in
 				GD.print("Failed to create match: \(error)")
 				ErrorManager.showError(message: "Failed to create match: \(error)")
@@ -112,11 +112,4 @@ final class MatchesSectionView: Control {
 		)
 	}
 
-	private func handleJoinSuccess(client: WebSocketClient, msg: NMMatchJoined) {
-		GD.print("Successfully joined match with ID: \(msg.id)")
-		let lobby = MatchLobby.loadScene()
-		changeSceneToNode(node: lobby)
-		removeChild(node: client)
-		lobby.initialize(ws: client, user: user, players: msg.players)
-	}
 }

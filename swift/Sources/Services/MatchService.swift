@@ -17,11 +17,13 @@ struct MatchService {
 	private static var binaryMsgHandlerToken: Callable?
 
 	static func joinMatch(
+		on node: Node,
 		matchId: String,
 		user: User,
 		webSocketClient: WebSocketClient,
 		onConnected: (() -> Void)? = nil,
-		onJoinSuccess: @escaping (WebSocketClient, NMMatchJoined) -> Void,
+		onJoinSuccess: ((WebSocketClient, NMMatchJoined) -> Void)? = nil,
+		onReconnectSuccess: ((WebSocketClient, NMMatchJoinedInProgress) -> Void)? = nil,
 		onError: @escaping (MatchError) -> Void
 	) {
 		webSocketClient.connectedToServer.connect {
@@ -37,7 +39,12 @@ struct MatchService {
 			handleJoinMatchMessage(
 				data: data,
 				webSocketClient: webSocketClient,
-				onJoinSuccess: { msg in onJoinSuccess(webSocketClient, msg) },
+				onJoinSuccess: { msg in
+					onJoinSuccess?(webSocketClient, msg) ?? handleJoinSuccess(node: node, client: webSocketClient, msg: msg, user: user)
+				},
+				onReconnectSuccess: { msg in
+					onReconnectSuccess?(webSocketClient, msg) ?? handleReconnectSuccess(node: node, client: webSocketClient, msg: msg, user: user)
+				},
 				onError: onError
 			)
 		}
@@ -54,11 +61,12 @@ struct MatchService {
 	}
 
 	static func createMatch(
+		on node: Node,
 		settings: NMMatchSettings,
 		user: User,
 		webSocketClient: WebSocketClient,
 		onConnected: (() -> Void)? = nil,
-		onCreateSuccess: @escaping (WebSocketClient, NMMatchJoined) -> Void,
+		onCreateSuccess: ((WebSocketClient, NMMatchJoined) -> Void)? = nil,
 		onError: @escaping (MatchError) -> Void
 	) {
 		webSocketClient.connectedToServer.connect {
@@ -75,7 +83,9 @@ struct MatchService {
 				settings: settings,
 				data: data,
 				webSocketClient: webSocketClient,
-				onCreateSuccess: { msg in onCreateSuccess(webSocketClient, msg) },
+				onCreateSuccess: { msg in
+					onCreateSuccess?(webSocketClient, msg) ?? handleJoinSuccess(node: node, client: webSocketClient, msg: msg, user: user)
+				},
 				onError: onError
 			)
 		}
@@ -123,34 +133,42 @@ struct MatchService {
 		data: PackedByteArray,
 		webSocketClient: WebSocketClient,
 		onJoinSuccess: @escaping (NMMatchJoined) -> Void,
+		onReconnectSuccess: @escaping (NMMatchJoinedInProgress) -> Void,
 		onError: @escaping (MatchError) -> Void
 	) {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
 
 			switch message {
-			case let msg as NMPlayerAuthResult:
-				if msg.success {
-					GD.print("Join match auth successful")
-					try webSocketClient.send(message: NMPlayerAuthAck())
-				} else {
-					GD.print("Join match auth failed: \(msg.message ?? "Unknown error")")
-					onError(.authenticationFailed(msg.message ?? "Unknown error"))
-				}
+				case let msg as NMPlayerAuthResult:
+					if msg.success {
+						GD.print("Join match auth successful")
+						try webSocketClient.send(message: NMPlayerAuthAck())
+					} else {
+						GD.print("Join match auth failed: \(msg.message ?? "Unknown error")")
+						onError(.authenticationFailed(msg.message ?? "Unknown error"))
+					}
 
-			case let msg as NMMatchJoined:
-				GD.print("Successfully joined match: \(msg.id)")
-				if let binaryMsgHandlerToken {
-					webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
-				}
-				onJoinSuccess(msg)
-			case is NMMatchAlreadyStarted:
-				GD.print("Match already started")
-				onError(.matchJoinFailed(String(describing: message)))
+				case let msg as NMMatchJoined:
+					GD.print("Successfully joined match: \(msg.id)")
+					if let binaryMsgHandlerToken {
+						webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
+					}
+					onJoinSuccess(msg)
+				case let msg as NMMatchJoinedInProgress:
+					GD.print("Successfully joined match in progress: \(msg.id)")
+					if let binaryMsgHandlerToken {
+						webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
+					}
+					onReconnectSuccess(msg)
 
-			default:
-				GD.print("Received unexpected message in join match: \(type(of: message))")
-				onError(.unknownMessage(String(describing: message)))
+				case is NMMatchAlreadyStarted:
+					GD.print("Match already started")
+					onError(.matchJoinFailed(String(describing: message)))
+
+				default:
+					GD.print("Received unexpected message in join match: \(type(of: message))")
+					onError(.unknownMessage(String(describing: message)))
 			}
 		} catch {
 			GD.print("Failed to decode join match message: \(error)")
@@ -169,26 +187,26 @@ struct MatchService {
 			let message = try NMDecoder.decode(data.asBytes())
 
 			switch message {
-			case let msg as NMPlayerAuthResult:
-				if msg.success {
-					GD.print("Create match auth successful")
-					sendCreateMatchRequest(
-						settings: settings, webSocketClient: webSocketClient, onError: onError)
-				} else {
-					GD.print("Create match auth failed: \(msg.message ?? "Unknown error")")
-					onError(.authenticationFailed(msg.message ?? "Unknown error"))
-				}
+				case let msg as NMPlayerAuthResult:
+					if msg.success {
+						GD.print("Create match auth successful")
+						sendCreateMatchRequest(
+							settings: settings, webSocketClient: webSocketClient, onError: onError)
+					} else {
+						GD.print("Create match auth failed: \(msg.message ?? "Unknown error")")
+						onError(.authenticationFailed(msg.message ?? "Unknown error"))
+					}
 
-			case let msg as NMMatchJoined:
-				GD.print("Successfully created match: \(msg.id)")
-				if let binaryMsgHandlerToken {
-					webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
-				}
-				onCreateSuccess(msg)
+				case let msg as NMMatchJoined:
+					GD.print("Successfully created match: \(msg.id)")
+					if let binaryMsgHandlerToken {
+						webSocketClient.dataReceived.disconnect(binaryMsgHandlerToken)
+					}
+					onCreateSuccess(msg)
 
-			default:
-				GD.print("Received unexpected message in create match: \(type(of: message))")
-				onError(.unknownMessage(String(describing: message)))
+				default:
+					GD.print("Received unexpected message in create match: \(type(of: message))")
+					onError(.unknownMessage(String(describing: message)))
 			}
 		} catch {
 			GD.print("Failed to decode create match message: \(error)")
@@ -209,5 +227,26 @@ struct MatchService {
 			GD.print("Failed to encode NMCreateMatch: \(error)")
 			onError(.networkError(error))
 		}
+	}
+
+	private static func handleJoinSuccess(node: Node, client: WebSocketClient, msg: NMMatchJoined, user: User) {
+		GD.print("Successfully joined match with ID: \(msg.id)")
+		let lobby = MatchLobby.loadScene()
+		node.changeSceneToNode(node: lobby)
+		node.removeChild(node: client)
+		lobby.initialize(ws: client, user: user, players: msg.players)
+	}
+
+	private static func handleReconnectSuccess(node: Node, client: WebSocketClient, msg: NMMatchJoinedInProgress, user: User) {
+		GD.print("Successfully reconnected match with ID: \(msg.id)")
+		let match = MatchScreen.loadScene()
+		match.initialize(
+			user: user,
+			settings: msg.settings, players: msg.players, startingPlayer: msg.players[Int(msg.currentPlayerIndex)].id,
+			mapData: msg.map, ws: client)
+		match.setCurrentState(phase: msg.state, remainingTime: msg.remainingTime)
+
+		node.changeSceneToNode(node: match)
+		node.removeChild(node: client)
 	}
 }

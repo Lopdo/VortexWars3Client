@@ -74,6 +74,29 @@ class Match {
 		matchScreen.viewTurnTimer.startTurn()
 	}
 
+	// This is used only if player joins game already in progress
+	func setCurrentState(phase: NMMatchJoinedInProgress.NMMatchState, remainingTime: Int) {
+		switch phase {
+			case .intro, .gameOver:
+				break
+			case .attack:
+				if currentPlayer.id == user.player.id {
+					state = .myTurn(.attackerSelection)
+				} else {
+					state = .enemyTurn(.idle)
+				}
+				matchScreen.viewTurnTimer.startTurn(time: remainingTime)
+			case .reinforcements(let count):
+				if currentPlayer.id == user.player.id {
+					state = .myTurn(.reinforcementSelection(count))
+				} else {
+					state = .enemyTurn(.reinforcementSelection(count))
+				}
+				//TODO: In case turn timer looks different in reinforcements phase this will need to change
+				matchScreen.viewTurnTimer.startTurn(time: remainingTime)
+		}
+	}
+
 	private func handleBinaryMessage(data: PackedByteArray) {
 		do {
 			let message = try NMDecoder.decode(data.asBytes())
@@ -82,6 +105,8 @@ class Match {
 				case let msg as NMMatchPlayerLeft:
 					handlePlayerDisonnected(playerId: msg.playerId)
 					break
+				case let msg as NMMatchPlayerReconnected:
+					handlePlayerReconnected(playerId: msg.playerId)
 				/*case let msg as NMMatchTurnEnded:
 					//TODO:
 					break*/
@@ -127,6 +152,10 @@ class Match {
 
 	private func handlePlayerDisonnected(playerId: String) {
 		matchScreen.playerDisconnected(playerId: playerId)
+	}
+
+	private func handlePlayerReconnected(playerId: String) {
+		matchScreen.playerReconnected(playerId: playerId)
 	}
 
 	private func handleNewTurnStart(newPlayerId: String) {

@@ -38,7 +38,11 @@ struct Map {
 			}
 			let owner = players.first(where: { UInt8($0.index) == mapDataRegion.ownerIndex })
 			return MatchRegion(
-				region: mapRegion, owner: owner, dice: Int(mapDataRegion.dice), maxDice: Int(mapDataRegion.maxDice))
+				region: mapRegion,
+				owner: owner,
+				dice: Int(mapDataRegion.dice),
+				maxDice: Int(mapDataRegion.maxDice),
+				hasDefenceBoost: mapDataRegion.hasDefenceBoost)
 		}
 		.sorted(by: { $0.region.id < $1.region.id })
 

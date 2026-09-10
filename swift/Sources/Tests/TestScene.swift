@@ -275,6 +275,7 @@ final class TestScene: Node {
 		webSocketClient = createWebSocketClient()
 
 		MatchService.joinMatch(
+			on: self,
 			matchId: matchId,
 			user: user,
 			webSocketClient: webSocketClient!,
@@ -301,6 +302,7 @@ final class TestScene: Node {
 			boosterEnabled: true)
 
 		MatchService.createMatch(
+			on: self,
 			settings: settings,
 			user: user,
 			webSocketClient: webSocketClient!,

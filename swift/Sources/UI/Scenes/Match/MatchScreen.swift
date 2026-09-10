@@ -101,6 +101,10 @@ final class MatchScreen: Node {
 		}
 	}
 
+	func setCurrentState(phase: NMMatchJoinedInProgress.NMMatchState, remainingTime: Int) {
+		match.setCurrentState(phase: phase, remainingTime: remainingTime)
+	}
+
 	private func setupSubViewport() {
 		// Enable local input processing for mouse events
 		mapContainer.handleInputLocally = true

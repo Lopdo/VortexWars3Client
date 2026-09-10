@@ -10,7 +10,7 @@ final class MatchTurnTimerView: Control {
 
 	private var tween: Tween?
 
-	func startTurn() {
+	func startTurn(time: Int? = nil) {
 		tween?.stop()
 
 		bar.value = bar.maxValue
@@ -19,13 +19,13 @@ final class MatchTurnTimerView: Control {
 			object: bar,
 			property: "value",
 			finalVal: Variant(0.0),
-			duration: Double(Timings.attackPhase / 1000))
+			duration: Double((time ?? Timings.attackPhase) / 1000))
 
 		show()
 	}
 
 	func startReinforcements(count: Int) {
-		stop()
+		tween?.stop()
 
 		bar.value = bar.maxValue
 		tween = createTween()

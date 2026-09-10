@@ -4,7 +4,7 @@ struct MatchListDTO {
 	let matches: [MatchDTO]
 }
 
-extension MatchListDTO: Codable {
+extension MatchListDTO: Decodable {
 	private enum CodingKeys: String, CodingKey {
 		case matches
 	}
@@ -16,10 +16,14 @@ struct MatchDTO {
 	let playerCount: Int
 }
 
-extension MatchDTO: Codable {
+extension MatchDTO: Decodable {
 	private enum CodingKeys: String, CodingKey {
 		case id
 		case name
 		case playerCount
 	}
+}
+
+struct CurrentMatchDTO: Decodable {
+	let match: MatchDTO?
 }
