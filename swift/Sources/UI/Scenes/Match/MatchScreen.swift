@@ -191,7 +191,10 @@ final class MatchScreen: Node {
 
 	func playerEliminated(_ player: MatchPlayer, result: MatchEliminationResult) {
 
-		playerKicked(playerId: player.id)
+		// do not mark winner as gone in the UI and map
+		if result.position != 1 {
+			playerKicked(playerId: player.id)
+		}
 
 		//show him as eliminated in player list
 

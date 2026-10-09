@@ -4,14 +4,17 @@ extension Match {
 			case .myTurn(let turnState):
 				switch turnState {
 					case .targetSelection(let region):
-						region.regionView.isSelected = false
+						if case .myTurn(let newTurnState) = newState,
+							case .combatInitiated = newTurnState
+						{
+							// Do not clean up the selected region, we need it for battle
+						} else {
+							region.regionView.isSelected = false
+						}
 					case .reinforcementSelection(_):
 						matchScreen.lblReinforcementDice.hide()
 						matchScreen.reinforcementsAutoDistributor.finishDistribution()
 						matchScreen.reinforcementsManualDistributor.stopDistribution()
-					case .combatInitiated(let sourceRegion, let targetRegion):
-						sourceRegion.regionView.isSelected = false
-						targetRegion.regionView.isSelected = false
 					default:
 						// nothing to clean up
 						break
@@ -31,4 +34,3 @@ extension Match {
 		}
 	}
 }
-
