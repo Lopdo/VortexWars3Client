@@ -2,14 +2,14 @@ import Foundation
 import NetworkModels
 import SwiftGodot
 
-extension MainLobby: SceneLoadable {
+extension RankedLobby: SceneLoadable {
 	static var pathToScene: String {
-		"res://Screens/MainLobby/main_lobby.tscn"
+		"res://Screens/MainLobby/ranked_lobby.tscn"
 	}
 }
 
 @Godot
-final class MainLobby: Node {
+final class RankedLobby: Control {
 	private let client = WebSocketClient()
 
 	@Export
@@ -18,9 +18,6 @@ final class MainLobby: Node {
 	var chatContent: VBoxContainer!
 	@Export
 	var playerList: VBoxContainer!
-
-	@Export
-	var matchesSectionView: MatchesSectionView!
 
 	private var user: User!
 
@@ -34,7 +31,6 @@ final class MainLobby: Node {
 		client.textReceived.connect(handleMessage)
 		client.dataReceived.connect(handleBinaryMessage)
 
-		matchesSectionView.user = user
 		checkCurrentMatch()
 	}
 
@@ -96,7 +92,7 @@ final class MainLobby: Node {
 
 	private func handleJoinSuccess(client: WebSocketClient, msg: NMMatchJoined) {
 		GD.print("Successfully joined match with ID: \(msg.id)")
-		let lobby = MatchLobby.loadScene()
+		let lobby = CustomMatchLobby.loadScene()
 		changeSceneToNode(node: lobby)
 		removeChild(node: client)
 		lobby.initialize(ws: client, user: user, players: msg.players)
@@ -207,4 +203,3 @@ final class MainLobby: Node {
 		GD.print(message)
 	}
 }
-

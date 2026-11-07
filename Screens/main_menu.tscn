@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://dfvriqw5d141n"]
+
+[ext_resource type="Theme" uid="uid://bdmdy3evg5ncx" path="res://res/vw_ui.tres" id="1_r4w38"]
+
+[node name="MainMenu" type="MainMenuScene" unique_id=445484889 node_paths=PackedStringArray("content_container")]
+content_container = NodePath("MarginContainer/VBoxContainer/MarginContainer")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=164775148]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=782940740]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1490335014]
+custom_minimum_size = Vector2(0, 80)
+custom_maximum_size = Vector2(-1, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EqualWidthHBoxContainer" type="EqualWidthHBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=924328691]
+separation = 6.0
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonRanked" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=2022982356]
+layout_mode = 2
+theme = ExtResource("1_r4w38")
+theme_type_variation = &"MainMenuButton"
+text = "Ranked"
+
+[node name="ButtonCustom" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=990693406]
+layout_mode = 2
+theme = ExtResource("1_r4w38")
+theme_type_variation = &"MainMenuButton"
+text = "Custom"
+
+[node name="ButtonGuild" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=1099451415]
+layout_mode = 2
+theme = ExtResource("1_r4w38")
+theme_type_variation = &"MainMenuButton"
+text = "Guild"
+
+[node name="ButtonProfile" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=1053114015]
+layout_mode = 2
+theme = ExtResource("1_r4w38")
+theme_type_variation = &"MainMenuButton"
+text = "Profile"
+
+[node name="ButtonContentPass" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=720514871]
+layout_mode = 2
+theme = ExtResource("1_r4w38")
+theme_type_variation = &"MainMenuButton"
+text = "Content Pass"
+
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=4736183]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonSettings" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1369727428]
+layout_mode = 2
+text = "Settings"
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer" unique_id=515306029]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer/ButtonRanked" to="." method="onRankedPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer/ButtonCustom" to="." method="onCustomPressed"]

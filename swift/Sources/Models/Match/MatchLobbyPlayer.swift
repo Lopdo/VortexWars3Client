@@ -1,7 +1,7 @@
 import NetworkModels
 import SwiftGodot
 
-struct MatchLobbyPlayer {
+struct CustomLobbyPlayer {
 	let id: String
 	let name: String
 

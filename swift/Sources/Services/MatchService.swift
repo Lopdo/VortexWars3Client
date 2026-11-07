@@ -231,7 +231,7 @@ struct MatchService {
 
 	private static func handleJoinSuccess(node: Node, client: WebSocketClient, msg: NMMatchJoined, user: User) {
 		GD.print("Successfully joined match with ID: \(msg.id)")
-		let lobby = MatchLobby.loadScene()
+		let lobby = CustomMatchLobby.loadScene()
 		node.changeSceneToNode(node: lobby)
 		node.removeChild(node: client)
 		lobby.initialize(ws: client, user: user, players: msg.players)

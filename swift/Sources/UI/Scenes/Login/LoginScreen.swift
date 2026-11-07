@@ -61,9 +61,9 @@ final class LoginScreen: Node {
 	}
 
 	private func loginCompleted(userDTO: UserDTO) {
-		let lobby = MainLobby.loadScene()
-		lobby.initialize(user: User(from: userDTO))
-		changeSceneToNode(node: lobby)
+		let mainMenu = MainMenuScene.loadScene()
+		changeSceneToNode(node: mainMenu)
+		mainMenu.initialize(user: User(from: userDTO))
 	}
 
 	private func register() {

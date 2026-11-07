@@ -3,7 +3,7 @@ import NetworkModels
 import SwiftGodot
 
 @Godot
-final class MatchLobbyPlayerInfoView: Control {
+final class CustomMatchLobbyPlayerInfoView: Control {
 
 	private var factionIndex: Int = 1
 	private var terrainIndex: Int = 1

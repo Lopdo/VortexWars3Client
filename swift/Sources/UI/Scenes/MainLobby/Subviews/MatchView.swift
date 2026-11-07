@@ -1,14 +1,14 @@
 import Foundation
 import SwiftGodot
 
-extension MatchView: SceneLoadable {
+extension CustomMatchView: SceneLoadable {
 	static var pathToScene: String {
-		"res://Screens/MainLobby/match_view.tscn"
+		"res://Screens/MainLobby/custom_match_view.tscn"
 	}
 }
 
 @Godot
-class MatchView: Button {
+class CustomMatchView: Button {
 	@Export
 	var lblName: Label!
 

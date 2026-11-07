@@ -61,7 +61,7 @@ final class MatchesSectionView: Control {
 	}
 
 	private func createMatchView(for match: MatchDTO) {
-		let matchView = MatchView.loadScene()
+		let matchView = CustomMatchView.loadScene()
 		matchView.setup(with: match)
 		matchList.addChild(node: matchView)
 		matchView.pressed.connect {

@@ -2,14 +2,14 @@ import Foundation
 import NetworkModels
 import SwiftGodot
 
-extension MatchLobbyPlayerView: SceneLoadable {
+extension CustomMatchLobbyPlayerView: SceneLoadable {
 	static var pathToScene: String {
-		"res://Screens/MatchLobby/match_lobby_player.tscn"
+		"res://Screens/MatchLobby/custom_match_lobby_player.tscn"
 	}
 }
 
 @Godot
-final class MatchLobbyPlayerView: Control {
+final class CustomMatchLobbyPlayerView: Control {
 
 	@Export
 	var imgFaction: TextureRect!
@@ -20,9 +20,9 @@ final class MatchLobbyPlayerView: Control {
 	@Export
 	var lblReady: Label!
 
-	var player: MatchLobbyPlayer!
+	var player: CustomLobbyPlayer!
 
-	func initialize(player: MatchLobbyPlayer) {
+	func initialize(player: CustomLobbyPlayer) {
 		self.player = player
 		updateName()
 		set(ready: player.isReady)

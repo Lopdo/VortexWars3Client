@@ -2,17 +2,17 @@ import Foundation
 import NetworkModels
 import SwiftGodot
 
-extension MatchLobby: SceneLoadable {
+extension CustomMatchLobby: SceneLoadable {
 	static var pathToScene: String {
-		"res://Screens/MatchLobby/match_lobby.tscn"
+		"res://Screens/MatchLobby/custom_match_lobby.tscn"
 	}
 }
 
 @Godot
-final class MatchLobby: Node {
+final class CustomMatchLobby: Node {
 
 	@Export
-	var playerInfoView: MatchLobbyPlayerInfoView!
+	var playerInfoView: CustomMatchLobbyPlayerInfoView!
 
 	@Export
 	var playerList: VBoxContainer!
@@ -95,17 +95,17 @@ final class MatchLobby: Node {
 	}
 
 	private func add(player: NMMatchLobbyPlayer) {
-		let matchView = MatchLobbyPlayerView.loadScene()
-		matchView.initialize(player: MatchLobbyPlayer(from: player))
+		let matchView = CustomMatchLobbyPlayerView.loadScene()
+		matchView.initialize(player: CustomLobbyPlayer(from: player))
 		playerList.addChild(node: matchView)
 	}
 
-	private func playerView(for playerId: String) -> MatchLobbyPlayerView? {
+	private func playerView(for playerId: String) -> CustomMatchLobbyPlayerView? {
 		let nodes = playerList.getChildren()
 		if let playerView = nodes.first(where: {
-			($0 as? MatchLobbyPlayerView)?.player.id == playerId
+			($0 as? CustomMatchLobbyPlayerView)?.player.id == playerId
 		}) {
-			return playerView as? MatchLobbyPlayerView
+			return playerView as? CustomMatchLobbyPlayerView
 		} else {
 			GD.print("PlayerView for \(playerId) not found")
 			return nil
@@ -144,14 +144,14 @@ final class MatchLobby: Node {
 			buttonStart.hide()
 		}
 
-		let playerViews = playerList.getChildren().compactMap { $0 as? MatchLobbyPlayerView }
+		let playerViews = playerList.getChildren().compactMap { $0 as? CustomMatchLobbyPlayerView }
 		for pView in playerViews {
 			pView.set(isCook: pView.player.id == newCookId)
 		}
 	}
 
 	private func updateStartButton() {
-		let playerViews = playerList.getChildren().compactMap { $0 as? MatchLobbyPlayerView }
+		let playerViews = playerList.getChildren().compactMap { $0 as? CustomMatchLobbyPlayerView }
 		buttonStart.disabled = playerViews.contains(where: { !$0.player.isReady })
 	}
 
@@ -171,7 +171,7 @@ final class MatchLobby: Node {
 	@Callable
 	func onExit() {
 		wsClient.close()
-		let lobby = MainLobby.loadScene()
+		let lobby = MainMenuScene.loadScene()
 		lobby.initialize(user: user)
 		changeSceneToNode(node: lobby)
 	}

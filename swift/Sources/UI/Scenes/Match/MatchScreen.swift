@@ -153,7 +153,7 @@ final class MatchScreen: Node {
 	private func quitGame() {
 		ws.close()
 
-		let lobby = MainLobby.loadScene()
+		let lobby = CustomLobby.loadScene()
 		lobby.initialize(user: match.user)
 		changeSceneToNode(node: lobby)
 	}

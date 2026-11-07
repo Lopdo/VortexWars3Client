@@ -1,0 +1,154 @@
+[gd_scene format=3 uid="uid://r52dhllgoy16"]
+
+[node name="CustomLobby" type="CustomLobby" unique_id=246213483 node_paths=PackedStringArray("line_edit", "chat_content", "player_list", "matches_section_view")]
+line_edit = NodePath("MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer/LineEdit")
+chat_content = NodePath("MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2/ChatScrollContainer/ChatContent")
+player_list = NodePath("MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2/PlayersScrollContainer/PlayersList")
+matches_section_view = NodePath("MarginContainer/HBoxContainer/MatchesSectionView")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1468856457]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1525083219]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=1387977636]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProfileContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=1876083608]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/ProfileContainer" unique_id=821867805]
+layout_mode = 2
+text = "Player data will be here.
+level, some stats, 
+maybe current battle pass
+watever we need"
+horizontal_alignment = 1
+
+[node name="ChatSection" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=1525725088]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection" unique_id=1605618016]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChatScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2" unique_id=1884120902]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ChatContent" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2/ChatScrollContainer" unique_id=1002392491]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PlayersScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2" unique_id=14464281]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+
+[node name="PlayersList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer2/PlayersScrollContainer" unique_id=1989664332]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection" unique_id=65413101]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer" unique_id=1018511329]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer" unique_id=1257417871]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Send
+"
+
+[node name="MatchesSectionView" type="MatchesSectionView" parent="MarginContainer/HBoxContainer" unique_id=480621454 node_paths=PackedStringArray("create_match_button", "match_list", "loading_indicator")]
+create_match_button = NodePath("MatchSection/HBoxContainer/Button")
+match_list = NodePath("MatchSection/Control/VBoxContainer")
+loading_indicator = NodePath("MatchSection/Control/CenterContainer")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.6
+
+[node name="MatchSection" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView" unique_id=1920062995]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.6
+
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection" unique_id=1452843460]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/Control" unique_id=41211584]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/Control" unique_id=560217760]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/Control/CenterContainer" unique_id=789808140]
+layout_mode = 2
+text = "Loading"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection" unique_id=1876219335]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer" unique_id=9887788]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer" unique_id=1437455863]
+layout_mode = 2
+text = "Create match
+"
+
+[node name="Button2" type="Button" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer" unique_id=626521563]
+layout_mode = 2
+text = "Refresh"
+
+[node name="Spacer2" type="Control" parent="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer" unique_id=1234958523]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer/Button" to="." method="onSendPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer/Button" to="MarginContainer/HBoxContainer/MatchesSectionView" method="onCreateMatchButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MatchesSectionView/MatchSection/HBoxContainer/Button2" to="MarginContainer/HBoxContainer/MatchesSectionView" method="onRefresh"]

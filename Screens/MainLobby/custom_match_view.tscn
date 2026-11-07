@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cbjw10kw5xq0i"]
 
-[node name="MatchView" type="MatchView" node_paths=PackedStringArray("lbl_name", "lbl_player_count")]
+[node name="CustomMatchView" type="CustomMatchView" node_paths=PackedStringArray("lbl_name", "lbl_player_count")]
 lbl_name = NodePath("MarginContainer/HBoxContainer/Match name")
 lbl_player_count = NodePath("MarginContainer/HBoxContainer/Player Count")
 custom_minimum_size = Vector2(0, 80)

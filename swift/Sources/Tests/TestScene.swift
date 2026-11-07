@@ -362,7 +362,7 @@ final class TestScene: Node {
 
 	private func goToLobby(msg: NMMatchJoined) {
 		GD.print("Successfully joined match with ID: \(msg.id)")
-		let lobby = MatchLobby.loadScene()
+		let lobby = CustomMatchLobby.loadScene()
 		removeChild(node: webSocketClient!)
 		lobby.initialize(ws: webSocketClient!, user: currentUser!, players: msg.players)
 		changeSceneToNode2(node: lobby)
