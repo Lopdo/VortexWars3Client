@@ -379,11 +379,11 @@ final class TestScene: Node {
 			if let mainScene = GD.load(path: "res://Screens/Main.tscn") as? PackedScene,
 				let main = mainScene.instantiate()
 			{
-				tree.root?.addChild(node: main)
-				tree.root?.removeChild(node: currScene)
+				tree.root.addChild(node: main)
+				tree.root.removeChild(node: currScene)
 				tree.currentScene = main
 
-				tree.root?.changeSceneToNode(node: node)
+				tree.root.changeSceneToNode(node: node)
 			}
 
 		} else {

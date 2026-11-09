@@ -1,5 +1,5 @@
 {
-  "originHash" : "e06631987fccb999c0fa0e83bf485c5029c66002ab7af66f7091ca4d56dea55e",
+  "originHash" : "f5843cfe64ac812e0fc5aec05cd0821556f9e03ecda859cad6b26e2b06a1e8a8",
   "pins" : [
     {
       "identity" : "binarycodable",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax",
       "state" : {
-        "revision" : "0687f71944021d616d34d922343dcef086855920",
-        "version" : "600.0.1"
+        "revision" : "79e4b74a295b6eb74a8b585e3a39d29e70c1dbd1",
+        "version" : "603.0.2"
       }
     },
     {
@@ -43,7 +43,7 @@
       "location" : "https://github.com/migueldeicaza/SwiftGodot",
       "state" : {
         "branch" : "main",
-        "revision" : "5a9ffab8f7c11d7872f50d6c02fdb278b6e532b2"
+        "revision" : "9aa1f47863f4f4e3fdd8fe72275725739575d6cb"
       }
     }
   ],
