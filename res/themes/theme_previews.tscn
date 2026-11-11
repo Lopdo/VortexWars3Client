@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dpdqd0dgo70vk"]
+
+[ext_resource type="Theme" uid="uid://bdmdy3evg5ncx" path="res://res/themes/vw_ui.tres" id="1_rtqgo"]
+
+[node name="ThemePreviews" type="MarginContainer" unique_id=10374396]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HFlowContainer" type="HFlowContainer" parent="." unique_id=1391652843]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="HFlowContainer" unique_id=349131731]
+layout_mode = 2
+theme = ExtResource("1_rtqgo")
+theme_type_variation = &"MainMenuButton"
+text = "Main menu button
+"
+
+[node name="Button2" type="Button" parent="HFlowContainer" unique_id=2091140609]
+layout_mode = 2
+theme = ExtResource("1_rtqgo")
+theme_type_variation = &"SettingsAdjButton"
+text = "-"

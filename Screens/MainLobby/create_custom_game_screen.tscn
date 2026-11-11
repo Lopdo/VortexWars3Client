@@ -1,0 +1,345 @@
+[gd_scene format=3 uid="uid://cxo5xr2ed4442"]
+
+[ext_resource type="Theme" uid="uid://bdmdy3evg5ncx" path="res://res/themes/vw_ui.tres" id="1_5km53"]
+
+[node name="CreateCustomGameScreen" type="CreateCustomMatchScreen" unique_id=378692543 node_paths=PackedStringArray("line_edit_map_name", "view_max_players", "view_combat_rule", "view_reinforcements", "view_start_condition", "view_boosts_enabled", "view_map_type", "view_random_map_size")]
+line_edit_map_name = NodePath("MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/VBoxContainer/LineEdit")
+view_max_players = NodePath("MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/MaxPlayersRow")
+view_combat_rule = NodePath("MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/CombatRuleRow")
+view_reinforcements = NodePath("MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/ReinforcementTypeRow")
+view_start_condition = NodePath("MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/StartTypeRow")
+view_boosts_enabled = NodePath("MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/BoostsEnabledRow")
+view_map_type = NodePath("MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapRow")
+view_random_map_size = NodePath("MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapSizeRow")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1698236762]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=420847960]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer" unique_id=970391540]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer" unique_id=1799421430]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer" unique_id=1692912063]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" unique_id=1750678455]
+layout_mode = 2
+text = "Map name"
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" unique_id=1193472454]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" unique_id=1571996]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="MaxPlayersRow" type="SelectableOptionRow" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer" unique_id=994935632 node_paths=PackedStringArray("button_left", "button_right", "label_current")]
+button_left = NodePath("MaxPlayersRow/Button")
+button_right = NodePath("MaxPlayersRow/Button2")
+label_current = NodePath("MaxPlayersRow/Label2")
+layout_mode = 2
+
+[node name="MaxPlayersRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/MaxPlayersRow" unique_id=2065246632]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/MaxPlayersRow/MaxPlayersRow" unique_id=689585840]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Max players"
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/MaxPlayersRow/MaxPlayersRow" unique_id=247496870]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = "-"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/MaxPlayersRow/MaxPlayersRow" unique_id=885833143]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "4"
+horizontal_alignment = 1
+
+[node name="Button2" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/MaxPlayersRow/MaxPlayersRow" unique_id=1217666998]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = "+"
+
+[node name="CombatRuleRow" type="SelectableOptionRow" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer" unique_id=1445400262 node_paths=PackedStringArray("button_left", "button_right", "label_current")]
+button_left = NodePath("CombatRuleRow/Button")
+button_right = NodePath("CombatRuleRow/Button2")
+label_current = NodePath("CombatRuleRow/Label2")
+cyclical = true
+layout_mode = 2
+
+[node name="CombatRuleRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/CombatRuleRow" unique_id=846490864]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/CombatRuleRow/CombatRuleRow" unique_id=1759272313]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Battle type"
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/CombatRuleRow/CombatRuleRow" unique_id=1096517362]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = "<"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/CombatRuleRow/CombatRuleRow" unique_id=804366876]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Hardcore"
+horizontal_alignment = 1
+
+[node name="Button2" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/CombatRuleRow/CombatRuleRow" unique_id=1898778140]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = ">"
+
+[node name="ReinforcementTypeRow" type="SelectableOptionRow" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer" unique_id=1105664224 node_paths=PackedStringArray("button_left", "button_right", "label_current")]
+button_left = NodePath("ReinforcementTypeRow/Button")
+button_right = NodePath("ReinforcementTypeRow/Button2")
+label_current = NodePath("ReinforcementTypeRow/Label2")
+cyclical = true
+layout_mode = 2
+
+[node name="ReinforcementTypeRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/ReinforcementTypeRow" unique_id=2103601338]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/ReinforcementTypeRow/ReinforcementTypeRow" unique_id=247340076]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Reinforcement"
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/ReinforcementTypeRow/ReinforcementTypeRow" unique_id=288330616]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = "<"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/ReinforcementTypeRow/ReinforcementTypeRow" unique_id=1277478012]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Random"
+horizontal_alignment = 1
+
+[node name="Button2" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/ReinforcementTypeRow/ReinforcementTypeRow" unique_id=992903866]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = ">"
+
+[node name="StartTypeRow" type="SelectableOptionRow" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer" unique_id=1690836293 node_paths=PackedStringArray("button_left", "button_right", "label_current")]
+button_left = NodePath("StartTypeRow/Button")
+button_right = NodePath("StartTypeRow/Button2")
+label_current = NodePath("StartTypeRow/Label2")
+cyclical = true
+layout_mode = 2
+
+[node name="StartTypeRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/StartTypeRow" unique_id=1223844867]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/StartTypeRow/StartTypeRow" unique_id=2147032785]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Starting condition"
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/StartTypeRow/StartTypeRow" unique_id=466355273]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = "<"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/StartTypeRow/StartTypeRow" unique_id=787090119]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Conquest"
+horizontal_alignment = 1
+
+[node name="Button2" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/StartTypeRow/StartTypeRow" unique_id=1238389484]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = ">"
+
+[node name="BoostsEnabledRow" type="SelectableOptionRow" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer" unique_id=1209485791 node_paths=PackedStringArray("button_left", "button_right", "label_current")]
+button_left = NodePath("BoostsEnabledRow/Button")
+button_right = NodePath("BoostsEnabledRow/Button2")
+label_current = NodePath("BoostsEnabledRow/Label2")
+cyclical = true
+layout_mode = 2
+
+[node name="BoostsEnabledRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/BoostsEnabledRow" unique_id=1449134139]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/BoostsEnabledRow/BoostsEnabledRow" unique_id=31890931]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Boosts"
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/BoostsEnabledRow/BoostsEnabledRow" unique_id=187367643]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = "<"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/BoostsEnabledRow/BoostsEnabledRow" unique_id=1192788542]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Disabled"
+horizontal_alignment = 1
+
+[node name="Button2" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/BoostsEnabledRow/BoostsEnabledRow" unique_id=186142062]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = ">"
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/HBoxContainer" unique_id=1500107371]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer2" unique_id=273487730]
+layout_mode = 2
+
+[node name="MapRow" type="SelectableOptionRow" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer" unique_id=1157964292 node_paths=PackedStringArray("button_left", "button_right", "label_current")]
+button_left = NodePath("MapRow/Button")
+button_right = NodePath("MapRow/Button2")
+label_current = NodePath("MapRow/Label2")
+cyclical = true
+layout_mode = 2
+
+[node name="MapRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapRow" unique_id=1733058685]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapRow/MapRow" unique_id=963757341]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Map"
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapRow/MapRow" unique_id=1463355779]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+disabled = true
+text = "<"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapRow/MapRow" unique_id=805975509]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Random"
+horizontal_alignment = 1
+
+[node name="Button2" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapRow/MapRow" unique_id=316233109]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+disabled = true
+text = ">"
+
+[node name="MapSizeRow" type="SelectableOptionRow" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer" unique_id=292670115 node_paths=PackedStringArray("button_left", "button_right", "label_current")]
+button_left = NodePath("MapSizeRow/Button")
+button_right = NodePath("MapSizeRow/Button2")
+label_current = NodePath("MapSizeRow/Label2")
+layout_mode = 2
+
+[node name="MapSizeRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapSizeRow" unique_id=215531750]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapSizeRow/MapSizeRow" unique_id=967063870]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Size"
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapSizeRow/MapSizeRow" unique_id=597128225]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = "<"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapSizeRow/MapSizeRow" unique_id=1073272784]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Extreme"
+horizontal_alignment = 1
+
+[node name="Button2" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapSizeRow/MapSizeRow" unique_id=630324871]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme = ExtResource("1_5km53")
+theme_type_variation = &"SettingsAdjButton"
+text = ">"
+
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer" unique_id=1465957963]
+custom_minimum_size = Vector2(0, 240)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer" unique_id=538028715]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/HBoxContainer" unique_id=854198071]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/HBoxContainer" unique_id=239487865]
+layout_mode = 2
+text = "Start"
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/MaxPlayersRow/MaxPlayersRow/Button" to="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/MaxPlayersRow" method="onLeftButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/MaxPlayersRow/MaxPlayersRow/Button2" to="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/MaxPlayersRow" method="onRightButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/CombatRuleRow/CombatRuleRow/Button" to="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/CombatRuleRow" method="onLeftButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/CombatRuleRow/CombatRuleRow/Button2" to="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/CombatRuleRow" method="onRightButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/ReinforcementTypeRow/ReinforcementTypeRow/Button" to="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/ReinforcementTypeRow" method="onLeftButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/ReinforcementTypeRow/ReinforcementTypeRow/Button2" to="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/ReinforcementTypeRow" method="onRightButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/StartTypeRow/StartTypeRow/Button" to="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/StartTypeRow" method="onLeftButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/StartTypeRow/StartTypeRow/Button2" to="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/StartTypeRow" method="onRightButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/BoostsEnabledRow/BoostsEnabledRow/Button" to="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/BoostsEnabledRow" method="onLeftButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/BoostsEnabledRow/BoostsEnabledRow/Button2" to="MarginContainer/HBoxContainer/CenterContainer/VBoxContainer/BoostsEnabledRow" method="onRightButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapRow/MapRow/Button" to="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapRow" method="onLeftButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapRow/MapRow/Button2" to="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapRow" method="onRightButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapSizeRow/MapSizeRow/Button" to="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapSizeRow" method="onLeftButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapSizeRow/MapSizeRow/Button2" to="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/MapSizeRow" method="onRightButtonPressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer2/VBoxContainer/HBoxContainer/Button" to="." method="startGame"]

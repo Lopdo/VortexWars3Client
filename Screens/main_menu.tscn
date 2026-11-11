@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dfvriqw5d141n"]
 
-[ext_resource type="Theme" uid="uid://bdmdy3evg5ncx" path="res://res/vw_ui.tres" id="1_r4w38"]
+[ext_resource type="Theme" uid="uid://bdmdy3evg5ncx" path="res://res/themes/vw_ui.tres" id="1_r4w38"]
 
 [node name="MainMenu" type="MainMenuScene" unique_id=445484889 node_paths=PackedStringArray("content_container")]
 content_container = NodePath("MarginContainer/VBoxContainer/MarginContainer")
@@ -61,6 +61,12 @@ layout_mode = 2
 theme = ExtResource("1_r4w38")
 theme_type_variation = &"MainMenuButton"
 text = "Content Pass"
+
+[node name="ButtonMyMaps" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=1741763730]
+layout_mode = 2
+theme = ExtResource("1_r4w38")
+theme_type_variation = &"MainMenuButton"
+text = "My Maps"
 
 [node name="Control" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=4736183]
 layout_mode = 2

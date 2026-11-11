@@ -88,28 +88,9 @@ final class MatchesSectionView: Control {
 	}
 
 	private func createMatch() {
-
-		let client = WebSocketClient()
-		addChild(node: client)
-
-		MatchService.createMatch(
-			on: self,
-			settings: NMMatchSettings(
-				mapType: .random(.medium),
-				gameName: "Test match",
-				maxPlayers: 4,
-				startCondition: .full,
-				combatRule: .hardcore,
-				reinforcementsRule: .manual,
-				boosterEnabled: true),
-			user: user,
-			webSocketClient: client,
-			onError: { error in
-				GD.print("Failed to create match: \(error)")
-				ErrorManager.showError(message: "Failed to create match: \(error)")
-				self.removeChild(node: client)
-			}
-		)
+		let createMatchScreen = CreateCustomMatchScreen.loadScene()
+		createMatchScreen.initialize(user: user)
+		changeSceneToNode(node: createMatchScreen)
 	}
 
 }

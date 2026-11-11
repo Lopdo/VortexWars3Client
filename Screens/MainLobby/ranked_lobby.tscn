@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://r52dhllgoy16"]
+[gd_scene format=3 uid="uid://r52dhllgoy17"]
 
 [node name="RankedLobby" type="RankedLobby" unique_id=246213483 node_paths=PackedStringArray("line_edit", "chat_content", "player_list")]
 line_edit = NodePath("MarginContainer/HBoxContainer/VBoxContainer/ChatSection/HBoxContainer/LineEdit")

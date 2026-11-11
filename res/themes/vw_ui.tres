@@ -1,0 +1,25 @@
+[gd_resource type="Theme" format=3 uid="uid://bdmdy3evg5ncx"]
+
+[ext_resource type="StyleBox" uid="uid://bjen0xevjidqc" path="res://res/themes/main_menu_button/main_menu_button_disabled_stylebox.tres" id="1_pmxi8"]
+[ext_resource type="StyleBox" uid="uid://cm3gtda368baa" path="res://res/themes/main_menu_button/main_menu_button_hover_stylebox.tres" id="2_fplib"]
+[ext_resource type="StyleBox" uid="uid://mk1kvar8d74f" path="res://res/themes/main_menu_button/main_menu_button_normal_stylebox.tres" id="3_du18t"]
+[ext_resource type="StyleBox" uid="uid://c0vkvhclkcxxw" path="res://res/themes/main_menu_button/main_menu_button_pressed_stylebox.tres" id="4_lls3s"]
+[ext_resource type="StyleBox" uid="uid://coymfbpjefcpn" path="res://res/themes/settings_adj_button/settings_adj_button_disabled_stylebox.tres" id="5_qpc3q"]
+[ext_resource type="StyleBox" uid="uid://cukfsh7kkgmm0" path="res://res/themes/settings_adj_button/settings_adj_button_hover_stylebox.tres" id="6_ffhg3"]
+[ext_resource type="StyleBox" uid="uid://edheoaiiq6cc" path="res://res/themes/settings_adj_button/settings_adj_button_normal_stylebox.tres" id="7_4um06"]
+[ext_resource type="StyleBox" uid="uid://crqc4aavdg76k" path="res://res/themes/settings_adj_button/settings_adj_button_pressed_stylebox.tres" id="8_fplib"]
+
+[resource]
+MainMenuButton/base_type = &"Button"
+MainMenuButton/font_sizes/font_size = 22
+MainMenuButton/styles/disabled = ExtResource("1_pmxi8")
+MainMenuButton/styles/focus = ExtResource("2_fplib")
+MainMenuButton/styles/hover = ExtResource("2_fplib")
+MainMenuButton/styles/normal = ExtResource("3_du18t")
+MainMenuButton/styles/pressed = ExtResource("4_lls3s")
+SettingsAdjButton/base_type = &"Button"
+SettingsAdjButton/font_sizes/font_size = 26
+SettingsAdjButton/styles/disabled = ExtResource("5_qpc3q")
+SettingsAdjButton/styles/hover = ExtResource("6_ffhg3")
+SettingsAdjButton/styles/normal = ExtResource("7_4um06")
+SettingsAdjButton/styles/pressed = ExtResource("8_fplib")
