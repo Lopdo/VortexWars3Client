@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://cbecxnd3um4cn"]
 
-[node name="CustomMatchLobby" type="CustomMatchLobby" unique_id=1995516779 node_paths=PackedStringArray("player_info_view", "player_list", "button_leave", "button_ready", "button_start")]
+[node name="CustomMatchLobby" type="CustomMatchLobby" unique_id=1995516779 node_paths=PackedStringArray("player_info_view", "match_info_view", "player_list", "button_leave", "button_ready", "button_start")]
 player_info_view = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyPlayerInfoView")
+match_info_view = NodePath("HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView")
 player_list = NodePath("HBoxContainer/VBoxContainer2/PlayerList")
 button_leave = NodePath("HBoxContainer/VBoxContainer2/HBoxContainer/ButtonLeave")
 button_ready = NodePath("HBoxContainer/VBoxContainer2/HBoxContainer/ButtonReady")
@@ -19,6 +20,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=713648676]
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
 [node name="CustomMatchLobbyPlayerInfoView" type="CustomMatchLobbyPlayerInfoView" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2007939155 node_paths=PackedStringArray("img_faction", "img_terrain")]
@@ -73,13 +75,70 @@ layout_mode = 2
 text = ">
 "
 
-[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1756583111]
-custom_minimum_size = Vector2(0, 300)
+[node name="CustomMatchLobbyMatchInfoView" type="CustomMatchLobbyMatchInfoView" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1477673512 node_paths=PackedStringArray("lbl_name", "lbl_player_count", "lbl_combat_rule", "lbl_start_type", "lbl_reinforcement_rule", "lbl_boosts_enabled", "lbl_map_size")]
+lbl_name = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Match name")
+lbl_player_count = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Player Count")
+lbl_combat_rule = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/LblCombat")
+lbl_start_type = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/LblStartType")
+lbl_reinforcement_rule = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/LblReinforcements")
+lbl_boosts_enabled = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/LblBoosts")
+lbl_map_size = NodePath("MarginContainer/HBoxContainer/Label")
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView" unique_id=1110533162]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer" unique_id=1493339202]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer/HBoxContainer" unique_id=1503953499]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "S"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer/HBoxContainer" unique_id=1900038553]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/CenterContainer" unique_id=1612786722]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer/HBoxContainer/VBoxContainer" unique_id=416632741]
 layout_mode = 2
-text = "Here will be match info (map + settings)"
+size_flags_vertical = 3
+
+[node name="Match name" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1299811033]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "test"
+
+[node name="Player Count" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2036374784]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer/HBoxContainer/VBoxContainer" unique_id=2062560573]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="LblStartType" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=32492945]
+layout_mode = 2
+
+[node name="LblReinforcements" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1283980794]
+layout_mode = 2
+
+[node name="LblCombat" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1918089737]
+layout_mode = 2
+
+[node name="LblBoosts" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/CustomMatchLobbyMatchInfoView/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1835371206]
+layout_mode = 2
 
 [node name="ChatSection" type="VBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=1874378422]
 layout_mode = 2

@@ -11,8 +11,11 @@ extension CustomMatchLobby: SceneLoadable {
 @Godot
 final class CustomMatchLobby: Node {
 
-	@Export
+	@Export(.nodeType)
 	var playerInfoView: CustomMatchLobbyPlayerInfoView!
+
+	@Export(.nodeType)
+	var matchInfoView: CustomMatchLobbyMatchInfoView!
 
 	@Export
 	var playerList: VBoxContainer!
@@ -37,7 +40,7 @@ final class CustomMatchLobby: Node {
 		}
 	}
 
-	func initialize(ws: WebSocketClient, user: User, players: [NMMatchLobbyPlayer]) {
+	func initialize(ws: WebSocketClient, user: User, players: [NMMatchLobbyPlayer], settings: NMMatchSettings) {
 		wsClient = ws
 		binaryMessageHandler = wsClient.dataReceived.connect(handleBinaryMessage)
 		addChild(node: wsClient)
@@ -56,6 +59,7 @@ final class CustomMatchLobby: Node {
 		}
 
 		playerInfoView.initialize(with: user.player, wsClient: wsClient)
+		matchInfoView.initialize(with: settings)
 	}
 
 	private func handleBinaryMessage(data: PackedByteArray) {

@@ -137,7 +137,7 @@ final class CreateCustomMatchScreen: Control {
 
 		return NMMatchSettings(
 			mapType: map,
-			gameName: lineEditMapName.text,
+			matchName: lineEditMapName.text,
 			maxPlayers: viewMaxPlayers.currentOption.id,
 			startCondition: startCondition,
 			combatRule: combatRule,

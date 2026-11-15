@@ -255,7 +255,7 @@ final class TestScene: Node {
 	private func matchFetchRequestCompleted(result: Result<MatchListDTO, Error>, matchName: String) {
 		switch result {
 			case .success(let matchListDTO):
-				if let match = matchListDTO.matches.first(where: { $0.name == matchName }) {
+				if let match = matchListDTO.matches.first(where: { $0.settings.matchName == matchName }) {
 					//if let match = matchListDTO.matches.first {
 					joinMatch(matchId: match.id, user: currentUser!)
 				} else {
@@ -294,7 +294,7 @@ final class TestScene: Node {
 
 		let settings = NMMatchSettings(
 			mapType: .random(.large),
-			gameName: matchName,
+			matchName: matchName,
 			maxPlayers: 4,
 			startCondition: .full,
 			combatRule: .attrition,
@@ -364,7 +364,7 @@ final class TestScene: Node {
 		GD.print("Successfully joined match with ID: \(msg.id)")
 		let lobby = CustomMatchLobby.loadScene()
 		removeChild(node: webSocketClient!)
-		lobby.initialize(ws: webSocketClient!, user: currentUser!, players: msg.players)
+		lobby.initialize(ws: webSocketClient!, user: currentUser!, players: msg.players, settings: msg.settings)
 		changeSceneToNode2(node: lobby)
 		if let binaryMsgHandlerToken {
 			webSocketClient!.dataReceived.disconnect(binaryMsgHandlerToken)

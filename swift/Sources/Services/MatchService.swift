@@ -234,7 +234,7 @@ struct MatchService {
 		let lobby = CustomMatchLobby.loadScene()
 		node.changeSceneToNode(node: lobby)
 		node.removeChild(node: client)
-		lobby.initialize(ws: client, user: user, players: msg.players)
+		lobby.initialize(ws: client, user: user, players: msg.players, settings: msg.settings)
 	}
 
 	private static func handleReconnectSuccess(node: Node, client: WebSocketClient, msg: NMMatchJoinedInProgress, user: User) {

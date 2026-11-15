@@ -64,7 +64,7 @@ final class RankedLobby: Control {
 				if let match = currentMatchDTO.match {
 					ConfirmationPopup.show(
 						on: getTree()?.currentScene,
-						text: "Do you want to rejoin the game \(match.name)",
+						text: "Do you want to rejoin the game \(match.settings.matchName)",
 						confirmText: "Rejoin"
 					) { [unowned self] in
 						let client = WebSocketClient()
@@ -95,7 +95,7 @@ final class RankedLobby: Control {
 		let lobby = CustomMatchLobby.loadScene()
 		changeSceneToNode(node: lobby)
 		removeChild(node: client)
-		lobby.initialize(ws: client, user: user, players: msg.players)
+		lobby.initialize(ws: client, user: user, players: msg.players, settings: msg.settings)
 	}
 
 	private func connectToWebSocket() {
