@@ -44,4 +44,11 @@ final class MainMenuScene: CanvasLayer {
 		customLobby.initialize(user: user)
 		swapContent(newContent: customLobby)
 	}
+
+	@Callable
+	func onProfilePressed() {
+		let profileScreen = ProfileScreen.loadScene()
+		profileScreen.initialize(user: user)
+		swapContent(newContent: profileScreen)
+	}
 }

@@ -44,29 +44,29 @@ theme = ExtResource("1_r4w38")
 theme_type_variation = &"MainMenuButton"
 text = "Custom"
 
-[node name="ButtonGuild" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=1099451415]
-layout_mode = 2
-theme = ExtResource("1_r4w38")
-theme_type_variation = &"MainMenuButton"
-text = "Guild"
-
-[node name="ButtonProfile" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=1053114015]
-layout_mode = 2
-theme = ExtResource("1_r4w38")
-theme_type_variation = &"MainMenuButton"
-text = "Profile"
-
 [node name="ButtonContentPass" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=720514871]
 layout_mode = 2
 theme = ExtResource("1_r4w38")
 theme_type_variation = &"MainMenuButton"
 text = "Content Pass"
 
-[node name="ButtonMyMaps" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=1741763730]
+[node name="ButtonGuild" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=1099451415]
 layout_mode = 2
 theme = ExtResource("1_r4w38")
 theme_type_variation = &"MainMenuButton"
-text = "My Maps"
+text = "Guild"
+
+[node name="ButtonMapEditor" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=1741763730]
+layout_mode = 2
+theme = ExtResource("1_r4w38")
+theme_type_variation = &"MainMenuButton"
+text = "Map Editor"
+
+[node name="ButtonProfile" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer" unique_id=1053114015]
+layout_mode = 2
+theme = ExtResource("1_r4w38")
+theme_type_variation = &"MainMenuButton"
+text = "Profile"
 
 [node name="Control" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=4736183]
 layout_mode = 2
@@ -82,3 +82,4 @@ size_flags_vertical = 3
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer/ButtonRanked" to="." method="onRankedPressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer/ButtonCustom" to="." method="onCustomPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/EqualWidthHBoxContainer/ButtonProfile" to="." method="onProfilePressed"]

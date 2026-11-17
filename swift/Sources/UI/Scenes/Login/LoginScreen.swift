@@ -1,6 +1,12 @@
 import Foundation
 import SwiftGodot
 
+extension LoginScreen: SceneLoadable {
+	static var pathToScene: String {
+		"res://Screens/Login/login_screen.tscn"
+	}
+}
+
 @Godot
 final class LoginScreen: Node {
 

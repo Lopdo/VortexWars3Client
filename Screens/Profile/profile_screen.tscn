@@ -1,0 +1,183 @@
+[gd_scene format=3 uid="uid://24b88i2vl6gi"]
+
+[node name="ProfileScreen" type="ProfileScreen" unique_id=422599856 node_paths=PackedStringArray("view_player_info", "view_player_stats", "btn_logot")]
+view_player_info = NodePath("MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView")
+view_player_stats = NodePath("MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer/ProfilePlayerStatsView")
+btn_logot = NodePath("MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer2/HBoxContainer/ButtonLogout")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=681428924]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1425740971]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=45682840]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=814430108]
+propagate_maximum_size = false
+layout_mode = 2
+theme_override_constants/margin_left = 17
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ProfilePlayerInfoView" type="ProfilePlayerInfoView" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer" unique_id=1707088717 node_paths=PackedStringArray("lbl_name", "lbl_level", "lbl_rank", "lbl_currency")]
+lbl_name = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Label2")
+lbl_level = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/Label2")
+lbl_rank = NodePath("MarginContainer/VBoxContainer/HBoxContainer3/Label2")
+lbl_currency = NodePath("MarginContainer/VBoxContainer/HBoxContainer4/Label2")
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView" unique_id=1934075981]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer" unique_id=1046169761]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer" unique_id=1911588965]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1631613647]
+layout_mode = 2
+text = "Name"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1610779808]
+layout_mode = 2
+text = "<Player name>"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer" unique_id=970001613]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=2141463625]
+layout_mode = 2
+text = "Level"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=875530908]
+layout_mode = 2
+text = "<Level>"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer" unique_id=398293008]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=805916064]
+layout_mode = 2
+text = "Rank"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=631248981]
+layout_mode = 2
+text = "<Rank>"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer" unique_id=1477737193]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer/HBoxContainer4" unique_id=144712283]
+layout_mode = 2
+text = "Free currency"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer/HBoxContainer4" unique_id=1780094791]
+layout_mode = 2
+text = "<currency>"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer" unique_id=1857377726]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer/HBoxContainer5" unique_id=1571452254]
+layout_mode = 2
+text = "Premium currency"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/ProfilePlayerInfoView/MarginContainer/VBoxContainer/HBoxContainer5" unique_id=849748459]
+layout_mode = 2
+text = "<currency>"
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=1829276373]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer" unique_id=8105452]
+layout_mode = 2
+theme_override_constants/separation = 19
+
+[node name="ButtonArmory" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=288504008]
+layout_mode = 2
+text = "Armory"
+
+[node name="ButtonAchievements" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=1078354103]
+layout_mode = 2
+text = "Achievements"
+
+[node name="ButtonReplays" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=35019476]
+layout_mode = 2
+text = "Replays"
+
+[node name="ButtonFriends" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=1325164545]
+layout_mode = 2
+text = "Friends"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=432392613]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2" unique_id=1138183579]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 15
+
+[node name="ProfilePlayerStatsView" type="ProfilePlayerStatsView" parent="MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer" unique_id=422496767]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer/ProfilePlayerStatsView" unique_id=557996202]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer/ProfilePlayerStatsView/VBoxContainer" unique_id=1838405527]
+layout_mode = 2
+text = "some stats will be here"
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2" unique_id=1228826974]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer2" unique_id=380861430]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer2/HBoxContainer" unique_id=606764131]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonLogout" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer2/HBoxContainer" unique_id=1768830261]
+layout_mode = 2
+text = "Logout"
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer/VBoxContainer/ButtonArmory" to="." method="onArmoryTapped"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer/VBoxContainer/ButtonAchievements" to="." method="onAchievementsTapped"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer/VBoxContainer/ButtonReplays" to="." method="onReplaysTapped"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer/VBoxContainer/ButtonFriends" to="." method="onFriendsTapped"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer2/HBoxContainer/ButtonLogout" to="." method="onLogoutTapped"]
