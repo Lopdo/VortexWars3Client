@@ -26,7 +26,7 @@ class Match {
 
 	private var pendingState: PendingState?
 
-	private var queuedEliminationMessage: NMMatchPlayerEliminated?
+	private var eliminationMessagesQueue: [NMMatchPlayerEliminated] = []
 
 	var currentPlayer: MatchPlayer {
 		willSet {
@@ -258,19 +258,28 @@ class Match {
 		if case .enemyTurn(let turnState) = state,
 			case .combatInProgress = turnState
 		{
-			queuedEliminationMessage = msg
+			enqueueEliminationMessage(msg: msg)
 		} else if case .myTurn(let turnState) = state,
 			case .combatInProgress = turnState
 		{
-			queuedEliminationMessage = msg
+			enqueueEliminationMessage(msg: msg)
 		} else {
 			matchScreen.playerEliminated(players[Int(msg.playerIndex)], result: MatchEliminationResult(msg: msg))
 		}
 
 		if msg.gameOver {
 			gameOver()
-			queuedEliminationMessage = msg
+			enqueueEliminationMessage(msg: msg)
 		}
+	}
+
+	private func enqueueEliminationMessage(msg: NMMatchPlayerEliminated) {
+		if eliminationMessagesQueue.contains(where: { $0.playerIndex == msg.playerIndex }) {
+			//Already queued, do nothing
+			return
+		}
+
+		eliminationMessagesQueue.append(msg)
 	}
 
 	func handleGameOver(msg: NMMatchGameOver) {
@@ -538,11 +547,10 @@ extension Match {
 
 					self.matchScreen.viewTurnTimer.unpause()
 
-					if let eliminationMsg = self.queuedEliminationMessage {
-						self.matchScreen.playerEliminated(
-							self.players[Int(eliminationMsg.playerIndex)], result: MatchEliminationResult(msg: eliminationMsg))
-						self.queuedEliminationMessage = nil
+					self.eliminationMessagesQueue.forEach {
+						self.matchScreen.playerEliminated(self.players[Int($0.playerIndex)], result: MatchEliminationResult(msg: $0))
 					}
+					self.eliminationMessagesQueue.removeAll()
 
 					if let pendingState = self.pendingState {
 						if case .myTurn(let turnState) = pendingState.state {
